@@ -1,0 +1,15 @@
+{
+  "name": "Gabriella de Paris",
+  "document": "251.011.966-49",
+  "email": "gbparis@chanel.com",
+  "phone": "(38) 98141-0879",
+  "address": {
+    "street": "Rua Diamonds",
+    "house": "11-1",
+    "complement": "",
+    "neighborhood": "Todos os Santos",
+    "city": "Montes Claros",
+    "state": "MG",
+    "zipCode": "39400-142"
+  }
+}

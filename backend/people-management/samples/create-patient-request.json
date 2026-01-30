@@ -1,0 +1,15 @@
+{
+  "name": "John Null",
+  "document": "123.456.789-09",
+  "email": "clinic@staily.net",
+  "phone": "(71) 99999-9999",
+  "address": {
+    "street": "Av. Paulista",
+    "house": "1239",
+    "complement": "Edifício Catalina",
+    "neighborhood": "Bela Vista",
+    "city": "São Paulo",
+    "state": "SP",
+    "zipCode": "01310-200"
+  }
+}
