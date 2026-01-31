@@ -1,13 +1,16 @@
 package com.ifba.clinic.people.security.components;
 
+import com.ifba.clinic.people.entities.User;
 import com.ifba.clinic.people.security.enums.TraitPolicy;
 import java.util.function.Predicate;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
 
 @Component("userGrantsEvaluator")
+@Slf4j
 public class UserGrantsEvaluator {
 
   public boolean hasAuthentication()  {
@@ -15,7 +18,15 @@ public class UserGrantsEvaluator {
         .getContext()
         .getAuthentication();
 
-    return auth != null && auth.isAuthenticated();
+    if (auth == null || !auth.isAuthenticated()) {
+      return false;
+    }
+
+    User user = auth.getPrincipal() instanceof User
+        ? (User) auth.getPrincipal()
+        : null;
+
+    return user != null;
   }
 
   public boolean hasRole(String role)  {

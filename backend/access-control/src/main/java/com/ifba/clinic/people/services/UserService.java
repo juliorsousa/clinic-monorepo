@@ -4,11 +4,15 @@ import com.ifba.clinic.people.entities.User;
 import com.ifba.clinic.people.entities.UserRole;
 import com.ifba.clinic.people.entities.UserTrait;
 import com.ifba.clinic.people.entities.enums.EnumRole;
+import com.ifba.clinic.people.exceptions.BadRequestException;
 import com.ifba.clinic.people.exceptions.ConflictException;
 import com.ifba.clinic.people.exceptions.UnauthorizedException;
 import com.ifba.clinic.people.models.requests.CreateUserRequest;
+import com.ifba.clinic.people.models.requests.ChangePasswordRequest;
 import com.ifba.clinic.people.models.response.CreateUserResponse;
 import com.ifba.clinic.people.repositories.UserRepository;
+import com.ifba.clinic.people.security.annotations.AuthRequired;
+import com.ifba.clinic.people.security.annotations.RoleRestricted;
 import com.ifba.clinic.people.security.services.AuthenticationService;
 import jakarta.transaction.Transactional;
 import java.util.ArrayList;
@@ -19,6 +23,7 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import static com.ifba.clinic.people.utils.Messages.PASSWORD_MUST_BE_DIFFERENT;
 import static com.ifba.clinic.people.utils.Messages.USER_DUPLICATED;
 
 @Service
@@ -85,6 +90,34 @@ public class UserService {
     return new CreateUserResponse(savedUser, authenticationService.generateToken(savedUser));
   }
 
+  @AuthRequired
+  @RoleRestricted("ADMIN")
+  public void admin() {
+    log.info("Admin-only method accessed successfully.");
+  }
+
+  @AuthRequired
+  public void changePassword(ChangePasswordRequest request) {
+    User currentUser = getCurrentUser();
+
+    log.info("Changing password for user with email: {}", currentUser.getEmail());
+
+    if (passwordEncoder.matches(request.newPassword(), currentUser.getPassword())) {
+      log.error("New password cannot be the same as the current password for user with email: {}",
+          currentUser.getEmail());
+
+      throw new BadRequestException(PASSWORD_MUST_BE_DIFFERENT);
+    }
+
+    currentUser.setPassword(passwordEncoder.encode(request.newPassword()));
+    currentUser.getTraits().removeIf(trait -> trait.getTrait().equals("MUST_CHANGE_PASSWORD"));
+
+    userRepository.save(currentUser);
+
+    log.info("Password reset successfully for user with email: {}", currentUser.getEmail());
+  }
+
+  @AuthRequired
   public User getCurrentUser() {
     Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
 
@@ -92,6 +125,8 @@ public class UserService {
       log.error("No authenticated user found in the security context");
       throw new IllegalStateException("No authenticated user found");
     }
+
+    log.info("Retrieving currently authenticated user from context. {}", authentication);
 
     User user = authentication.getPrincipal() instanceof User
         ? (User) authentication.getPrincipal()

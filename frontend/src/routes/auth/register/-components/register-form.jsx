@@ -95,7 +95,7 @@ export function RegisterForm() {
 		<Form {...form}>
 			<form
 				onSubmit={form.handleSubmit(onHandleSubmit)}
-				className="flex flex-col gap-4 h-127.5"
+				className="flex flex-col gap-4"
 			>
 				<div className="flex flex-col gap-3">
 					<FormField
@@ -164,6 +164,8 @@ export function RegisterForm() {
 						)}
 					/>
 				</div>
+
+				<div className="after:border-border relative text-center text-sm after:absolute after:inset-0 after:top-1/2 after:z-0 after:flex after:items-center after:border-t" />
 
 				<Button
 					disabled={form.formState.isSubmitting}

@@ -5,19 +5,25 @@ import { AuthProvider } from "./contexts/auth-provider";
 import { useAuth } from "./hooks/use-auth";
 import { routeTree } from "./routeTree.gen";
 
-const router = createRouter({
-	routeTree,
-	context: {
-		auth: undefined,
-	},
-});
+function InnerApp() {
+	const auth = useAuth();
+
+	const router = createRouter({
+		routeTree,
+		context: {
+			auth,
+		},
+	});
+
+	return <RouterProvider router={router} />;
+}
 
 export function App() {
 	return (
 		<ThemeProvider defaultTheme="dark" storageKey="vite-ui-theme">
 			{/* <QueryClientProvider client={queryClient}> */}
 			<AuthProvider>
-				<RouterProvider context={{ auth: useAuth() }} router={router} />
+				<InnerApp />
 				<Toaster richColors />
 			</AuthProvider>
 			{/*   </QueryClientProvider> */}

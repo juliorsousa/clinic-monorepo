@@ -21,13 +21,13 @@ public class Messages {
   public static final String USER_DUPLICATED =
       "Já existe uma conta associada a este endereço de e-mail.";
 
-  public static final String PATIENT_NOT_FOUND =
-      "Paciente não encontrado.";
-
   // Authentication messages
 
   public static final String AUTH_INVALID_CREDENTIALS =
       "Usuário ou senha inválidos.";
+
+  public static final String PASSWORD_MUST_BE_DIFFERENT =
+      "A nova senha deve ser diferente da senha atual.";
 
   // Generic User messages
 

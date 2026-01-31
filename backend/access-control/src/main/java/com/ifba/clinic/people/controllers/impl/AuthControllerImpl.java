@@ -4,6 +4,7 @@ import com.ifba.clinic.people.controllers.AuthController;
 import com.ifba.clinic.people.entities.enums.EnumRole;
 import com.ifba.clinic.people.models.requests.CreateUserRequest;
 import com.ifba.clinic.people.models.requests.LoginUserRequest;
+import com.ifba.clinic.people.models.requests.ChangePasswordRequest;
 import com.ifba.clinic.people.models.response.CreateUserResponse;
 import com.ifba.clinic.people.models.response.TokenResponse;
 import com.ifba.clinic.people.security.services.AuthenticationService;
@@ -36,5 +37,13 @@ public class AuthControllerImpl implements AuthController {
         .body(
             authenticationService.authenticateUser(request)
         );
+  }
+
+  public ResponseEntity<String> changePassword(ChangePasswordRequest request) {
+    userService.changePassword(request);
+
+    return ResponseEntity
+        .ok()
+        .body("Password changed successfully.");
   }
 }

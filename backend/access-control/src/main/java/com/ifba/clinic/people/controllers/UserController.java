@@ -1,16 +1,11 @@
 package com.ifba.clinic.people.controllers;
 
-import com.ifba.clinic.people.models.requests.CreateUserRequest;
-import com.ifba.clinic.people.models.response.CreateUserResponse;
 import com.ifba.clinic.people.models.response.CurrentUserResponse;
-import com.ifba.clinic.people.security.annotations.AuthRestrictedEndpoint;
+import com.ifba.clinic.people.security.annotations.AuthRequired;
 import io.swagger.v3.oas.annotations.Operation;
-import io.swagger.v3.oas.annotations.media.Content;
-import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
-import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -33,7 +28,9 @@ public interface UserController {
       )
   })
   @GetMapping("/me")
-  @AuthRestrictedEndpoint
   ResponseEntity<CurrentUserResponse> getCurrentUser();
+
+  @GetMapping("/admin-only")
+  ResponseEntity<String> adminOnlyEndpoint();
 
 }

@@ -9,12 +9,18 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from './routes/__root'
+import { Route as AuthLayoutRouteImport } from './routes/auth/layout'
 import { Route as AppLayoutRouteImport } from './routes/_app/layout'
 import { Route as AppIndexRouteImport } from './routes/_app/index'
-import { Route as AppAuthLayoutRouteImport } from './routes/_app/auth/layout'
-import { Route as AppAuthRegisterIndexRouteImport } from './routes/_app/auth/register/index'
-import { Route as AppAuthLoginIndexRouteImport } from './routes/_app/auth/login/index'
+import { Route as AuthRegisterIndexRouteImport } from './routes/auth/register/index'
+import { Route as AuthPasswordIndexRouteImport } from './routes/auth/password/index'
+import { Route as AuthLoginIndexRouteImport } from './routes/auth/login/index'
 
+const AuthLayoutRoute = AuthLayoutRouteImport.update({
+  id: '/auth',
+  path: '/auth',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const AppLayoutRoute = AppLayoutRouteImport.update({
   id: '/_app',
   getParentRoute: () => rootRouteImport,
@@ -24,62 +30,79 @@ const AppIndexRoute = AppIndexRouteImport.update({
   path: '/',
   getParentRoute: () => AppLayoutRoute,
 } as any)
-const AppAuthLayoutRoute = AppAuthLayoutRouteImport.update({
-  id: '/auth',
-  path: '/auth',
-  getParentRoute: () => AppLayoutRoute,
-} as any)
-const AppAuthRegisterIndexRoute = AppAuthRegisterIndexRouteImport.update({
+const AuthRegisterIndexRoute = AuthRegisterIndexRouteImport.update({
   id: '/register/',
   path: '/register/',
-  getParentRoute: () => AppAuthLayoutRoute,
+  getParentRoute: () => AuthLayoutRoute,
 } as any)
-const AppAuthLoginIndexRoute = AppAuthLoginIndexRouteImport.update({
+const AuthPasswordIndexRoute = AuthPasswordIndexRouteImport.update({
+  id: '/password/',
+  path: '/password/',
+  getParentRoute: () => AuthLayoutRoute,
+} as any)
+const AuthLoginIndexRoute = AuthLoginIndexRouteImport.update({
   id: '/login/',
   path: '/login/',
-  getParentRoute: () => AppAuthLayoutRoute,
+  getParentRoute: () => AuthLayoutRoute,
 } as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof AppIndexRoute
-  '/auth': typeof AppAuthLayoutRouteWithChildren
-  '/auth/login/': typeof AppAuthLoginIndexRoute
-  '/auth/register/': typeof AppAuthRegisterIndexRoute
+  '/auth': typeof AuthLayoutRouteWithChildren
+  '/auth/login/': typeof AuthLoginIndexRoute
+  '/auth/password/': typeof AuthPasswordIndexRoute
+  '/auth/register/': typeof AuthRegisterIndexRoute
 }
 export interface FileRoutesByTo {
-  '/auth': typeof AppAuthLayoutRouteWithChildren
+  '/auth': typeof AuthLayoutRouteWithChildren
   '/': typeof AppIndexRoute
-  '/auth/login': typeof AppAuthLoginIndexRoute
-  '/auth/register': typeof AppAuthRegisterIndexRoute
+  '/auth/login': typeof AuthLoginIndexRoute
+  '/auth/password': typeof AuthPasswordIndexRoute
+  '/auth/register': typeof AuthRegisterIndexRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/_app': typeof AppLayoutRouteWithChildren
-  '/_app/auth': typeof AppAuthLayoutRouteWithChildren
+  '/auth': typeof AuthLayoutRouteWithChildren
   '/_app/': typeof AppIndexRoute
-  '/_app/auth/login/': typeof AppAuthLoginIndexRoute
-  '/_app/auth/register/': typeof AppAuthRegisterIndexRoute
+  '/auth/login/': typeof AuthLoginIndexRoute
+  '/auth/password/': typeof AuthPasswordIndexRoute
+  '/auth/register/': typeof AuthRegisterIndexRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/auth' | '/auth/login/' | '/auth/register/'
+  fullPaths:
+    | '/'
+    | '/auth'
+    | '/auth/login/'
+    | '/auth/password/'
+    | '/auth/register/'
   fileRoutesByTo: FileRoutesByTo
-  to: '/auth' | '/' | '/auth/login' | '/auth/register'
+  to: '/auth' | '/' | '/auth/login' | '/auth/password' | '/auth/register'
   id:
     | '__root__'
     | '/_app'
-    | '/_app/auth'
+    | '/auth'
     | '/_app/'
-    | '/_app/auth/login/'
-    | '/_app/auth/register/'
+    | '/auth/login/'
+    | '/auth/password/'
+    | '/auth/register/'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   AppLayoutRoute: typeof AppLayoutRouteWithChildren
+  AuthLayoutRoute: typeof AuthLayoutRouteWithChildren
 }
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
+    '/auth': {
+      id: '/auth'
+      path: '/auth'
+      fullPath: '/auth'
+      preLoaderRoute: typeof AuthLayoutRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/_app': {
       id: '/_app'
       path: ''
@@ -94,51 +117,35 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AppIndexRouteImport
       parentRoute: typeof AppLayoutRoute
     }
-    '/_app/auth': {
-      id: '/_app/auth'
-      path: '/auth'
-      fullPath: '/auth'
-      preLoaderRoute: typeof AppAuthLayoutRouteImport
-      parentRoute: typeof AppLayoutRoute
-    }
-    '/_app/auth/register/': {
-      id: '/_app/auth/register/'
+    '/auth/register/': {
+      id: '/auth/register/'
       path: '/register'
       fullPath: '/auth/register/'
-      preLoaderRoute: typeof AppAuthRegisterIndexRouteImport
-      parentRoute: typeof AppAuthLayoutRoute
+      preLoaderRoute: typeof AuthRegisterIndexRouteImport
+      parentRoute: typeof AuthLayoutRoute
     }
-    '/_app/auth/login/': {
-      id: '/_app/auth/login/'
+    '/auth/password/': {
+      id: '/auth/password/'
+      path: '/password'
+      fullPath: '/auth/password/'
+      preLoaderRoute: typeof AuthPasswordIndexRouteImport
+      parentRoute: typeof AuthLayoutRoute
+    }
+    '/auth/login/': {
+      id: '/auth/login/'
       path: '/login'
       fullPath: '/auth/login/'
-      preLoaderRoute: typeof AppAuthLoginIndexRouteImport
-      parentRoute: typeof AppAuthLayoutRoute
+      preLoaderRoute: typeof AuthLoginIndexRouteImport
+      parentRoute: typeof AuthLayoutRoute
     }
   }
 }
 
-interface AppAuthLayoutRouteChildren {
-  AppAuthLoginIndexRoute: typeof AppAuthLoginIndexRoute
-  AppAuthRegisterIndexRoute: typeof AppAuthRegisterIndexRoute
-}
-
-const AppAuthLayoutRouteChildren: AppAuthLayoutRouteChildren = {
-  AppAuthLoginIndexRoute: AppAuthLoginIndexRoute,
-  AppAuthRegisterIndexRoute: AppAuthRegisterIndexRoute,
-}
-
-const AppAuthLayoutRouteWithChildren = AppAuthLayoutRoute._addFileChildren(
-  AppAuthLayoutRouteChildren,
-)
-
 interface AppLayoutRouteChildren {
-  AppAuthLayoutRoute: typeof AppAuthLayoutRouteWithChildren
   AppIndexRoute: typeof AppIndexRoute
 }
 
 const AppLayoutRouteChildren: AppLayoutRouteChildren = {
-  AppAuthLayoutRoute: AppAuthLayoutRouteWithChildren,
   AppIndexRoute: AppIndexRoute,
 }
 
@@ -146,8 +153,25 @@ const AppLayoutRouteWithChildren = AppLayoutRoute._addFileChildren(
   AppLayoutRouteChildren,
 )
 
+interface AuthLayoutRouteChildren {
+  AuthLoginIndexRoute: typeof AuthLoginIndexRoute
+  AuthPasswordIndexRoute: typeof AuthPasswordIndexRoute
+  AuthRegisterIndexRoute: typeof AuthRegisterIndexRoute
+}
+
+const AuthLayoutRouteChildren: AuthLayoutRouteChildren = {
+  AuthLoginIndexRoute: AuthLoginIndexRoute,
+  AuthPasswordIndexRoute: AuthPasswordIndexRoute,
+  AuthRegisterIndexRoute: AuthRegisterIndexRoute,
+}
+
+const AuthLayoutRouteWithChildren = AuthLayoutRoute._addFileChildren(
+  AuthLayoutRouteChildren,
+)
+
 const rootRouteChildren: RootRouteChildren = {
   AppLayoutRoute: AppLayoutRouteWithChildren,
+  AuthLayoutRoute: AuthLayoutRouteWithChildren,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)

@@ -1,9 +1,6 @@
 package com.ifba.clinic.people.controllers.impl;
 
 import com.ifba.clinic.people.controllers.UserController;
-import com.ifba.clinic.people.entities.enums.EnumRole;
-import com.ifba.clinic.people.models.requests.CreateUserRequest;
-import com.ifba.clinic.people.models.response.CreateUserResponse;
 import com.ifba.clinic.people.models.response.CurrentUserResponse;
 import com.ifba.clinic.people.services.UserService;
 import lombok.RequiredArgsConstructor;
@@ -23,5 +20,12 @@ public class UserControllerImpl implements UserController {
         .body(
             new CurrentUserResponse(userService.getCurrentUser())
         );
+  }
+
+  public ResponseEntity<String> adminOnlyEndpoint() {
+    userService.admin();
+    return ResponseEntity
+        .status(HttpStatus.OK)
+        .body("Acesso concedido a endpoint restrita para ADMIN.");
   }
 }

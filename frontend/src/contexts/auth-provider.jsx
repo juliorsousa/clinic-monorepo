@@ -13,7 +13,6 @@ export function AuthProvider({ children }) {
 
 	useEffect(() => {
 		const accessToken = Cookies.get("access_token");
-		const refreshToken = Cookies.get("refresh_token");
 
 		if (accessToken) {
 			api
@@ -27,17 +26,15 @@ export function AuthProvider({ children }) {
 					setIsAuthenticated(true);
 					setUser(response.data);
 				})
-				.catch(() => refresh());
-		} else {
-			if (refreshToken) refresh();
-			else signOut();
+				.catch(() => signOut());
 		}
 	}, []);
 
 	function signOut() {
+		if (!Cookies.get("access_token")) return;
+
 		api.post("/auth/log-out").finally(() => {
 			Cookies.remove("access_token");
-			Cookies.remove("refresh_token");
 		});
 	}
 
@@ -145,14 +142,6 @@ export function AuthProvider({ children }) {
 	// 		})
 	// 		.catch(() => signOut());
 	// }
-
-	// function isValidUrlToRedirect(url) {
-	// 	return !url.startsWith("/authorize") && !url.startsWith("/api/");
-	// }
-
-	function isValidUrlToRedirect(url) {
-		return !url.startsWith("/api/");
-	}
 
 	return (
 		<AuthContext.Provider
