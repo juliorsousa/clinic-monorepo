@@ -6,17 +6,28 @@ public class Messages {
 
   // Exception messages
 
+  public static final String GENERIC_BAD_REQUEST =
+      "A requisição não pôde ser concluída devido a um erro do cliente.";
+
   public static final String GENERIC_CONFLICT =
       "A requisição não pôde ser concluída devido a um conflito com o estado atual do recurso.";
 
   public static final String GENERIC_NOT_FOUND =
       "A requisição não pôde ser concluída porque o recurso solicitado não foi encontrado.";
 
+  public static final String GENERIC_UNAUTHORIZED =
+      "A requisição não pôde ser concluída porque o cliente não está autenticado.";
+
   public static final String USER_DUPLICATED =
       "Já existe uma conta associada a este endereço de e-mail.";
 
   public static final String PATIENT_NOT_FOUND =
       "Paciente não encontrado.";
+
+  // Authentication messages
+
+  public static final String AUTH_INVALID_CREDENTIALS =
+      "Usuário ou senha inválidos.";
 
   // Generic User messages
 

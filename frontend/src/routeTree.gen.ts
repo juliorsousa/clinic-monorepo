@@ -11,6 +11,8 @@
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as AppLayoutRouteImport } from './routes/_app/layout'
 import { Route as AppIndexRouteImport } from './routes/_app/index'
+import { Route as AppAuthLayoutRouteImport } from './routes/_app/auth/layout'
+import { Route as AppAuthRegisterIndexRouteImport } from './routes/_app/auth/register/index'
 import { Route as AppAuthLoginIndexRouteImport } from './routes/_app/auth/login/index'
 
 const AppLayoutRoute = AppLayoutRouteImport.update({
@@ -22,32 +24,54 @@ const AppIndexRoute = AppIndexRouteImport.update({
   path: '/',
   getParentRoute: () => AppLayoutRoute,
 } as any)
-const AppAuthLoginIndexRoute = AppAuthLoginIndexRouteImport.update({
-  id: '/auth/login/',
-  path: '/auth/login/',
+const AppAuthLayoutRoute = AppAuthLayoutRouteImport.update({
+  id: '/auth',
+  path: '/auth',
   getParentRoute: () => AppLayoutRoute,
+} as any)
+const AppAuthRegisterIndexRoute = AppAuthRegisterIndexRouteImport.update({
+  id: '/register/',
+  path: '/register/',
+  getParentRoute: () => AppAuthLayoutRoute,
+} as any)
+const AppAuthLoginIndexRoute = AppAuthLoginIndexRouteImport.update({
+  id: '/login/',
+  path: '/login/',
+  getParentRoute: () => AppAuthLayoutRoute,
 } as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof AppIndexRoute
+  '/auth': typeof AppAuthLayoutRouteWithChildren
   '/auth/login/': typeof AppAuthLoginIndexRoute
+  '/auth/register/': typeof AppAuthRegisterIndexRoute
 }
 export interface FileRoutesByTo {
+  '/auth': typeof AppAuthLayoutRouteWithChildren
   '/': typeof AppIndexRoute
   '/auth/login': typeof AppAuthLoginIndexRoute
+  '/auth/register': typeof AppAuthRegisterIndexRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/_app': typeof AppLayoutRouteWithChildren
+  '/_app/auth': typeof AppAuthLayoutRouteWithChildren
   '/_app/': typeof AppIndexRoute
   '/_app/auth/login/': typeof AppAuthLoginIndexRoute
+  '/_app/auth/register/': typeof AppAuthRegisterIndexRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/auth/login/'
+  fullPaths: '/' | '/auth' | '/auth/login/' | '/auth/register/'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/auth/login'
-  id: '__root__' | '/_app' | '/_app/' | '/_app/auth/login/'
+  to: '/auth' | '/' | '/auth/login' | '/auth/register'
+  id:
+    | '__root__'
+    | '/_app'
+    | '/_app/auth'
+    | '/_app/'
+    | '/_app/auth/login/'
+    | '/_app/auth/register/'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -70,24 +94,52 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AppIndexRouteImport
       parentRoute: typeof AppLayoutRoute
     }
+    '/_app/auth': {
+      id: '/_app/auth'
+      path: '/auth'
+      fullPath: '/auth'
+      preLoaderRoute: typeof AppAuthLayoutRouteImport
+      parentRoute: typeof AppLayoutRoute
+    }
+    '/_app/auth/register/': {
+      id: '/_app/auth/register/'
+      path: '/register'
+      fullPath: '/auth/register/'
+      preLoaderRoute: typeof AppAuthRegisterIndexRouteImport
+      parentRoute: typeof AppAuthLayoutRoute
+    }
     '/_app/auth/login/': {
       id: '/_app/auth/login/'
-      path: '/auth/login'
+      path: '/login'
       fullPath: '/auth/login/'
       preLoaderRoute: typeof AppAuthLoginIndexRouteImport
-      parentRoute: typeof AppLayoutRoute
+      parentRoute: typeof AppAuthLayoutRoute
     }
   }
 }
 
-interface AppLayoutRouteChildren {
-  AppIndexRoute: typeof AppIndexRoute
+interface AppAuthLayoutRouteChildren {
   AppAuthLoginIndexRoute: typeof AppAuthLoginIndexRoute
+  AppAuthRegisterIndexRoute: typeof AppAuthRegisterIndexRoute
+}
+
+const AppAuthLayoutRouteChildren: AppAuthLayoutRouteChildren = {
+  AppAuthLoginIndexRoute: AppAuthLoginIndexRoute,
+  AppAuthRegisterIndexRoute: AppAuthRegisterIndexRoute,
+}
+
+const AppAuthLayoutRouteWithChildren = AppAuthLayoutRoute._addFileChildren(
+  AppAuthLayoutRouteChildren,
+)
+
+interface AppLayoutRouteChildren {
+  AppAuthLayoutRoute: typeof AppAuthLayoutRouteWithChildren
+  AppIndexRoute: typeof AppIndexRoute
 }
 
 const AppLayoutRouteChildren: AppLayoutRouteChildren = {
+  AppAuthLayoutRoute: AppAuthLayoutRouteWithChildren,
   AppIndexRoute: AppIndexRoute,
-  AppAuthLoginIndexRoute: AppAuthLoginIndexRoute,
 }
 
 const AppLayoutRouteWithChildren = AppLayoutRoute._addFileChildren(

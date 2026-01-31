@@ -1,23 +1,46 @@
 package com.ifba.clinic.people.handlers;
 
+import com.ifba.clinic.people.exceptions.BadRequestException;
 import com.ifba.clinic.people.exceptions.ConflictException;
 import com.ifba.clinic.people.exceptions.NotFoundException;
+import com.ifba.clinic.people.exceptions.UnauthorizedException;
 import com.ifba.clinic.people.models.error.MessagedError;
 import com.ifba.clinic.people.models.error.ValidationError;
+import io.jsonwebtoken.MalformedJwtException;
 import java.util.Map;
 import java.util.stream.Collectors;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.authorization.AuthorizationDeniedException;
 import org.springframework.validation.FieldError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
+import org.springframework.web.servlet.resource.NoResourceFoundException;
 
 @RestControllerAdvice
 public class GlobalExceptionHandler {
 
   private static final Logger log = LoggerFactory.getLogger(GlobalExceptionHandler.class);
+
+  @ExceptionHandler(AuthorizationDeniedException.class)
+  public ResponseEntity<MessagedError> handleAuthorizationDeniedException() {
+    return ResponseEntity
+        .status(403)
+        .body(new MessagedError("You do not have permission to access this resource."));
+  }
+
+  @ExceptionHandler(BadRequestException.class)
+  public ResponseEntity<MessagedError> handleBadRequestException(BadRequestException exception) {
+    String message = exception.getMessage() != null
+        ? exception.getMessage()
+        : "The request could not be understood or was missing required parameters.";
+
+    return ResponseEntity
+        .status(400)
+        .body(new MessagedError(message));
+  }
 
   @ExceptionHandler(ConflictException.class)
   public ResponseEntity<MessagedError> handleConflictException(ConflictException exception) {
@@ -35,6 +58,37 @@ public class GlobalExceptionHandler {
     String message = exception.getMessage() != null
         ? exception.getMessage()
         : "The requested resource was not found.";
+
+    return ResponseEntity
+        .status(404)
+        .body(new MessagedError(message));
+  }
+
+  @ExceptionHandler(UnauthorizedException.class)
+  public ResponseEntity<MessagedError> handleUnauthorizedException(UnauthorizedException exception) {
+    String message = exception.getMessage() != null
+        ? exception.getMessage()
+        : "Authentication is required and has failed or has not yet been provided.";
+
+    return ResponseEntity
+        .status(401)
+        .body(new MessagedError(message));
+  }
+
+  @ExceptionHandler(MalformedJwtException.class)
+  public ResponseEntity<MessagedError> handleMalformedJwtException(MalformedJwtException exception) {
+    String message = exception.getMessage() != null
+        ? exception.getMessage()
+        : "Invalid authentication token.";
+
+    return ResponseEntity
+        .status(401)
+        .body(new MessagedError(message));
+  }
+
+  @ExceptionHandler(NoResourceFoundException.class)
+  public ResponseEntity<MessagedError> handleNoResourceFoundException(NoResourceFoundException exception) {
+    String message = "The requested resource was not found.";
 
     return ResponseEntity
         .status(404)

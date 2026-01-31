@@ -5,14 +5,18 @@ import com.ifba.clinic.people.entities.UserRole;
 import com.ifba.clinic.people.entities.UserTrait;
 import com.ifba.clinic.people.entities.enums.EnumRole;
 import com.ifba.clinic.people.exceptions.ConflictException;
+import com.ifba.clinic.people.exceptions.UnauthorizedException;
 import com.ifba.clinic.people.models.requests.CreateUserRequest;
 import com.ifba.clinic.people.models.response.CreateUserResponse;
 import com.ifba.clinic.people.repositories.UserRepository;
+import com.ifba.clinic.people.security.services.AuthenticationService;
 import jakarta.transaction.Transactional;
 import java.util.ArrayList;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import static com.ifba.clinic.people.utils.Messages.USER_DUPLICATED;
@@ -22,6 +26,7 @@ import static com.ifba.clinic.people.utils.Messages.USER_DUPLICATED;
 @Slf4j
 public class UserService {
 
+  private final AuthenticationService authenticationService;
   private final UserRepository userRepository;
   private final PasswordEncoder passwordEncoder;
 
@@ -77,7 +82,28 @@ public class UserService {
 
     log.info("User with email: {} created successfully", request.email());
 
-    return new CreateUserResponse(savedUser);
+    return new CreateUserResponse(savedUser, authenticationService.generateToken(savedUser));
+  }
+
+  public User getCurrentUser() {
+    Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+
+    if (authentication == null || !authentication.isAuthenticated()) {
+      log.error("No authenticated user found in the security context");
+      throw new IllegalStateException("No authenticated user found");
+    }
+
+    User user = authentication.getPrincipal() instanceof User
+        ? (User) authentication.getPrincipal()
+        : null;
+
+    if (user != null) {
+      return user;
+    }
+
+    log.error("Authenticated user not found in context.");
+
+    throw  new UnauthorizedException("Authenticated user not found");
   }
 
 }

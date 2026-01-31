@@ -4,12 +4,21 @@ import com.ifba.clinic.people.entities.User;
 
 public record CreateUserResponse(
     String id,
-    String email
+    String email,
+
+    TokenResponse token
 ) {
-  public CreateUserResponse(User user) {
+  public CreateUserResponse(
+      User user
+  ) {
+    this(user.getId(), user.getEmail(), null);
+  }
+
+  public CreateUserResponse(User user, String token) {
     this(
         user.getId(),
-        user.getEmail()
+        user.getEmail(),
+        new TokenResponse(token)
     );
   }
 }

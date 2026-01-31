@@ -2,6 +2,8 @@ package com.ifba.clinic.people.controllers;
 
 import com.ifba.clinic.people.models.requests.CreateUserRequest;
 import com.ifba.clinic.people.models.response.CreateUserResponse;
+import com.ifba.clinic.people.models.response.CurrentUserResponse;
+import com.ifba.clinic.people.security.annotations.AuthRestrictedEndpoint;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
@@ -17,35 +19,21 @@ import org.springframework.web.bind.annotation.*;
 public interface UserController {
 
   @Operation(
-      summary = "Criar usuário",
-      description = "Cria um novo registro de usuário no sistema."
+      summary = "Busca informações do usuário autenticado",
+      description = "Retorna as informações do usuário atualmente autenticado no sistema."
   )
   @ApiResponses({
       @ApiResponse(
-          responseCode = "201",
-          description = "Usuário criado com sucesso",
-          content = @Content(
-              mediaType = "application/json",
-              schema = @Schema(implementation = CreateUserResponse.class)
-          )
-      ),
-      @ApiResponse(
-          responseCode = "400",
-          description = "Corpo da requisição inválido"
-      ),
-      @ApiResponse(
-          responseCode = "409",
-          description = "Usuário já existente"
+          responseCode = "200",
+          description = "Informações do usuário retornadas com sucesso"
       ),
       @ApiResponse(
           responseCode = "401",
           description = "Não autorizado"
       )
   })
-  @PostMapping("/")
-  ResponseEntity<CreateUserResponse> createUser(
-      @Valid
-      @RequestBody CreateUserRequest request
-  );
+  @GetMapping("/me")
+  @AuthRestrictedEndpoint
+  ResponseEntity<CurrentUserResponse> getCurrentUser();
 
 }
