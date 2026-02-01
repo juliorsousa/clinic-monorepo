@@ -1,4 +1,4 @@
-package com.ifba.gateway_service;
+package com.ifba.clinic.gateway;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;

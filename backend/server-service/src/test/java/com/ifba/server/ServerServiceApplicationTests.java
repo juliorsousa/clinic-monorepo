@@ -1,10 +1,10 @@
-package com.ifba.gateway_service;
+package com.ifba.server;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
 
 @SpringBootTest
-class GatewayServiceApplicationTests {
+class ServerServiceApplicationTests {
 
 	@Test
 	void contextLoads() {

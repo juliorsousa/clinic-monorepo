@@ -1,4 +1,4 @@
-package com.ifba.gateway_service.exceptions;
+package com.ifba.clinic.gateway.exceptions;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.web.server.ResponseStatusException;

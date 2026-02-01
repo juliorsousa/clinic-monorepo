@@ -1,4 +1,4 @@
-package com.ifba.gateway_service.model;
+package com.ifba.clinic.gateway.model;
 
 public record ValidateUserResponse(
     String id,
