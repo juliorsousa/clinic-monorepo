@@ -17,8 +17,10 @@
     <packaging>pom</packaging>
 
     <modules>
-        <module>access-control</module>
+        <module>server-service</module>
         <module>people-management</module>
+        <module>access-control</module>
+        <module>gateway-service</module>
     </modules>
 
     <properties>

@@ -1,0 +1,48 @@
+
+server:
+    port: 8080
+
+spring:
+    application:
+        name: gateway-service
+    cloud:
+        gateway:
+            discovery:
+                locator:
+                    enabled: true
+            routes:
+            
+             - id: auth-public
+               uri: lb://access-control
+               predicates:
+                - Path=/auth/login, /auth/register
+               filters:
+
+             - id: people-management
+               uri: lb://clinic
+               predicates:
+                - Path=/patients/**
+               filters:
+                - AuthenticationFilter
+
+             - id: auth-private
+               uri: lb://access-control
+               predicates:
+                - Path=/auth/change-password, /users/**, /profiling/**
+               filters:
+                - AuthenticationFilter
+
+            globalcors:
+                cors-configurations:
+                  '[/**]':
+                    allowedOrigins: "http://localhost:5173"
+                    allowedMethods:
+                     - GET
+                     - POST
+                     - PUT
+                     - DELETE
+                    allowedHeaders: "*"
+eureka:
+    client:
+        serviceUrl:
+            defaultZone: http://localhost:8761/eureka
