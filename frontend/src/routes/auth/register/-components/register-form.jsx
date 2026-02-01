@@ -10,7 +10,6 @@ import {
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { useAuth } from "@/hooks/use-auth";
-import { api } from "@/lib/api";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Link } from "@tanstack/react-router";
 import { AxiosError } from "axios";
@@ -19,9 +18,6 @@ import { useForm } from "react-hook-form";
 import { toast } from "sonner";
 import { z } from "zod";
 
-/* ---------------------------------------------
-   Password validation rules
----------------------------------------------- */
 const passwordSchema = z
 	.string({
 		required_error: "A senha é obrigatória.",
@@ -41,9 +37,6 @@ const passwordSchema = z
 		message: "A senha deve conter pelo menos um caractere especial.",
 	});
 
-/* ---------------------------------------------
-   Form schema
----------------------------------------------- */
 const registerFormSchema = z
 	.object({
 		email: z
@@ -142,7 +135,6 @@ export function RegisterForm() {
 						)}
 					/>
 
-					{/* Confirm password */}
 					<FormField
 						control={form.control}
 						name="confirmPassword"

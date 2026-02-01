@@ -26,11 +26,42 @@ export function AuthProvider({ children }) {
 					setIsAuthenticated(true);
 					setUser(response.data);
 				})
-				.catch(() => signOut());
+				.catch(() => {
+					setIsAuthLoading(false);
+					setIsAuthenticated(false);
+					setUser(null);
+
+					signOut();
+				});
 		}
 	}, []);
 
+	async function revalidate() {
+		try {
+			const response = await api.get("/users/me", {
+				headers: {
+					Authorization: `Bearer ${Cookies.get("access_token")}`,
+				},
+			});
+
+			if (response.status === 200) {
+				setIsAuthLoading(false);
+				setIsAuthenticated(true);
+				setUser(response.data);
+			} else throw new Error("Failed to revalidate user.");
+		} catch {
+			signOut();
+		}
+	}
+
+	function hasTrait(trait) {
+		return user?.traits?.includes(trait);
+	}
+
 	function signOut() {
+		setUser(null);
+		setIsAuthenticated(false);
+
 		if (!Cookies.get("access_token")) return;
 
 		api.post("/auth/log-out").finally(() => {
@@ -151,6 +182,8 @@ export function AuthProvider({ children }) {
 				isAuthenticated,
 				user,
 				register,
+				hasTrait,
+				revalidate,
 			}}
 		>
 			{children}

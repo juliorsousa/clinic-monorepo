@@ -12,6 +12,9 @@ public class Messages {
   public static final String GENERIC_CONFLICT =
       "A requisição não pôde ser concluída devido a um conflito com o estado atual do recurso.";
 
+  public static final String GENERIC_NO_CONTENT =
+      "A requisição foi bem-sucedida, mas não há conteúdo para retornar.";
+
   public static final String GENERIC_NOT_FOUND =
       "A requisição não pôde ser concluída porque o recurso solicitado não foi encontrado.";
 
@@ -28,6 +31,11 @@ public class Messages {
 
   public static final String PASSWORD_MUST_BE_DIFFERENT =
       "A nova senha deve ser diferente da senha atual.";
+
+  // Profiling messages
+
+  public static final String INTENT_ALREADY_EXISTS =
+      "Você já possui uma intenção de perfil registrada para esse mesmo tipo";
 
   // Generic User messages
 

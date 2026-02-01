@@ -91,12 +91,6 @@ public class UserService {
   }
 
   @AuthRequired
-  @RoleRestricted("ADMIN")
-  public void admin() {
-    log.info("Admin-only method accessed successfully.");
-  }
-
-  @AuthRequired
   public void changePassword(ChangePasswordRequest request) {
     User currentUser = getCurrentUser();
 
@@ -139,6 +133,45 @@ public class UserService {
     log.error("Authenticated user not found in context.");
 
     throw  new UnauthorizedException("Authenticated user not found");
+  }
+
+  @Transactional
+  public void removeTraitsFromUser(String userId, List<String> traits) {
+    User user = userRepository.findById(userId)
+        .orElseThrow(() -> new BadRequestException("User not found"));
+
+    removeTraitsFromUser(user, traits);
+  }
+
+  public void removeTraitsFromUser(User user, List<String> traits) {
+    user.getTraits().removeIf(trait -> traits.contains(trait.getTrait()));
+
+    userRepository.save(user);
+
+    log.info("Removed traits {} from user with ID: {}", traits, user.getId());
+  }
+
+  @Transactional
+  public void addTraitToUser(String userId, String trait) {
+    User user = userRepository.findById(userId)
+        .orElseThrow(() -> new BadRequestException("User not found"));
+
+    UserTrait userTrait = UserTrait.builder()
+        .trait(trait)
+        .deleted(false)
+        .user(user)
+        .build();
+
+    if (user.getTraits().stream().anyMatch(check -> check.getTrait().equals(trait))) {
+      log.info("User with ID: {} already has trait '{}'", user.getId(), trait);
+      return;
+    }
+
+    user.getTraits().add(userTrait);
+
+    userRepository.save(user);
+
+    log.info("Added trait '{}' to user with ID: {}", trait, user.getId());
   }
 
 }

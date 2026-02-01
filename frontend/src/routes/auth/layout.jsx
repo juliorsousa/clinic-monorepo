@@ -24,7 +24,6 @@ function AuthLayout() {
 	return (
 		<div className="h-screen w-full flex items-center justify-center bg-muted/30 p-6">
 			<Card className="flex flex-row w-full max-w-5xl overflow-hidden rounded-xl shadow-lg p-0">
-				{/* LEFT IMAGE */}
 				<div className="hidden md:flex w-1/2">
 					<img
 						src={coverImg}
@@ -33,7 +32,6 @@ function AuthLayout() {
 					/>
 				</div>
 
-				{/* RIGHT CONTENT (FULLY ANIMATED) */}
 				<div className="relative flex w-full md:w-1/2 items-center justify-center px-6 py-6">
 					<AnimatePresence mode="wait">
 						<motion.div
@@ -44,7 +42,6 @@ function AuthLayout() {
 							transition={{ duration: 0.45, ease: "easeInOut" }}
 							className="w-full max-w-sm flex flex-col gap-6"
 						>
-							{/* HEADER */}
 							<header className="flex flex-col gap-4 items-center text-center">
 								<img src={logoImg} alt="Clinic Logo" width={64} height={64} />
 
@@ -69,7 +66,6 @@ function AuthLayout() {
 								</div>
 							</header>
 
-							{/* PAGE CONTENT */}
 							<Outlet />
 						</motion.div>
 					</AnimatePresence>

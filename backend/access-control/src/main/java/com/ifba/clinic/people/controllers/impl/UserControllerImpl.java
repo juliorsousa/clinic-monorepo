@@ -22,10 +22,4 @@ public class UserControllerImpl implements UserController {
         );
   }
 
-  public ResponseEntity<String> adminOnlyEndpoint() {
-    userService.admin();
-    return ResponseEntity
-        .status(HttpStatus.OK)
-        .body("Acesso concedido a endpoint restrita para ADMIN.");
-  }
 }

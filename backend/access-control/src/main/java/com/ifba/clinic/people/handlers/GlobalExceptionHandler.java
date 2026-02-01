@@ -2,10 +2,12 @@ package com.ifba.clinic.people.handlers;
 
 import com.ifba.clinic.people.exceptions.BadRequestException;
 import com.ifba.clinic.people.exceptions.ConflictException;
+import com.ifba.clinic.people.exceptions.NoContentException;
 import com.ifba.clinic.people.exceptions.NotFoundException;
 import com.ifba.clinic.people.exceptions.UnauthorizedException;
 import com.ifba.clinic.people.models.error.MessagedError;
 import com.ifba.clinic.people.models.error.ValidationError;
+import io.jsonwebtoken.ExpiredJwtException;
 import io.jsonwebtoken.MalformedJwtException;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -75,11 +77,31 @@ public class GlobalExceptionHandler {
         .body(new MessagedError(message));
   }
 
-  @ExceptionHandler(MalformedJwtException.class)
-  public ResponseEntity<MessagedError> handleMalformedJwtException(MalformedJwtException exception) {
+  @ExceptionHandler(NoContentException.class)
+  public ResponseEntity<MessagedError> handleUnauthorizedException(NoContentException exception) {
     String message = exception.getMessage() != null
         ? exception.getMessage()
-        : "Invalid authentication token.";
+        : "The request was successful but there is no content to send for this request.";
+
+    return ResponseEntity
+        .status(204)
+        .body(new MessagedError(message));
+  }
+
+  @ExceptionHandler(MalformedJwtException.class)
+  public ResponseEntity<MessagedError> handleMalformedJwtException(MalformedJwtException exception) {
+    String message = "Invalid authentication token provided.";
+
+    log.error("Malformed JWT Exception: ", exception);
+
+    return ResponseEntity
+        .status(401)
+        .body(new MessagedError(message));
+  }
+
+  @ExceptionHandler(ExpiredJwtException.class)
+  public ResponseEntity<MessagedError> handleMalformedJwtException(ExpiredJwtException exception) {
+    String message = "Sua sessão expirou. Por favor, faça login novamente.";
 
     return ResponseEntity
         .status(401)

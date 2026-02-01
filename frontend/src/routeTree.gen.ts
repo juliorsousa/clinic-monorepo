@@ -9,13 +9,25 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from './routes/__root'
+import { Route as OnboardingLayoutRouteImport } from './routes/onboarding/layout'
 import { Route as AuthLayoutRouteImport } from './routes/auth/layout'
 import { Route as AppLayoutRouteImport } from './routes/_app/layout'
+import { Route as OnboardingIndexRouteImport } from './routes/onboarding/index'
 import { Route as AppIndexRouteImport } from './routes/_app/index'
+import { Route as OnboardingSubmitIndexRouteImport } from './routes/onboarding/submit/index'
+import { Route as OnboardingSpecificIndexRouteImport } from './routes/onboarding/specific/index'
+import { Route as OnboardingPersonalIndexRouteImport } from './routes/onboarding/personal/index'
 import { Route as AuthRegisterIndexRouteImport } from './routes/auth/register/index'
 import { Route as AuthPasswordIndexRouteImport } from './routes/auth/password/index'
 import { Route as AuthLoginIndexRouteImport } from './routes/auth/login/index'
+import { Route as OnboardingDonePendingIndexRouteImport } from './routes/onboarding/done/pending/index'
+import { Route as OnboardingDoneHandlingIndexRouteImport } from './routes/onboarding/done/handling/index'
 
+const OnboardingLayoutRoute = OnboardingLayoutRouteImport.update({
+  id: '/onboarding',
+  path: '/onboarding',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const AuthLayoutRoute = AuthLayoutRouteImport.update({
   id: '/auth',
   path: '/auth',
@@ -25,10 +37,30 @@ const AppLayoutRoute = AppLayoutRouteImport.update({
   id: '/_app',
   getParentRoute: () => rootRouteImport,
 } as any)
+const OnboardingIndexRoute = OnboardingIndexRouteImport.update({
+  id: '/',
+  path: '/',
+  getParentRoute: () => OnboardingLayoutRoute,
+} as any)
 const AppIndexRoute = AppIndexRouteImport.update({
   id: '/',
   path: '/',
   getParentRoute: () => AppLayoutRoute,
+} as any)
+const OnboardingSubmitIndexRoute = OnboardingSubmitIndexRouteImport.update({
+  id: '/submit/',
+  path: '/submit/',
+  getParentRoute: () => OnboardingLayoutRoute,
+} as any)
+const OnboardingSpecificIndexRoute = OnboardingSpecificIndexRouteImport.update({
+  id: '/specific/',
+  path: '/specific/',
+  getParentRoute: () => OnboardingLayoutRoute,
+} as any)
+const OnboardingPersonalIndexRoute = OnboardingPersonalIndexRouteImport.update({
+  id: '/personal/',
+  path: '/personal/',
+  getParentRoute: () => OnboardingLayoutRoute,
 } as any)
 const AuthRegisterIndexRoute = AuthRegisterIndexRouteImport.update({
   id: '/register/',
@@ -45,57 +77,122 @@ const AuthLoginIndexRoute = AuthLoginIndexRouteImport.update({
   path: '/login/',
   getParentRoute: () => AuthLayoutRoute,
 } as any)
+const OnboardingDonePendingIndexRoute =
+  OnboardingDonePendingIndexRouteImport.update({
+    id: '/done/pending/',
+    path: '/done/pending/',
+    getParentRoute: () => OnboardingLayoutRoute,
+  } as any)
+const OnboardingDoneHandlingIndexRoute =
+  OnboardingDoneHandlingIndexRouteImport.update({
+    id: '/done/handling/',
+    path: '/done/handling/',
+    getParentRoute: () => OnboardingLayoutRoute,
+  } as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof AppIndexRoute
   '/auth': typeof AuthLayoutRouteWithChildren
+  '/onboarding': typeof OnboardingLayoutRouteWithChildren
+  '/onboarding/': typeof OnboardingIndexRoute
   '/auth/login/': typeof AuthLoginIndexRoute
   '/auth/password/': typeof AuthPasswordIndexRoute
   '/auth/register/': typeof AuthRegisterIndexRoute
+  '/onboarding/personal/': typeof OnboardingPersonalIndexRoute
+  '/onboarding/specific/': typeof OnboardingSpecificIndexRoute
+  '/onboarding/submit/': typeof OnboardingSubmitIndexRoute
+  '/onboarding/done/handling/': typeof OnboardingDoneHandlingIndexRoute
+  '/onboarding/done/pending/': typeof OnboardingDonePendingIndexRoute
 }
 export interface FileRoutesByTo {
   '/auth': typeof AuthLayoutRouteWithChildren
   '/': typeof AppIndexRoute
+  '/onboarding': typeof OnboardingIndexRoute
   '/auth/login': typeof AuthLoginIndexRoute
   '/auth/password': typeof AuthPasswordIndexRoute
   '/auth/register': typeof AuthRegisterIndexRoute
+  '/onboarding/personal': typeof OnboardingPersonalIndexRoute
+  '/onboarding/specific': typeof OnboardingSpecificIndexRoute
+  '/onboarding/submit': typeof OnboardingSubmitIndexRoute
+  '/onboarding/done/handling': typeof OnboardingDoneHandlingIndexRoute
+  '/onboarding/done/pending': typeof OnboardingDonePendingIndexRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/_app': typeof AppLayoutRouteWithChildren
   '/auth': typeof AuthLayoutRouteWithChildren
+  '/onboarding': typeof OnboardingLayoutRouteWithChildren
   '/_app/': typeof AppIndexRoute
+  '/onboarding/': typeof OnboardingIndexRoute
   '/auth/login/': typeof AuthLoginIndexRoute
   '/auth/password/': typeof AuthPasswordIndexRoute
   '/auth/register/': typeof AuthRegisterIndexRoute
+  '/onboarding/personal/': typeof OnboardingPersonalIndexRoute
+  '/onboarding/specific/': typeof OnboardingSpecificIndexRoute
+  '/onboarding/submit/': typeof OnboardingSubmitIndexRoute
+  '/onboarding/done/handling/': typeof OnboardingDoneHandlingIndexRoute
+  '/onboarding/done/pending/': typeof OnboardingDonePendingIndexRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
   fullPaths:
     | '/'
     | '/auth'
+    | '/onboarding'
+    | '/onboarding/'
     | '/auth/login/'
     | '/auth/password/'
     | '/auth/register/'
+    | '/onboarding/personal/'
+    | '/onboarding/specific/'
+    | '/onboarding/submit/'
+    | '/onboarding/done/handling/'
+    | '/onboarding/done/pending/'
   fileRoutesByTo: FileRoutesByTo
-  to: '/auth' | '/' | '/auth/login' | '/auth/password' | '/auth/register'
+  to:
+    | '/auth'
+    | '/'
+    | '/onboarding'
+    | '/auth/login'
+    | '/auth/password'
+    | '/auth/register'
+    | '/onboarding/personal'
+    | '/onboarding/specific'
+    | '/onboarding/submit'
+    | '/onboarding/done/handling'
+    | '/onboarding/done/pending'
   id:
     | '__root__'
     | '/_app'
     | '/auth'
+    | '/onboarding'
     | '/_app/'
+    | '/onboarding/'
     | '/auth/login/'
     | '/auth/password/'
     | '/auth/register/'
+    | '/onboarding/personal/'
+    | '/onboarding/specific/'
+    | '/onboarding/submit/'
+    | '/onboarding/done/handling/'
+    | '/onboarding/done/pending/'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   AppLayoutRoute: typeof AppLayoutRouteWithChildren
   AuthLayoutRoute: typeof AuthLayoutRouteWithChildren
+  OnboardingLayoutRoute: typeof OnboardingLayoutRouteWithChildren
 }
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
+    '/onboarding': {
+      id: '/onboarding'
+      path: '/onboarding'
+      fullPath: '/onboarding'
+      preLoaderRoute: typeof OnboardingLayoutRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/auth': {
       id: '/auth'
       path: '/auth'
@@ -110,12 +207,40 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AppLayoutRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/onboarding/': {
+      id: '/onboarding/'
+      path: '/'
+      fullPath: '/onboarding/'
+      preLoaderRoute: typeof OnboardingIndexRouteImport
+      parentRoute: typeof OnboardingLayoutRoute
+    }
     '/_app/': {
       id: '/_app/'
       path: '/'
       fullPath: '/'
       preLoaderRoute: typeof AppIndexRouteImport
       parentRoute: typeof AppLayoutRoute
+    }
+    '/onboarding/submit/': {
+      id: '/onboarding/submit/'
+      path: '/submit'
+      fullPath: '/onboarding/submit/'
+      preLoaderRoute: typeof OnboardingSubmitIndexRouteImport
+      parentRoute: typeof OnboardingLayoutRoute
+    }
+    '/onboarding/specific/': {
+      id: '/onboarding/specific/'
+      path: '/specific'
+      fullPath: '/onboarding/specific/'
+      preLoaderRoute: typeof OnboardingSpecificIndexRouteImport
+      parentRoute: typeof OnboardingLayoutRoute
+    }
+    '/onboarding/personal/': {
+      id: '/onboarding/personal/'
+      path: '/personal'
+      fullPath: '/onboarding/personal/'
+      preLoaderRoute: typeof OnboardingPersonalIndexRouteImport
+      parentRoute: typeof OnboardingLayoutRoute
     }
     '/auth/register/': {
       id: '/auth/register/'
@@ -137,6 +262,20 @@ declare module '@tanstack/react-router' {
       fullPath: '/auth/login/'
       preLoaderRoute: typeof AuthLoginIndexRouteImport
       parentRoute: typeof AuthLayoutRoute
+    }
+    '/onboarding/done/pending/': {
+      id: '/onboarding/done/pending/'
+      path: '/done/pending'
+      fullPath: '/onboarding/done/pending/'
+      preLoaderRoute: typeof OnboardingDonePendingIndexRouteImport
+      parentRoute: typeof OnboardingLayoutRoute
+    }
+    '/onboarding/done/handling/': {
+      id: '/onboarding/done/handling/'
+      path: '/done/handling'
+      fullPath: '/onboarding/done/handling/'
+      preLoaderRoute: typeof OnboardingDoneHandlingIndexRouteImport
+      parentRoute: typeof OnboardingLayoutRoute
     }
   }
 }
@@ -169,9 +308,31 @@ const AuthLayoutRouteWithChildren = AuthLayoutRoute._addFileChildren(
   AuthLayoutRouteChildren,
 )
 
+interface OnboardingLayoutRouteChildren {
+  OnboardingIndexRoute: typeof OnboardingIndexRoute
+  OnboardingPersonalIndexRoute: typeof OnboardingPersonalIndexRoute
+  OnboardingSpecificIndexRoute: typeof OnboardingSpecificIndexRoute
+  OnboardingSubmitIndexRoute: typeof OnboardingSubmitIndexRoute
+  OnboardingDoneHandlingIndexRoute: typeof OnboardingDoneHandlingIndexRoute
+  OnboardingDonePendingIndexRoute: typeof OnboardingDonePendingIndexRoute
+}
+
+const OnboardingLayoutRouteChildren: OnboardingLayoutRouteChildren = {
+  OnboardingIndexRoute: OnboardingIndexRoute,
+  OnboardingPersonalIndexRoute: OnboardingPersonalIndexRoute,
+  OnboardingSpecificIndexRoute: OnboardingSpecificIndexRoute,
+  OnboardingSubmitIndexRoute: OnboardingSubmitIndexRoute,
+  OnboardingDoneHandlingIndexRoute: OnboardingDoneHandlingIndexRoute,
+  OnboardingDonePendingIndexRoute: OnboardingDonePendingIndexRoute,
+}
+
+const OnboardingLayoutRouteWithChildren =
+  OnboardingLayoutRoute._addFileChildren(OnboardingLayoutRouteChildren)
+
 const rootRouteChildren: RootRouteChildren = {
   AppLayoutRoute: AppLayoutRouteWithChildren,
   AuthLayoutRoute: AuthLayoutRouteWithChildren,
+  OnboardingLayoutRoute: OnboardingLayoutRouteWithChildren,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)

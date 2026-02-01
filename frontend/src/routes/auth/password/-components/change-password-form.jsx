@@ -17,9 +17,6 @@ import { useForm } from "react-hook-form";
 import { toast } from "sonner";
 import { z } from "zod";
 
-/* ---------------------------------------------
-   Password validation rules (nova senha)
----------------------------------------------- */
 const passwordSchema = z
 	.string({ required_error: "A senha é obrigatória." })
 	.min(6, { message: "A senha deve ter no mínimo 6 caracteres." })
@@ -37,9 +34,6 @@ const passwordSchema = z
 		message: "A senha deve conter pelo menos um caractere especial.",
 	});
 
-/* ---------------------------------------------
-   Form schema
----------------------------------------------- */
 const changePasswordFormSchema = z
 	.object({
 		oldPassword: z.string({

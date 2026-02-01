@@ -24,7 +24,7 @@ public class AuthControllerImpl implements AuthController {
   public ResponseEntity<CreateUserResponse> registerUser(
       CreateUserRequest request
   ) {
-    var created = userService.createUser(request, EnumRole.GUEST);
+    var created = userService.createUser(request, EnumRole.GUEST, "PENDING_ONBOARDING");
 
     return ResponseEntity
         .status(HttpStatus.CREATED)

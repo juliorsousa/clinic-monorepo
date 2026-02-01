@@ -30,7 +30,4 @@ public interface UserController {
   @GetMapping("/me")
   ResponseEntity<CurrentUserResponse> getCurrentUser();
 
-  @GetMapping("/admin-only")
-  ResponseEntity<String> adminOnlyEndpoint();
-
 }
