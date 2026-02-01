@@ -37,7 +37,8 @@ public record AddressRequest(
 ) {
 
   public static AddressRequest fromAddress(Address address) {
-    return new AddressRequest(
+	 if (address == null) return null;
+	  return new AddressRequest(
         address.getStreet(),
         address.getHouse(),
         address.getComplement(),

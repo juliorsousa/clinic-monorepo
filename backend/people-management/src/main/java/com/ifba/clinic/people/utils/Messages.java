@@ -87,4 +87,27 @@ public class Messages {
 
   public static final String ZIP_CODE_INVALID =
       "CEP inválido. Utilize o formato 00000-000 ou 00000000.";
+  
+  
+  // Doctor
+  
+  public static final String CREDENTIAL_REQUIRED = 
+		  "O número do CRM/Credencial é obrigatório.";
+  
+  public static final String CREDENTIAL_MAX_LENGTH = 
+		  "A credencial deve ter no máximo 20 caracteres.";
+  
+  public static final String SPECIALITY_REQUIRED = 
+		  "A especialidade médica é obrigatória.";
+  
+  public static final String ADDRESS_REQUIRED = 
+		  "Os dados do endereço são obrigatórios.";
+  
+  public static final String DOCTOR_DUPLICATED = 
+	      "Médico já cadastrado com esta credencial ou email.";
+	  
+	  public static final String DOCTOR_NOT_FOUND = 
+	      "Médico não encontrado.";
+  
+  
 }
