@@ -10,6 +10,7 @@ import com.ifba.clinic.access.exceptions.UnauthorizedException;
 import com.ifba.clinic.access.models.requests.CreateUserRequest;
 import com.ifba.clinic.access.models.requests.ChangePasswordRequest;
 import com.ifba.clinic.access.models.response.CreateUserResponse;
+import com.ifba.clinic.access.models.response.ValidateUserResponse;
 import com.ifba.clinic.access.repositories.UserRepository;
 import com.ifba.clinic.access.security.annotations.AuthRequired;
 import com.ifba.clinic.access.security.services.AuthenticationService;
@@ -190,6 +191,16 @@ public class UserService {
     userRepository.save(user);
 
     log.info("Added trait '{}' to user with ID: {}", trait, user.getId());
+  }
+
+  public ValidateUserResponse getAuthenticatedUser() {
+
+    User user = getCurrentUser();
+
+    return new ValidateUserResponse(
+        user.getId(),
+        user.getEmail()
+    );
   }
 
 }

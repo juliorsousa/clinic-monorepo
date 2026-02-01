@@ -8,7 +8,7 @@ services:
       POSTGRES_PASSWORD: mDZkdL679o4K3vWESqS14r5iygVb20AS0Ii3McP2
       POSTGRES_DB: clinic
     ports:
-      - "5432:5432"
+      - "5433:5432"
     volumes:
       - "./data:/var/lib/postgresql"
 
