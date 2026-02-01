@@ -46,12 +46,11 @@ public class PatientService {
 
   @Transactional
   public CreatePatientResponse createPatient(CreatePatientRequest request) {
-    log.info("Creating patient with document: {} and email: {}", request.document(), request.email());
+    log.info("Creating patient with document: {}", request.document());
 
     boolean patientAlreadyExists =
-        patientRepository.findByDocumentOrEmail(
-            request.document(),
-            request.email()
+        patientRepository.findByDocument(
+            request.document()
         ).isPresent();
 
     if (patientAlreadyExists) {

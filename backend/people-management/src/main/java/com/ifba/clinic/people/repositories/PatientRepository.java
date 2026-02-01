@@ -8,7 +8,4 @@ import org.springframework.stereotype.Repository;
 @Repository
 public interface PatientRepository extends JpaRepository<Patient, String> {
   Optional<Patient> findByDocument(String document);
-  Optional<Patient> findByEmail(String email);
-
-  Optional<Patient> findByDocumentOrEmail(String document, String email);
 }

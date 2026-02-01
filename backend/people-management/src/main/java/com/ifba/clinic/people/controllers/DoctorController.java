@@ -107,7 +107,7 @@ public interface DoctorController {
           description = "Não autorizado"
       )
   })
-  @PatchMapping("/{id}") // Ou @PutMapping, dependendo da sua regra de negócio
+  @PutMapping("/{id}") //
   ResponseEntity<Void> updateDoctor(
       @PathVariable
       @Parameter(

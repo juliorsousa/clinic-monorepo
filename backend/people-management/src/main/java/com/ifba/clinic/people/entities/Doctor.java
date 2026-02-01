@@ -40,9 +40,6 @@ public class Doctor {
   @Column(name = "NM_DOCTOR", nullable = false)
   private String name;
 
-  @Column(name = "VL_EMAIL", nullable = false, unique = true)
-  private String email;
-
   @Column(name = "VL_PHONE", nullable = false)
   private String phone;
 
@@ -66,34 +63,23 @@ public class Doctor {
       this.phone = request.phone();
       this.speciality = request.speciality();
       
-      // Atualiza o endereço apenas se ele for enviado
       if (request.address() != null) {
            if (this.address == null) {
-               // Se não tinha endereço antes, cria um novo (caso raro, mas seguro tratar)
                this.address = Address.fromCreationRequest(request.address());
            } else {
-               // Se já tinha, atualiza os campos
                this.address = this.address.updateFromRequest(request.address());
            }
       }
   }
-  
-  
- 
-  
+
   public static Doctor fromCreationRequest(CreateDoctorRequest request, Address address) {
       return Doctor.builder()
           .name(request.name())
-          .email(request.email())
           .phone(request.phone())
           .credential(request.credential())
           .speciality(request.speciality())
           .address(address)
           .build();
   }
-  
-  
-  
-  
 
 }

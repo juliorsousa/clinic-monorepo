@@ -35,15 +35,6 @@ public class Messages {
   public static final String DOCUMENT_INVALID =
       "CPF inválido.";
 
-  public static final String EMAIL_REQUIRED =
-      "O e-mail é obrigatório.";
-
-  public static final String EMAIL_MAX_LENGTH =
-      "O e-mail deve ter no máximo 100 caracteres.";
-
-  public static final String EMAIL_INVALID =
-      "E-mail inválido.";
-
   public static final String PHONE_REQUIRED =
       "O telefone é obrigatório.";
 
@@ -89,7 +80,7 @@ public class Messages {
       "CEP inválido. Utilize o formato 00000-000 ou 00000000.";
   
   
-  // Doctor
+  // Doctor messages
   
   public static final String CREDENTIAL_REQUIRED = 
 		  "O número do CRM/Credencial é obrigatório.";

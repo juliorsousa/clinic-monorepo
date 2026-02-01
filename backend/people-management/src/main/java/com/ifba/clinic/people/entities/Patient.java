@@ -40,9 +40,6 @@ public class Patient {
   @Column(name = "VL_DOCUMENT", nullable = false, unique = true)
   private String document;
 
-  @Column(name = "VL_EMAIL", nullable = false, unique = true)
-  private String email;
-
   @Column(name = "VL_PHONE", nullable = false)
   private String phone;
 
@@ -64,7 +61,6 @@ public class Patient {
     return Patient.builder()
         .name(request.name())
         .document(request.document())
-        .email(request.email())
         .phone(request.phone())
         .address(address)
         .build();

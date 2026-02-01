@@ -1,5 +1,6 @@
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
+import { useAuth } from "@/hooks/use-auth";
 import { useOnboarding } from "@/hooks/use-onboarding";
 import { api } from "@/lib/api";
 import { createFileRoute, redirect, useNavigate } from "@tanstack/react-router";
@@ -22,8 +23,10 @@ export const Route = createFileRoute("/onboarding/done/handling/")({
 });
 
 export default function SubmitOnboardingPage() {
-	const navigate = useNavigate();
+	const { revalidate } = useAuth();
 	const { setCurrentStep } = useOnboarding();
+
+	const navigate = useNavigate();
 	const [status, setStatus] = useState("processing");
 
 	useEffect(() => {
@@ -57,9 +60,10 @@ export default function SubmitOnboardingPage() {
 				setStatus("ready");
 				clearInterval(interval);
 
-				setTimeout(() => {
-					// navigate({ to: "/" });
-					alert("Redirecionando para a página inicial...");
+				setTimeout(async () => {
+					await revalidate();
+
+					navigate({ to: "/" });
 				}, 1200);
 			}
 		}, 2000);
@@ -70,13 +74,6 @@ export default function SubmitOnboardingPage() {
 	return (
 		<>
 			<div className="w-full max-w-xl mx-auto flex flex-col items-center justify-center min-h-[70vh] space-y-6 text-center">
-				<Button
-					className="fade-in-once"
-					onClick={() => setStatus("processing")}
-					variant="ghost"
-				>
-					TESTE: RESETAR POLLING
-				</Button>
 				<Card className="w-full">
 					<CardContent className="pt-10 pb-10 flex flex-col items-center gap-4">
 						{status === "processing" ? (
