@@ -6,7 +6,6 @@ import com.ifba.clinic.people.entities.enums.EnumDoctorSpeciality;
 public record CreateDoctorResponse(
     String id,
     String name,
-    String email,
     String phone,
     String credential,
     EnumDoctorSpeciality speciality,
@@ -16,7 +15,6 @@ public record CreateDoctorResponse(
     this(
         doctor.getId(),
         doctor.getName(),
-        doctor.getEmail(),
         doctor.getPhone(),
         doctor.getCredential(),
         doctor.getSpeciality(),

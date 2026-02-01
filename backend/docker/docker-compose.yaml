@@ -11,3 +11,17 @@ services:
       - "5432:5432"
     volumes:
       - "./data:/var/lib/postgresql"
+
+  rabbitmq:
+    container_name: clinic-rabbitmq
+    image: rabbitmq:3-management-alpine
+    restart: always
+    environment:
+      - RABBITMQ_DEFAULT_USER=clinic
+      - RABBITMQ_DEFAULT_PASS=ZcRvCWoqP3c6doVeZ8euipSt6NzhWU63mklfxyC0C7hlzFveOD
+    ports:
+      - "5672:5672"
+      - "15672:15672"
+    volumes:
+      - ./data/:/var/lib/rabbitmq/
+      - ./log/:/var/log/rabbitmq/

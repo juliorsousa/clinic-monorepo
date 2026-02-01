@@ -47,12 +47,11 @@ public class DoctorService {
 
   @Transactional
   public CreateDoctorResponse createDoctor(CreateDoctorRequest request) {
-    log.info("Creating doctor with credential: {} and email: {}", request.credential(), request.email());
+    log.info("Creating doctor with credential: {}", request.credential());
 
     boolean doctorAlreadyExists =
-        doctorRepository.findByCredentialOrEmail(
-            request.credential(),
-            request.email()
+        doctorRepository.findByCredential(
+            request.credential()
         ).isPresent();
 
     if (doctorAlreadyExists) {
@@ -77,7 +76,6 @@ public class DoctorService {
     Doctor doctor = doctorRepository.findById(id)
         .orElseThrow(() -> new NotFoundException(DOCTOR_NOT_FOUND));
 
-    // Nota: Certifique-se de implementar o método updateFromRequest na entidade Doctor
     doctor.updateFromRequest(request);
 
     doctorRepository.save(doctor);

@@ -6,7 +6,6 @@ public record CreatePatientResponse(
     String id,
     String name,
     String document,
-    String email,
     String phone,
     AddressResponse address
 ) {
@@ -15,7 +14,6 @@ public record CreatePatientResponse(
         patient.getId(),
         patient.getName(),
         patient.getDocument(),
-        patient.getEmail(),
         patient.getPhone(),
         new AddressResponse(patient.getAddress())
     );
