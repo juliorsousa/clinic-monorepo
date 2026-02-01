@@ -5,6 +5,8 @@ import com.ifba.clinic.people.models.requests.LoginUserRequest;
 import com.ifba.clinic.people.models.requests.ChangePasswordRequest;
 import com.ifba.clinic.people.models.response.CreateUserResponse;
 import com.ifba.clinic.people.models.response.TokenResponse;
+import com.ifba.clinic.people.models.response.ValidateUserResponse;
+
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
@@ -13,6 +15,7 @@ import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -82,4 +85,12 @@ public interface AuthController {
       @Valid
       @RequestBody ChangePasswordRequest request
   );
+
+  @Operation(
+    summary = "Valida o token JWT",
+    description = "Endpoint interno usado pelo Gateway para verificar se o token é válido e obter dados do usuário."
+)
+    @GetMapping("/validate")
+    ResponseEntity<ValidateUserResponse> validateToken();
+
 }

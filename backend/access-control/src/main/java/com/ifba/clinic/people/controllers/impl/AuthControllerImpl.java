@@ -7,6 +7,7 @@ import com.ifba.clinic.people.models.requests.LoginUserRequest;
 import com.ifba.clinic.people.models.requests.ChangePasswordRequest;
 import com.ifba.clinic.people.models.response.CreateUserResponse;
 import com.ifba.clinic.people.models.response.TokenResponse;
+import com.ifba.clinic.people.models.response.ValidateUserResponse;
 import com.ifba.clinic.people.security.services.AuthenticationService;
 import com.ifba.clinic.people.services.UserService;
 import lombok.RequiredArgsConstructor;
@@ -45,5 +46,13 @@ public class AuthControllerImpl implements AuthController {
     return ResponseEntity
         .ok()
         .body("Password changed successfully.");
+  }
+
+  @Override
+  public ResponseEntity<ValidateUserResponse> validateToken() {
+      
+    ValidateUserResponse response = userService.getAuthenticatedUser();
+
+    return ResponseEntity.ok(response);
   }
 }
