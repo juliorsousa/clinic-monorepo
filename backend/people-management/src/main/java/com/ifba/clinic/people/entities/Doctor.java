@@ -1,6 +1,9 @@
 package com.ifba.clinic.people.entities;
 
 import com.ifba.clinic.people.entities.enums.EnumDoctorSpeciality;
+import com.ifba.clinic.people.models.requests.CreateDoctorRequest;
+import com.ifba.clinic.people.models.requests.UpdateDoctorRequest;
+
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Enumerated;
@@ -56,5 +59,41 @@ public class Doctor {
 
   @Column(name = "IN_DELETED", nullable = false, columnDefinition = "BOOLEAN DEFAULT FALSE")
   private boolean deleted = false;
+  
+
+  public void updateFromRequest(UpdateDoctorRequest request) {
+      this.name = request.name();
+      this.phone = request.phone();
+      this.speciality = request.speciality();
+      
+      // Atualiza o endereço apenas se ele for enviado
+      if (request.address() != null) {
+           if (this.address == null) {
+               // Se não tinha endereço antes, cria um novo (caso raro, mas seguro tratar)
+               this.address = Address.fromCreationRequest(request.address());
+           } else {
+               // Se já tinha, atualiza os campos
+               this.address = this.address.updateFromRequest(request.address());
+           }
+      }
+  }
+  
+  
+ 
+  
+  public static Doctor fromCreationRequest(CreateDoctorRequest request, Address address) {
+      return Doctor.builder()
+          .name(request.name())
+          .email(request.email())
+          .phone(request.phone())
+          .credential(request.credential())
+          .speciality(request.speciality())
+          .address(address)
+          .build();
+  }
+  
+  
+  
+  
 
 }
