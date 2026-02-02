@@ -9,6 +9,9 @@ import com.ifba.clinic.people.models.response.GetDoctorResponse;
 import com.ifba.clinic.people.models.response.PageResponse;
 import com.ifba.clinic.people.services.DoctorService;
 import lombok.RequiredArgsConstructor;
+
+import java.time.LocalDateTime;
+
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RestController;
@@ -51,5 +54,10 @@ public class DoctorControllerImpl implements DoctorController {
     return ResponseEntity
         .status(HttpStatus.NO_CONTENT)
         .build();
+  }
+
+  @Override
+  public ResponseEntity<Boolean> isAvaiable(String id) {
+      return ResponseEntity.ok(doctorService.isAvaiable(id));
   }
 }

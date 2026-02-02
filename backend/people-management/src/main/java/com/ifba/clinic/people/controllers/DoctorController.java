@@ -14,7 +14,11 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import jakarta.validation.Valid;
+
+import java.time.LocalDateTime;
+
 import org.springdoc.core.annotations.ParameterObject;
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -51,6 +55,47 @@ public interface DoctorController {
   @GetMapping
   PageResponse<GetDoctorResponse> listDoctors(
       @ParameterObject PageableRequest pageable
+  );
+
+
+  @Operation(
+      summary = "Valida disponibilidade do médico",
+      description = """
+          Retorna um booleano true para caso o médico seja válido e esteja disponível na data da consulta.
+
+          """
+  )
+  @ApiResponses({
+      @ApiResponse(
+          responseCode = "200",
+          description = "Médico validado com sucesso",
+          content = @Content(
+              mediaType = "application/json",
+              schema = @Schema(implementation = PageResponse.class)
+          )
+      ),
+      @ApiResponse(
+          responseCode = "400",
+          description = "Parâmetros de validação inválidos"
+      ),
+      @ApiResponse(
+          responseCode = "404",
+          description = "Médico não encontrado"
+      ),
+      @ApiResponse(
+          responseCode = "401",
+          description = "Não autorizado"
+      )
+  })
+  @GetMapping("/{id}")
+  ResponseEntity<Boolean> isAvaiable(
+        @PathVariable
+        @Parameter(
+            description = "ID do Médico",
+            example = "a3f1a9e4-7b20-4fa3-bc1b-5e57b51fd123",
+            required = true
+        )
+        String id
   );
 
   @Operation(

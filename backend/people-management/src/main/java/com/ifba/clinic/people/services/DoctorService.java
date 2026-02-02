@@ -19,6 +19,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import static com.ifba.clinic.people.utils.Messages.DOCTOR_DUPLICATED;
@@ -95,4 +96,13 @@ public class DoctorService {
     log.info("Doctor with id: {} deleted successfully", id);
   }
 
+  public Boolean isAvaiable(String id) {
+    log.info("validating doctor with id: {}", id);
+
+    var doctor = doctorRepository.findById(id)
+                  .orElseThrow(() -> new NotFoundException(DOCTOR_NOT_FOUND));
+
+    log.info("doctor with id: {} validated", id);
+    return true;
+  }
 }
