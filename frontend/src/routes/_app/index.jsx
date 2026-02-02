@@ -40,7 +40,7 @@ export const Route = createFileRoute("/_app/")({
 	},
 });
 
-// function PunishmentsComponent() {
+// function Index() {
 // 	return (
 // 		<>
 // 			<header className="flex h-16 shrink-0 items-center gap-2">

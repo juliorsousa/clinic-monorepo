@@ -207,6 +207,14 @@ public class UserService {
     }
   }
 
+  public boolean hasAnyTrait(String userId, List<String> traits) {
+    User user = userRepository.findById(userId)
+        .orElseThrow(() -> new BadRequestException("User not found"));
+
+    return user.getTraits().stream()
+        .anyMatch(trait -> traits.contains(trait.getTrait()));
+  }
+
   @Transactional
   public void removeTraitsFromUser(String userId, List<String> traits) {
     User user = userRepository.findById(userId)

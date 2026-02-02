@@ -9,6 +9,8 @@ public record ProfileIntentResponse(
    String id,
 
    EnumRole type,
-   EnumIntentStatus status
+   EnumIntentStatus status,
+
+   String response
 ) {
 }

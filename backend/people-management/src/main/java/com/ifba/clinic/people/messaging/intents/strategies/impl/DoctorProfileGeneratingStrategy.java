@@ -11,9 +11,9 @@ import com.ifba.clinic.people.messaging.intents.strategies.ProfileGeneratingStra
 import com.ifba.clinic.people.models.error.MessagedError;
 import com.ifba.clinic.people.models.error.ValidationError;
 import com.ifba.clinic.people.models.requests.AddressRequest;
-import com.ifba.clinic.people.models.requests.CreatePatientRequest;
-import com.ifba.clinic.people.models.response.CreatePatientResponse;
-import com.ifba.clinic.people.services.PatientService;
+import com.ifba.clinic.people.models.requests.CreateDoctorRequest;
+import com.ifba.clinic.people.models.response.CreateDoctorResponse;
+import com.ifba.clinic.people.services.DoctorService;
 import com.ifba.clinic.people.utils.validation.ErrorUtils;
 import jakarta.validation.Validator;
 import lombok.RequiredArgsConstructor;
@@ -23,20 +23,20 @@ import org.springframework.stereotype.Component;
 @Slf4j
 @Component
 @RequiredArgsConstructor
-public class PatientProfileGeneratingStrategy implements ProfileGeneratingStrategy {
+public class DoctorProfileGeneratingStrategy implements ProfileGeneratingStrategy {
 
-  private final PatientService patientService;
+  private final DoctorService doctorService;
   private final ObjectMapper objectMapper;
   private final Validator validator;
 
   @Override
   public String getProfileType() {
-    return "PATIENT";
+    return "DOCTOR";
   }
 
   @Override
   public ProfileIntentResponse generateProfile(RunProfileIntentMessage request) {
-    log.info("Generating patient profile for userId: {}", request.userId());
+    log.info("Generating doctor profile for userId: {}", request.userId());
 
     ValidationError validationError = validateRequest(request);
 
@@ -48,49 +48,51 @@ public class PatientProfileGeneratingStrategy implements ProfileGeneratingStrate
 
     try {
       ProfileIntentRequest.Personal personalInfo = request.body().personal();
+      ProfileIntentRequest.Specific specific = request.body().specific();
+
       AddressRequest address = mapToAddress(personalInfo.address());
 
-      CreatePatientRequest patientRequest = CreatePatientRequest.builder()
+      CreateDoctorRequest doctorRequest = CreateDoctorRequest.builder()
           .name(personalInfo.personal().name())
-          .document(personalInfo.personal().document())
           .phone(personalInfo.personal().phone())
           .userId(request.userId())
+          .credential(specific.credential())
+          .speciality(specific.getSpecialtyEnum())
           .address(address)
           .build();
 
-      CreatePatientResponse patientResponse = patientService.createPatient(patientRequest);
+      CreateDoctorResponse doctorResponse = doctorService.createDoctor(doctorRequest);
 
-      log.info("Patient profile created successfully for userId: {}", request.userId());
+      log.info("Doctor profile ({} - {}) created successfully for userId: {}", specific.credential(), specific.specialty(), request.userId());
 
       return new ProfileIntentResponse(
           request.intentId(),
           "PROCESSED",
-          patientResponse.id(),
+          doctorResponse.id(),
           "{}"
       );
 
-    } catch (IllegalArgumentException e) {
+    }  catch (IllegalArgumentException e) {
       log.error("Invalid data for patient creation: {}", e.getMessage());
       return buildErrorResponse(request.intentId(), new MessagedError("Dados inválidos: " + e.getMessage()));
     } catch (ConflictException e) {
       log.error("Conflict error creating patient profile: {}", e.getMessage());
-
       return buildErrorResponse(request.intentId(), new MessagedError(e.getMessage()));
     } catch (Exception e) {
       log.error("Unexpected error creating patient profile: {}", e.getMessage(), e);
-      return buildErrorResponse(request.intentId(), new MessagedError("Ocorreu um erro inesperado ao criar o perfil do paciente."));
+      return buildErrorResponse(request.intentId(), new MessagedError("Ocorreu um erro inesperado ao criar o perfil do médico."));
     }
   }
 
-  private AddressRequest mapToAddress(ProfileIntentRequest.Address address) {
+  private AddressRequest mapToAddress(ProfileIntentRequest.Address addr) {
     return AddressRequest.of(
-        address.street(),
-        address.house(),
-        address.complement(),
-        address.neighborhood(),
-        address.city(),
-        EnumBrazilState.valueOf(address.state()),
-        address.zipCode()
+        addr.street(),
+        addr.house(),
+        addr.complement(),
+        addr.neighborhood(),
+        addr.city(),
+        EnumBrazilState.valueOf(addr.state()),
+        addr.zipCode()
     );
   }
 

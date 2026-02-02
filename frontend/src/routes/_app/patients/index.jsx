@@ -7,7 +7,7 @@ import {
 } from "@/components/ui/breadcrumb";
 import { Separator } from "@/components/ui/separator";
 import { SidebarTrigger } from "@/components/ui/sidebar";
-import { createFileRoute } from "@tanstack/react-router";
+import { createFileRoute, redirect } from "@tanstack/react-router";
 import { PatientsDataTable } from "./-components/patients-data-table";
 
 export const Route = createFileRoute("/_app/patients/")({
@@ -19,6 +19,17 @@ export const Route = createFileRoute("/_app/patients/")({
 			},
 		],
 	}),
+	beforeLoad: async ({ context }) => {
+		const { auth } = context;
+
+		if (auth.isAuthLoading) {
+			return <Loading />;
+		}
+
+		if (!auth.hasRole("ADMIN")) {
+			throw redirect({ to: "/" });
+		}
+	},
 });
 
 function PatientsComponent() {

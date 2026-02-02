@@ -9,7 +9,9 @@ import jakarta.persistence.FetchType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.OneToOne;
+import jakarta.persistence.PrePersist;
 import jakarta.persistence.Table;
+import java.time.LocalDateTime;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -52,8 +54,16 @@ public class Patient {
   @OneToOne(fetch = FetchType.EAGER, cascade = CascadeType.ALL, orphanRemoval = true)
   private Address address;
 
+  @Column(name = "DT_CREATED", nullable = false)
+  private LocalDateTime createdAt;
+
   @Column(name = "IN_DELETED", nullable = false, columnDefinition = "BOOLEAN DEFAULT FALSE")
   private boolean deleted = false;
+
+  @PrePersist
+  protected void prePersist() {
+    createdAt = LocalDateTime.now();
+  }
 
   public void updateFromRequest(UpdatePatientRequest request) {
     this.name = request.name();

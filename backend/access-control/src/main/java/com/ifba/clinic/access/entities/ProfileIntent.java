@@ -8,7 +8,9 @@ import jakarta.persistence.Enumerated;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
+import jakarta.persistence.PrePersist;
 import jakarta.persistence.Table;
+import java.time.LocalDateTime;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -53,7 +55,15 @@ public class ProfileIntent {
   @Column(name = "VL_STATUS", nullable = false)
   private EnumIntentStatus status;
 
+  @Column(name = "DT_CREATED", nullable = false)
+  private LocalDateTime createdAt;
+
   @Column(name = "IN_DELETED", nullable = false, columnDefinition = "BOOLEAN DEFAULT FALSE")
   private boolean deleted = false;
+
+  @PrePersist
+  protected void prePersist() {
+    createdAt = LocalDateTime.now();
+  }
 
 }

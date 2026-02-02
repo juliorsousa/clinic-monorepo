@@ -19,6 +19,7 @@ import {
 	ListCheck,
 	Medal,
 	PersonStanding,
+	Plus,
 	Settings,
 } from "lucide-react";
 import { useMemo } from "react";
@@ -87,6 +88,11 @@ export function AppSidebar({ ...props }) {
 
 	const mainNav = useMemo(() => {
 		return [
+			{
+				title: "Novo perfil",
+				url: "/onboarding",
+				icon: Plus,
+			},
 			{
 				title: "Sair",
 				url: "/auth/logout",

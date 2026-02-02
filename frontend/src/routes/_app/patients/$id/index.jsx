@@ -118,6 +118,15 @@ function Patient() {
 					>
 						Histórico de consultas
 					</Link>
+					<Link
+						className="flex items-center gap-1.5 px-4 py-2 text-sm transition-colors hover:rounded-tl hover:rounded-tr hover:bg-sidebar"
+						params={{
+							id,
+						}}
+						to="/onboarding"
+					>
+						Incrementar cadastro
+					</Link>
 				</div>
 			</div>
 
@@ -127,56 +136,91 @@ function Patient() {
 				) : (
 					<>
 						{patient && (
-							<div className="flex w-full flex-1 flex-col gap-8">
-								<section className="flex flex-col gap-3">
+							<div className="flex w-full flex-1 flex-col gap-3">
+								<section className="flex flex-col gap-1">
 									<h2 className="text-lg font-semibold tracking-tight">
 										Informações Pessoais
 									</h2>
-									<div className="grid rounded-lg border bg-card md:grid-cols-2 lg:grid-cols-3">
-										<div className="flex items-center gap-3 border-b p-6 text-muted-foreground md:border-r lg:border-b-0">
-											<div className="rounded-full bg-sidebar p-2 text-primary">
-												<AtSign className="h-5 w-5" />
+									<div className="flex flex-col gap-0 border rounded-lg bg-card overflow-hidden">
+										<div className="grid md:grid-cols-2 lg:grid-cols-3 border-b-0">
+											<div className="flex items-center gap-3 border-b p-6 text-muted-foreground md:border-r lg:border-b-0">
+												<div className="rounded-full bg-sidebar p-2 text-primary">
+													<AtSign className="h-5 w-5" />
+												</div>
+												<div className="flex flex-col">
+													<span className="text-xs font-medium uppercase text-muted-foreground/70">
+														ID do Sistema
+													</span>
+													<span className="text-xs font-mono text-foreground/80">
+														{patient?.id?.split("-")?.[0] || "—"}...
+													</span>
+												</div>
 											</div>
-											<div className="flex flex-col">
-												<span className="text-xs font-medium uppercase text-muted-foreground/70">
-													ID do Sistema
-												</span>
-												<span className="text-xs font-mono text-foreground/80">
-													{patient?.id?.split("-")?.[0] || "—"}...
-												</span>
+
+											<div className="flex items-center gap-3 border-b p-6 text-muted-foreground lg:border-r lg:border-b-0">
+												<div className="rounded-full bg-sidebar p-2 text-primary">
+													<IdCard className="h-5 w-5" />
+												</div>
+												<div className="flex flex-col">
+													<span className="text-xs font-medium uppercase text-muted-foreground/70">
+														Nome Completo
+													</span>
+													<span className="text-sm font-medium text-foreground">
+														{patient?.name || "—"}
+													</span>
+												</div>
 											</div>
-										</div>
-										<div className="flex items-center gap-3 border-b p-6 text-muted-foreground lg:border-r lg:border-b-0">
-											<div className="rounded-full bg-sidebar p-2 text-primary">
-												<IdCard className="h-5 w-5" />
-											</div>
-											<div className="flex flex-col">
-												<span className="text-xs font-medium uppercase text-muted-foreground/70">
-													Nome Completo
-												</span>
-												<span className="text-sm font-medium text-foreground">
-													{patient?.name || "—"}
-												</span>
+
+											<div className="flex items-center gap-3 p-6 text-muted-foreground">
+												<div className="rounded-full bg-sidebar p-2 text-primary">
+													<Hash className="h-5 w-5" />
+												</div>
+												<div className="flex flex-col">
+													<span className="text-xs font-medium uppercase text-muted-foreground/70">
+														CPF / Documento
+													</span>
+													<span className="text-sm font-medium text-foreground">
+														{patient?.document
+															? maskCPF(patient.document)
+															: "—"}
+													</span>
+												</div>
 											</div>
 										</div>
 
-										<div className="flex items-center gap-3 p-6 text-muted-foreground">
-											<div className="rounded-full bg-sidebar p-2 text-primary">
-												<Hash className="h-5 w-5" />
+										<div className="grid lg:grid-cols-2 border-t">
+											<div className="flex items-center gap-3 p-6 text-muted-foreground lg:border-r">
+												<div className="rounded-full bg-sidebar p-2 text-primary">
+													<Phone className="h-5 w-5" />
+												</div>
+												<div className="flex flex-col">
+													<span className="text-xs font-medium uppercase text-muted-foreground/70">
+														Telefone
+													</span>
+													<span className="text-sm font-medium text-foreground">
+														{patient?.phone ? maskPhone(patient.phone) : "—"}
+													</span>
+												</div>
 											</div>
-											<div className="flex flex-col">
-												<span className="text-xs font-medium uppercase text-muted-foreground/70">
-													CPF / Documento
-												</span>
-												<span className="text-sm font-medium text-foreground">
-													{patient?.document ? maskCPF(patient.document) : "—"}
-												</span>
+
+											<div className="flex items-center gap-3 p-6 text-muted-foreground">
+												<div className="rounded-full bg-sidebar p-2 text-primary">
+													<Mail className="h-5 w-5" />
+												</div>
+												<div className="flex flex-col">
+													<span className="text-xs font-medium uppercase text-muted-foreground/70">
+														Email
+													</span>
+													<span className="text-sm font-medium text-foreground">
+														{patient?.email || "—"}
+													</span>
+												</div>
 											</div>
 										</div>
 									</div>
 								</section>
 
-								<section className="flex flex-col gap-3">
+								<section className="flex flex-col gap-1">
 									<h2 className="text-lg font-semibold tracking-tight">
 										Endereço Residencial
 									</h2>
@@ -223,37 +267,8 @@ function Patient() {
 
 								<section className="flex flex-col gap-3">
 									<h2 className="text-lg font-semibold tracking-tight">
-										Informações de Contato
+										Próximas Consultas
 									</h2>
-									<div className="grid rounded-lg border bg-card lg:grid-cols-2">
-										<div className="flex items-center gap-3 border-b p-6 text-muted-foreground lg:border-r lg:border-b-0">
-											<div className="rounded-full bg-sidebar p-2 text-primary">
-												<Phone className="h-5 w-5" />
-											</div>
-											<div className="flex flex-col">
-												<span className="text-xs font-medium uppercase text-muted-foreground/70">
-													Telefone
-												</span>
-												<span className="text-sm font-medium text-foreground">
-													{patient?.phone ? maskPhone(patient.phone) : "—"}
-												</span>
-											</div>
-										</div>
-
-										<div className="flex items-center gap-3 p-6 text-muted-foreground">
-											<div className="rounded-full bg-sidebar p-2 text-primary">
-												<Mail className="h-5 w-5" />
-											</div>
-											<div className="flex flex-col">
-												<span className="text-xs font-medium uppercase text-muted-foreground/70">
-													Email
-												</span>
-												<span className="text-sm font-medium text-foreground">
-													{patient?.email || "—"}
-												</span>
-											</div>
-										</div>
-									</div>
 								</section>
 							</div>
 						)}
