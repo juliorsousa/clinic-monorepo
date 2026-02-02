@@ -7,17 +7,20 @@ import com.ifba.clinic.access.entities.enums.EnumRole;
 import com.ifba.clinic.access.exceptions.BadRequestException;
 import com.ifba.clinic.access.exceptions.ConflictException;
 import com.ifba.clinic.access.exceptions.UnauthorizedException;
+import com.ifba.clinic.access.messaging.roles.models.UserRoleDroppedEvent;
 import com.ifba.clinic.access.models.requests.CreateUserRequest;
 import com.ifba.clinic.access.models.requests.ChangePasswordRequest;
 import com.ifba.clinic.access.models.response.CreateUserResponse;
 import com.ifba.clinic.access.models.response.UserRoleResponse;
 import com.ifba.clinic.access.models.response.ValidateUserResponse;
 import com.ifba.clinic.access.repositories.UserRepository;
+import com.ifba.clinic.access.repositories.UserRoleRepository;
 import com.ifba.clinic.access.security.annotations.AuthRequired;
 import com.ifba.clinic.access.security.services.AuthenticationService;
 import jakarta.transaction.Transactional;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.core.Authentication;
@@ -34,6 +37,7 @@ public class UserService {
 
   private final AuthenticationService authenticationService;
   private final UserRepository userRepository;
+  private final UserRoleRepository userRoleRepository;
   private final PasswordEncoder passwordEncoder;
 
   @Transactional
@@ -153,6 +157,54 @@ public class UserService {
     userRepository.save(user);
 
     log.info("Added role '{}' to user with ID: {}", role.name(), user.getId());
+  }
+
+  @Transactional
+  public void handleUserRoleDroppedEvent(UserRoleDroppedEvent event) {
+    String entityId = event.entityId();
+    EnumRole role = EnumRole.valueOf(event.role());
+
+    Optional<UserRole> optionalUserRole = userRoleRepository.findByReferencedEntityIdAndRole(entityId, role);
+
+    if (optionalUserRole.isEmpty()) {
+      log.info("No user role found for entity ID: {} and role: {}", entityId, role.name());
+      return;
+    }
+
+    UserRole userRole = optionalUserRole.get();
+
+    userRoleRepository.delete(userRole);
+
+    log.info("Removed role '{} - {}' from user with ID: {}", role.name(), entityId, userRole.getUser().getId());
+
+    ensureAtLeastOneRole(userRole.getUser().getId(), event);
+  }
+
+  @Transactional
+  protected void ensureAtLeastOneRole(String userId, UserRoleDroppedEvent event) {
+    User user = userRepository.findById(userId)
+        .orElseThrow(() -> new BadRequestException("User not found"));
+
+    log.info("Ensuring user with ID: {} has at least one role - {}", user.getId(), user.getRoles());
+
+    boolean isUserRolesAlreadyEmpty = user.getRoles().isEmpty();
+    boolean isUserUniqueRoleDropped = false;
+
+    if (!isUserRolesAlreadyEmpty) {
+      UserRole firstRole = user.getRoles().get(0);
+
+      boolean isSameRole = firstRole.getRole().equals(EnumRole.valueOf(event.role()));
+      boolean isSameEntity = (firstRole.getReferencedEntityId() == null && event.entityId() == null) ||
+          (firstRole.getReferencedEntityId() != null && firstRole.getReferencedEntityId().equals(event.entityId()));
+
+      isUserUniqueRoleDropped = isSameRole && isSameEntity;
+    }
+
+    if (user.getRoles().isEmpty() || isUserUniqueRoleDropped) {
+      userRepository.delete(user);
+
+      log.info("Deleted user with ID: {} as they had no roles left", user.getId());
+    }
   }
 
   @Transactional

@@ -1,4 +1,4 @@
-package com.ifba.clinic.access.messaging.producers;
+package com.ifba.clinic.access.messaging.intents.producers;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -12,7 +12,7 @@ import org.springframework.stereotype.Component;
 
 @Component
 @RequiredArgsConstructor
-public class ProfilingIntentProducer {
+public class ProfileIntentProducer {
 
   private final RabbitTemplate rabbitTemplate;
   private final ObjectMapper objectMapper;

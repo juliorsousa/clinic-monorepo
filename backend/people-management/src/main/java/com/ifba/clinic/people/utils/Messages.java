@@ -26,6 +26,9 @@ public class Messages {
 
   // Generic Person messages
 
+  public static final String USER_ID_REQUIRED =
+      "O ID do usuário é obrigatório.";
+
   public static final String NAME_REQUIRED =
       "O nome é obrigatório.";
 

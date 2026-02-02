@@ -4,6 +4,8 @@ import com.ifba.clinic.people.entities.Address;
 import com.ifba.clinic.people.entities.Patient;
 import com.ifba.clinic.people.exceptions.ConflictException;
 import com.ifba.clinic.people.exceptions.NotFoundException;
+import com.ifba.clinic.people.messaging.roles.models.UserRoleDroppedEvent;
+import com.ifba.clinic.people.messaging.roles.producers.UserRoleProducer;
 import com.ifba.clinic.people.models.requests.CreatePatientRequest;
 import com.ifba.clinic.people.models.requests.PageableRequest;
 import com.ifba.clinic.people.models.requests.UpdatePatientRequest;
@@ -14,6 +16,7 @@ import com.ifba.clinic.people.repositories.AddressRepository;
 import com.ifba.clinic.people.repositories.PatientRepository;
 import com.ifba.clinic.people.security.annotations.AuthRequired;
 import com.ifba.clinic.people.security.annotations.RoleRestricted;
+import com.ifba.clinic.people.security.components.AuthorizationComponent;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -33,6 +36,10 @@ public class PatientService {
   private final PatientRepository patientRepository;
   private final AddressRepository addressRepository;
 
+  private final UserRoleProducer userRoleProducer;
+
+  private final AuthorizationComponent authorizationComponent;
+
   @AuthRequired
   @RoleRestricted("ADMIN")
   public PageResponse<GetPatientResponse> listPatients(PageableRequest pageableRequest) {
@@ -46,6 +53,20 @@ public class PatientService {
         .map(GetPatientResponse::from);
 
     return PageResponse.from(patientPage);
+  }
+
+  @AuthRequired
+  public GetPatientResponse getPatientById(String id) {
+    log.info("Fetching patient with id: {}", id);
+
+    Patient patient = patientRepository.findById(id)
+        .orElseThrow(() -> new NotFoundException(PATIENT_NOT_FOUND));
+
+    if (!authorizationComponent.hasPermissionToManageResource(patient.getUserId())) {
+      throw new NotFoundException(PATIENT_NOT_FOUND);
+    }
+
+    return GetPatientResponse.from(patient);
   }
 
   @Transactional
@@ -73,11 +94,16 @@ public class PatientService {
   }
 
   @Transactional
+  @AuthRequired
   public void updatePatient(String id, UpdatePatientRequest request) {
     log.info("Updating patient with id: {}", id);
 
     Patient patient = patientRepository.findById(id)
         .orElseThrow(() -> new NotFoundException(PATIENT_NOT_FOUND));
+
+    if (!authorizationComponent.hasPermissionToManageResource(patient.getUserId())) {
+      throw new NotFoundException(PATIENT_NOT_FOUND);
+    }
 
     patient.updateFromRequest(request);
 
@@ -94,6 +120,8 @@ public class PatientService {
         .orElseThrow(() -> new NotFoundException(PATIENT_NOT_FOUND));
 
     patientRepository.delete(patient);
+
+    userRoleProducer.publishRoleDropped(new UserRoleDroppedEvent(patient.getId(), "PATIENT"));
 
     log.info("Patient with id: {} deleted successfully", id);
   }

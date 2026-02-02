@@ -52,6 +52,7 @@ public class PatientProfileGeneratingStrategy implements ProfileGeneratingStrate
           .name(personalInfo.personal().name())
           .document(personalInfo.personal().document())
           .phone(personalInfo.personal().phone())
+          .userId(request.userId())
           .address(address)
           .build();
 

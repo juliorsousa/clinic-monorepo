@@ -16,7 +16,7 @@ export const Route = createRootRouteWithContext()({
 			<HeadContent />
 			<OnboardingRouterBridge />
 			<Outlet />
-			<TanStackRouterDevtools />
+			<TanStackRouterDevtools position="top-right" />
 		</>
 	),
 	notFoundComponent: () => <NotFound />,
@@ -24,8 +24,6 @@ export const Route = createRootRouteWithContext()({
 		const { auth, onboarding } = context;
 		const { isAuthLoading, hasTrait } = auth;
 		const { isOnboardingLoading } = onboarding;
-
-		console.log("Loading state:", { isAuthLoading, isOnboardingLoading });
 
 		if (isAuthLoading || isOnboardingLoading) {
 			return <LoadingPage />;
@@ -36,8 +34,6 @@ export const Route = createRootRouteWithContext()({
 			location.pathname.startsWith("/onboarding/done");
 
 		if (isOnboardingDoneRoute) {
-			console.log("Usuário está na rota de onboarding concluído.", context);
-
 			if (
 				hasTrait("AWAITING_PROFILE_CREATION") ||
 				hasTrait("AWAITING_INTENT_APPROVAL")
@@ -47,12 +43,10 @@ export const Route = createRootRouteWithContext()({
 		}
 
 		if (context.onboarding.isOnboardingEligible && !isOnboardingRoute) {
-			console.log("Usuário é elegível para onboarding.", context);
 			throw redirect({ to: "/onboarding" });
 		}
 
 		if (!context.onboarding.isOnboardingEligible && isOnboardingRoute) {
-			console.log("Usuário não é elegível para onboarding.", context);
 			throw redirect({ to: "/" });
 		}
 	},

@@ -29,8 +29,9 @@ public class AdminAccountEnsurerComponent implements CommandLineRunner {
               adminEmail,
               adminPassword
           ),
-          EnumRole.ADMIN,
-          "MUST_CHANGE_PASSWORD"
+          EnumRole.ADMIN
+//          , TODO: reenable when password policies are enforced
+//          "MUST_CHANGE_PASSWORD"
       );
 
       log.info("Admin account created with email: {}", adminEmail);

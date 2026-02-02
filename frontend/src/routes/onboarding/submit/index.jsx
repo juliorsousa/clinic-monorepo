@@ -27,20 +27,15 @@ export const Route = createFileRoute("/onboarding/submit/")({
 
 		const onboardingData = onboarding.onboardingData;
 
-		console.log(onboarding);
-
 		if (!hasSelectedProfile(onboardingData)) {
-			console.log("NO PROFILE SELECTED");
 			throw redirect({ to: "/onboarding" });
 		}
 
 		if (validateCustomerData(onboardingData).length !== 0) {
-			console.log("FAILED TO VALIDATE CUSTOMER DATA");
 			throw redirect({ to: "/onboarding" });
 		}
 
 		if (validateDoctorSpecificData(onboardingData).length !== 0) {
-			console.log("FAILED TO VALIDATE DOCTOR SPECIFIC DATA");
 			throw redirect({ to: "/onboarding" });
 		}
 	},
@@ -53,22 +48,17 @@ export default function SubmitOnboardingPage() {
 	async function onNext() {
 		const response = await handleFinishRegistration();
 
-		console.log("Onboarding submission attempted.", response);
-
 		if (!response.success) return false;
 
 		await revalidate();
 
 		await new Promise((resolver) => setTimeout(resolver, 0));
-		console.log("Onboarding submission response:", response.data);
 
 		nextStep(response.data?.status === "IMPLICIT" ? "/handling" : "/pending");
 		return true;
 	}
 
 	async function handleFinishRegistration() {
-		console.log("Submitting onboarding data:", onboardingData);
-
 		try {
 			const response = await api.post(
 				"/profiling/profile-intent",

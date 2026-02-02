@@ -2,8 +2,10 @@ package com.ifba.clinic.people.entities;
 
 import com.ifba.clinic.people.models.requests.CreatePatientRequest;
 import com.ifba.clinic.people.models.requests.UpdatePatientRequest;
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.OneToOne;
@@ -34,17 +36,20 @@ public class Patient {
   @Column(name = "ID_PATIENT")
   private String id;
 
+  @Column(name = "ID_USER", nullable = false, unique = true)
+  private String userId;
+
   @Column(name = "NM_PATIENT", nullable = false)
   private String name;
 
-  @Column(name = "VL_DOCUMENT", nullable = false, unique = true)
+  @Column(name = "VL_DOCUMENT", nullable = false)
   private String document;
 
   @Column(name = "VL_PHONE", nullable = false)
   private String phone;
 
   @JoinColumn(name = "CD_ADDRESS", nullable = false)
-  @OneToOne
+  @OneToOne(fetch = FetchType.EAGER, cascade = CascadeType.ALL, orphanRemoval = true)
   private Address address;
 
   @Column(name = "IN_DELETED", nullable = false, columnDefinition = "BOOLEAN DEFAULT FALSE")
@@ -61,6 +66,7 @@ public class Patient {
     return Patient.builder()
         .name(request.name())
         .document(request.document())
+        .userId(request.userId())
         .phone(request.phone())
         .address(address)
         .build();

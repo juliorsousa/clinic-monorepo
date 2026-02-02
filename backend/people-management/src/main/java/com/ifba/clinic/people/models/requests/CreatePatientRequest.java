@@ -15,6 +15,9 @@ public record CreatePatientRequest(
     @Size(max = 100, message = Messages.NAME_MAX_LENGTH)
     String name,
 
+    @NotBlank(message = Messages.USER_ID_REQUIRED)
+    String userId,
+
     @NotBlank(message = Messages.DOCUMENT_REQUIRED)
     @Size(max = 20, message = Messages.DOCUMENT_MAX_LENGTH)
     @CPF

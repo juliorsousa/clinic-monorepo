@@ -1,4 +1,4 @@
-package com.ifba.clinic.access.messaging.config;
+package com.ifba.clinic.access.messaging.intents.config;
 
 import org.springframework.amqp.core.Binding;
 import org.springframework.amqp.core.BindingBuilder;
@@ -11,7 +11,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
 @Configuration
-public class AccessControlRabbitConfig {
+public class ProfileIntentsRabbitConfig {
 
   public static final String COMMAND_EXCHANGE = "people.profile.command";
   public static final String RESPONSE_EXCHANGE = "access.profile.response";
@@ -63,10 +63,5 @@ public class AccessControlRabbitConfig {
         .bind(responseDlqQueue())
         .to(responseDlqExchange())
         .with(DLQ_ROUTING_KEY);
-  }
-
-  @Bean
-  public MessageConverter messageConverter() {
-    return new Jackson2JsonMessageConverter();
   }
 }

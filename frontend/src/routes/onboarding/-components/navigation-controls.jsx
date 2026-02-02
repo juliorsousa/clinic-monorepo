@@ -10,11 +10,9 @@ export function NavigationControls({
 	const { nextStep, previousStep, isFirstStep, isLastStep } = useOnboarding();
 
 	const handleNext = async () => {
-		console.log("Next button clicked");
 		const canProceed = await preNextHook();
 
 		if (canProceed) {
-			console.log("Proceeding to next step");
 			nextStep();
 		}
 	};

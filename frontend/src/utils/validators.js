@@ -11,8 +11,6 @@ export function validateCustomerData(raw) {
 
 	const data = raw.personal || {};
 
-	console.log("Validating customer data:", data);
-
 	if (!data.personal?.name || data.personal.name.trim().length === 0) {
 		errors.push("O nome completo é obrigatório.");
 	} else if (data.personal.name.length > 100) {
@@ -79,8 +77,6 @@ export function validateCustomerData(raw) {
 		errors.push("CEP inválido.");
 	}
 
-	console.log("[customer] Validation errors:", errors);
-
 	return errors;
 }
 
@@ -97,8 +93,6 @@ export function validateDoctorSpecificData(raw) {
 	}
 
 	const data = raw.specific || {};
-
-	console.log("Validating DOCTOR specific data:", data, raw);
 
 	const errors = [];
 
@@ -119,8 +113,6 @@ export function validateDoctorSpecificData(raw) {
 	if (!validSpecialties.includes(data.specialty)) {
 		errors.push("A especialidade é inválida.");
 	}
-
-	console.log("[DOCTOR] Validation errors:", errors);
 
 	return errors;
 }

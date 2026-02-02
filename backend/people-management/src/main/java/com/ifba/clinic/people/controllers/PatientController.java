@@ -54,6 +54,37 @@ public interface PatientController {
   );
 
   @Operation(
+      summary = "Buscar paciente pelo ID",
+      description = """
+          Retorna as informações de um paciente específico pelo seu ID.
+          """
+  )
+  @ApiResponses({
+      @ApiResponse(
+          responseCode = "200",
+          description = "Paciente recuperado com sucesso",
+          content = @Content(
+              mediaType = "application/json",
+              schema = @Schema(implementation = GetPatientResponse.class)
+          )
+      ),
+      @ApiResponse(
+          responseCode = "401",
+          description = "Não autorizado"
+      )
+  })
+  @GetMapping("/{id}")
+  GetPatientResponse getPatientById(
+      @PathVariable
+      @Parameter(
+          description = "ID do paciente",
+          example = "a3f1a9e4-7b20-4fa3-bc1b-5e57b51fd123",
+          required = true
+      )
+      String id
+  );
+
+  @Operation(
       summary = "Criar paciente",
       description = "Cria um novo registro de paciente no sistema."
   )
@@ -107,7 +138,7 @@ public interface PatientController {
           description = "Não autorizado"
       )
   })
-  @PatchMapping("/{id}")
+  @PutMapping("/{id}")
   ResponseEntity<Void> updatePatient(
       @PathVariable
       @Parameter(

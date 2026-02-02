@@ -12,7 +12,7 @@ import com.ifba.clinic.access.exceptions.NoContentException;
 import com.ifba.clinic.access.models.requests.profiles.ProfileIntentRequest;
 import com.ifba.clinic.access.models.response.ProfileIntentProcessingResponse;
 import com.ifba.clinic.access.models.response.ProfileIntentResponse;
-import com.ifba.clinic.access.messaging.producers.ProfilingIntentProducer;
+import com.ifba.clinic.access.messaging.intents.producers.ProfileIntentProducer;
 import com.ifba.clinic.access.repositories.ProfileIntentRepository;
 import com.ifba.clinic.access.security.annotations.AuthRequired;
 import com.ifba.clinic.access.security.services.AuthenticationService;
@@ -34,7 +34,7 @@ public class ProfilingService {
   private final ProfileIntentRepository profileIntentRepository;
   private final UserService userService;
 
-  private final ProfilingIntentProducer profilingIntentProducer;
+  private final ProfileIntentProducer profileIntentProducer;
 
   private final ObjectMapper objectMapper;
 
@@ -100,7 +100,7 @@ public class ProfilingService {
       userService.addTraitToUser(currentUser.getId(), "AWAITING_PROFILE_CREATION");
 
       try {
-        profilingIntentProducer.sendRunProfileIntent(saved);
+        profileIntentProducer.sendRunProfileIntent(saved);
       } catch (JsonProcessingException e) {
         log.error("Failed to send profile intent to messaging queue: {}", e.getMessage());
 

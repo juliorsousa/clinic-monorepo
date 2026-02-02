@@ -14,6 +14,9 @@ public record CreateDoctorRequest(
     @Size(max = 100, message = Messages.NAME_MAX_LENGTH)
     String name,
 
+    @NotBlank(message = Messages.USER_ID_REQUIRED)
+    String userId,
+
     @NotBlank(message = Messages.PHONE_REQUIRED)
     @Size(max = 15, message = Messages.PHONE_MAX_LENGTH)
     @Phone

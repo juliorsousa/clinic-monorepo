@@ -169,11 +169,6 @@ export default function PersonalOnboardingPage() {
 	const cityValue = form.watch("city");
 	const stateValue = form.watch("state");
 
-	console.log(form.getValues(), onboardingData);
-	console.log("Personal Information:");
-	console.log("City:", cityValue);
-	console.log("State:", stateValue);
-
 	return (
 		<Form {...form}>
 			<form onSubmit={form.handleSubmit(handleSaveData)}>

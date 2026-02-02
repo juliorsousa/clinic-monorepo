@@ -1,4 +1,4 @@
-package com.ifba.clinic.access.messaging.consumers;
+package com.ifba.clinic.access.messaging.intents.consumers;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.ifba.clinic.access.models.response.ProfileIntentProcessingResponse;
@@ -11,14 +11,14 @@ import org.springframework.stereotype.Service;
 @RequiredArgsConstructor
 @Service
 @Slf4j
-public class ProfileResponseListener {
+public class ProfileIntentResponseListener {
 
   private final ProfilingService profilingService;
 
   private final ObjectMapper objectMapper;
 
   @RabbitListener(queues = "access.profile.response.queue")
-  public void handleProfileResponse(String raw) {
+  public void handleProfileIntentResponse(String raw) {
     ProfileIntentProcessingResponse response = parseMessage(raw);
 
     if (response.status() == null) {

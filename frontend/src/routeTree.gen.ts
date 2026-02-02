@@ -19,9 +19,13 @@ import { Route as OnboardingSpecificIndexRouteImport } from './routes/onboarding
 import { Route as OnboardingPersonalIndexRouteImport } from './routes/onboarding/personal/index'
 import { Route as AuthRegisterIndexRouteImport } from './routes/auth/register/index'
 import { Route as AuthPasswordIndexRouteImport } from './routes/auth/password/index'
+import { Route as AuthLogoutIndexRouteImport } from './routes/auth/logout/index'
 import { Route as AuthLoginIndexRouteImport } from './routes/auth/login/index'
+import { Route as AppPatientsIndexRouteImport } from './routes/_app/patients/index'
 import { Route as OnboardingDonePendingIndexRouteImport } from './routes/onboarding/done/pending/index'
 import { Route as OnboardingDoneHandlingIndexRouteImport } from './routes/onboarding/done/handling/index'
+import { Route as AppPatientsIdIndexRouteImport } from './routes/_app/patients/$id/index'
+import { Route as AppPatientsIdEditRouteImport } from './routes/_app/patients/$id/edit'
 
 const OnboardingLayoutRoute = OnboardingLayoutRouteImport.update({
   id: '/onboarding',
@@ -72,10 +76,20 @@ const AuthPasswordIndexRoute = AuthPasswordIndexRouteImport.update({
   path: '/password/',
   getParentRoute: () => AuthLayoutRoute,
 } as any)
+const AuthLogoutIndexRoute = AuthLogoutIndexRouteImport.update({
+  id: '/logout/',
+  path: '/logout/',
+  getParentRoute: () => AuthLayoutRoute,
+} as any)
 const AuthLoginIndexRoute = AuthLoginIndexRouteImport.update({
   id: '/login/',
   path: '/login/',
   getParentRoute: () => AuthLayoutRoute,
+} as any)
+const AppPatientsIndexRoute = AppPatientsIndexRouteImport.update({
+  id: '/patients/',
+  path: '/patients/',
+  getParentRoute: () => AppLayoutRoute,
 } as any)
 const OnboardingDonePendingIndexRoute =
   OnboardingDonePendingIndexRouteImport.update({
@@ -89,18 +103,32 @@ const OnboardingDoneHandlingIndexRoute =
     path: '/done/handling/',
     getParentRoute: () => OnboardingLayoutRoute,
   } as any)
+const AppPatientsIdIndexRoute = AppPatientsIdIndexRouteImport.update({
+  id: '/patients/$id/',
+  path: '/patients/$id/',
+  getParentRoute: () => AppLayoutRoute,
+} as any)
+const AppPatientsIdEditRoute = AppPatientsIdEditRouteImport.update({
+  id: '/patients/$id/edit',
+  path: '/patients/$id/edit',
+  getParentRoute: () => AppLayoutRoute,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof AppIndexRoute
   '/auth': typeof AuthLayoutRouteWithChildren
   '/onboarding': typeof OnboardingLayoutRouteWithChildren
   '/onboarding/': typeof OnboardingIndexRoute
+  '/patients/': typeof AppPatientsIndexRoute
   '/auth/login/': typeof AuthLoginIndexRoute
+  '/auth/logout/': typeof AuthLogoutIndexRoute
   '/auth/password/': typeof AuthPasswordIndexRoute
   '/auth/register/': typeof AuthRegisterIndexRoute
   '/onboarding/personal/': typeof OnboardingPersonalIndexRoute
   '/onboarding/specific/': typeof OnboardingSpecificIndexRoute
   '/onboarding/submit/': typeof OnboardingSubmitIndexRoute
+  '/patients/$id/edit': typeof AppPatientsIdEditRoute
+  '/patients/$id/': typeof AppPatientsIdIndexRoute
   '/onboarding/done/handling/': typeof OnboardingDoneHandlingIndexRoute
   '/onboarding/done/pending/': typeof OnboardingDonePendingIndexRoute
 }
@@ -108,12 +136,16 @@ export interface FileRoutesByTo {
   '/auth': typeof AuthLayoutRouteWithChildren
   '/': typeof AppIndexRoute
   '/onboarding': typeof OnboardingIndexRoute
+  '/patients': typeof AppPatientsIndexRoute
   '/auth/login': typeof AuthLoginIndexRoute
+  '/auth/logout': typeof AuthLogoutIndexRoute
   '/auth/password': typeof AuthPasswordIndexRoute
   '/auth/register': typeof AuthRegisterIndexRoute
   '/onboarding/personal': typeof OnboardingPersonalIndexRoute
   '/onboarding/specific': typeof OnboardingSpecificIndexRoute
   '/onboarding/submit': typeof OnboardingSubmitIndexRoute
+  '/patients/$id/edit': typeof AppPatientsIdEditRoute
+  '/patients/$id': typeof AppPatientsIdIndexRoute
   '/onboarding/done/handling': typeof OnboardingDoneHandlingIndexRoute
   '/onboarding/done/pending': typeof OnboardingDonePendingIndexRoute
 }
@@ -124,12 +156,16 @@ export interface FileRoutesById {
   '/onboarding': typeof OnboardingLayoutRouteWithChildren
   '/_app/': typeof AppIndexRoute
   '/onboarding/': typeof OnboardingIndexRoute
+  '/_app/patients/': typeof AppPatientsIndexRoute
   '/auth/login/': typeof AuthLoginIndexRoute
+  '/auth/logout/': typeof AuthLogoutIndexRoute
   '/auth/password/': typeof AuthPasswordIndexRoute
   '/auth/register/': typeof AuthRegisterIndexRoute
   '/onboarding/personal/': typeof OnboardingPersonalIndexRoute
   '/onboarding/specific/': typeof OnboardingSpecificIndexRoute
   '/onboarding/submit/': typeof OnboardingSubmitIndexRoute
+  '/_app/patients/$id/edit': typeof AppPatientsIdEditRoute
+  '/_app/patients/$id/': typeof AppPatientsIdIndexRoute
   '/onboarding/done/handling/': typeof OnboardingDoneHandlingIndexRoute
   '/onboarding/done/pending/': typeof OnboardingDonePendingIndexRoute
 }
@@ -140,12 +176,16 @@ export interface FileRouteTypes {
     | '/auth'
     | '/onboarding'
     | '/onboarding/'
+    | '/patients/'
     | '/auth/login/'
+    | '/auth/logout/'
     | '/auth/password/'
     | '/auth/register/'
     | '/onboarding/personal/'
     | '/onboarding/specific/'
     | '/onboarding/submit/'
+    | '/patients/$id/edit'
+    | '/patients/$id/'
     | '/onboarding/done/handling/'
     | '/onboarding/done/pending/'
   fileRoutesByTo: FileRoutesByTo
@@ -153,12 +193,16 @@ export interface FileRouteTypes {
     | '/auth'
     | '/'
     | '/onboarding'
+    | '/patients'
     | '/auth/login'
+    | '/auth/logout'
     | '/auth/password'
     | '/auth/register'
     | '/onboarding/personal'
     | '/onboarding/specific'
     | '/onboarding/submit'
+    | '/patients/$id/edit'
+    | '/patients/$id'
     | '/onboarding/done/handling'
     | '/onboarding/done/pending'
   id:
@@ -168,12 +212,16 @@ export interface FileRouteTypes {
     | '/onboarding'
     | '/_app/'
     | '/onboarding/'
+    | '/_app/patients/'
     | '/auth/login/'
+    | '/auth/logout/'
     | '/auth/password/'
     | '/auth/register/'
     | '/onboarding/personal/'
     | '/onboarding/specific/'
     | '/onboarding/submit/'
+    | '/_app/patients/$id/edit'
+    | '/_app/patients/$id/'
     | '/onboarding/done/handling/'
     | '/onboarding/done/pending/'
   fileRoutesById: FileRoutesById
@@ -256,12 +304,26 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthPasswordIndexRouteImport
       parentRoute: typeof AuthLayoutRoute
     }
+    '/auth/logout/': {
+      id: '/auth/logout/'
+      path: '/logout'
+      fullPath: '/auth/logout/'
+      preLoaderRoute: typeof AuthLogoutIndexRouteImport
+      parentRoute: typeof AuthLayoutRoute
+    }
     '/auth/login/': {
       id: '/auth/login/'
       path: '/login'
       fullPath: '/auth/login/'
       preLoaderRoute: typeof AuthLoginIndexRouteImport
       parentRoute: typeof AuthLayoutRoute
+    }
+    '/_app/patients/': {
+      id: '/_app/patients/'
+      path: '/patients'
+      fullPath: '/patients/'
+      preLoaderRoute: typeof AppPatientsIndexRouteImport
+      parentRoute: typeof AppLayoutRoute
     }
     '/onboarding/done/pending/': {
       id: '/onboarding/done/pending/'
@@ -277,15 +339,35 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof OnboardingDoneHandlingIndexRouteImport
       parentRoute: typeof OnboardingLayoutRoute
     }
+    '/_app/patients/$id/': {
+      id: '/_app/patients/$id/'
+      path: '/patients/$id'
+      fullPath: '/patients/$id/'
+      preLoaderRoute: typeof AppPatientsIdIndexRouteImport
+      parentRoute: typeof AppLayoutRoute
+    }
+    '/_app/patients/$id/edit': {
+      id: '/_app/patients/$id/edit'
+      path: '/patients/$id/edit'
+      fullPath: '/patients/$id/edit'
+      preLoaderRoute: typeof AppPatientsIdEditRouteImport
+      parentRoute: typeof AppLayoutRoute
+    }
   }
 }
 
 interface AppLayoutRouteChildren {
   AppIndexRoute: typeof AppIndexRoute
+  AppPatientsIndexRoute: typeof AppPatientsIndexRoute
+  AppPatientsIdEditRoute: typeof AppPatientsIdEditRoute
+  AppPatientsIdIndexRoute: typeof AppPatientsIdIndexRoute
 }
 
 const AppLayoutRouteChildren: AppLayoutRouteChildren = {
   AppIndexRoute: AppIndexRoute,
+  AppPatientsIndexRoute: AppPatientsIndexRoute,
+  AppPatientsIdEditRoute: AppPatientsIdEditRoute,
+  AppPatientsIdIndexRoute: AppPatientsIdIndexRoute,
 }
 
 const AppLayoutRouteWithChildren = AppLayoutRoute._addFileChildren(
@@ -294,12 +376,14 @@ const AppLayoutRouteWithChildren = AppLayoutRoute._addFileChildren(
 
 interface AuthLayoutRouteChildren {
   AuthLoginIndexRoute: typeof AuthLoginIndexRoute
+  AuthLogoutIndexRoute: typeof AuthLogoutIndexRoute
   AuthPasswordIndexRoute: typeof AuthPasswordIndexRoute
   AuthRegisterIndexRoute: typeof AuthRegisterIndexRoute
 }
 
 const AuthLayoutRouteChildren: AuthLayoutRouteChildren = {
   AuthLoginIndexRoute: AuthLoginIndexRoute,
+  AuthLogoutIndexRoute: AuthLogoutIndexRoute,
   AuthPasswordIndexRoute: AuthPasswordIndexRoute,
   AuthRegisterIndexRoute: AuthRegisterIndexRoute,
 }

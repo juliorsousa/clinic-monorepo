@@ -1,4 +1,4 @@
-package com.ifba.clinic.people.messaging.config;
+package com.ifba.clinic.people.messaging.intents.config;
 
 import org.springframework.amqp.core.Binding;
 import org.springframework.amqp.core.BindingBuilder;
@@ -10,7 +10,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
 @Configuration
-public class PeopleManagementRabbitConfig {
+public class ProfileIntentRabbitConfig {
 
   public static final String COMMAND_EXCHANGE = "people.profile.command";
   public static final String COMMAND_QUEUE = "people.profile.run.queue";
@@ -64,10 +64,5 @@ public class PeopleManagementRabbitConfig {
   @Bean
   DirectExchange responseExchange() {
     return new DirectExchange(RESPONSE_EXCHANGE);
-  }
-
-  @Bean
-  public Jackson2JsonMessageConverter jacksonConverter() {
-    return new Jackson2JsonMessageConverter();
   }
 }

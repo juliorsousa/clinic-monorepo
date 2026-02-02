@@ -34,7 +34,7 @@ public class User {
   @Column(name = "ID_USER")
   private String id;
 
-  @Column(name = "VL_EMAIL", nullable = false, unique = true)
+  @Column(name = "VL_EMAIL", nullable = false)
   private String email;
 
   @Column(name = "VL_PASSWORD_HASH", nullable = false)
@@ -55,6 +55,14 @@ public class User {
       fetch = FetchType.EAGER
   )
   private List<UserTrait> traits;
+
+  @OneToMany(
+      mappedBy = "user",
+      cascade = CascadeType.ALL,
+      orphanRemoval = true,
+      fetch = FetchType.LAZY
+  )
+  private List<ProfileIntent> profileIntents;
 
   @Column(name = "IN_DELETED", nullable = false, columnDefinition = "BOOLEAN DEFAULT FALSE")
   private boolean deleted = false;

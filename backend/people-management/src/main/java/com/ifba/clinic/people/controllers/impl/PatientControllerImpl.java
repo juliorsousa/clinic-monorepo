@@ -33,6 +33,10 @@ public class PatientControllerImpl implements PatientController {
     return patientService.listPatients(pageable);
   }
 
+  public GetPatientResponse getPatientById(String id) {
+    return patientService.getPatientById(id);
+  }
+
   public ResponseEntity<Void> updatePatient(String id, UpdatePatientRequest request) {
     patientService.updatePatient(id, request);
 
