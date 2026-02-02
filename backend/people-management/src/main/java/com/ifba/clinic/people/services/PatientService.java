@@ -12,6 +12,8 @@ import com.ifba.clinic.people.models.response.GetPatientResponse;
 import com.ifba.clinic.people.models.response.PageResponse;
 import com.ifba.clinic.people.repositories.AddressRepository;
 import com.ifba.clinic.people.repositories.PatientRepository;
+import com.ifba.clinic.people.security.annotations.AuthRequired;
+import com.ifba.clinic.people.security.annotations.RoleRestricted;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -31,6 +33,8 @@ public class PatientService {
   private final PatientRepository patientRepository;
   private final AddressRepository addressRepository;
 
+  @AuthRequired
+  @RoleRestricted("ADMIN")
   public PageResponse<GetPatientResponse> listPatients(PageableRequest pageableRequest) {
     Pageable pageable = PageRequest.of(
         pageableRequest.page(),

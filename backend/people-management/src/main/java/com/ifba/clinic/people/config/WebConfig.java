@@ -1,17 +1,16 @@
 package com.ifba.clinic.people.config;
 
-import org.springframework.beans.factory.annotation.Autowired;
+import com.ifba.clinic.people.security.components.GatewayHeaderInterceptor;
+import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
-import com.ifba.clinic.people.security.GatewayHeaderInterceptor;
-
 @Configuration
+@RequiredArgsConstructor
 public class WebConfig implements WebMvcConfigurer {
 
-    @Autowired
-    private GatewayHeaderInterceptor gatewayHeaderInterceptor;
+    private final GatewayHeaderInterceptor gatewayHeaderInterceptor;
 
     @Override
     public void addInterceptors(InterceptorRegistry registry) {

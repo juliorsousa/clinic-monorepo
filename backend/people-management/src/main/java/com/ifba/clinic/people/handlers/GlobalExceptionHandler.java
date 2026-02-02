@@ -1,7 +1,9 @@
 package com.ifba.clinic.people.handlers;
 
 import com.ifba.clinic.people.exceptions.ConflictException;
+import com.ifba.clinic.people.exceptions.ForbiddenException;
 import com.ifba.clinic.people.exceptions.NotFoundException;
+import com.ifba.clinic.people.exceptions.UnauthorizedException;
 import com.ifba.clinic.people.models.error.MessagedError;
 import com.ifba.clinic.people.models.error.ValidationError;
 import java.util.Map;
@@ -30,6 +32,15 @@ public class GlobalExceptionHandler {
         .body(new MessagedError(message));
   }
 
+  @ExceptionHandler(ForbiddenException.class)
+  public ResponseEntity<MessagedError> handleForbiddenException(ForbiddenException exception) {
+    String message = exception.getMessage();
+
+    return ResponseEntity
+        .status(403)
+        .body(new MessagedError(message));
+  }
+
   @ExceptionHandler(NotFoundException.class)
   public ResponseEntity<MessagedError> handleNotFoundException(NotFoundException exception) {
     String message = exception.getMessage() != null
@@ -38,6 +49,15 @@ public class GlobalExceptionHandler {
 
     return ResponseEntity
         .status(404)
+        .body(new MessagedError(message));
+  }
+
+  @ExceptionHandler(UnauthorizedException.class)
+  public ResponseEntity<MessagedError> handleUnauthorizedException(UnauthorizedException exception) {
+    String message = exception.getMessage();
+
+    return ResponseEntity
+        .status(401)
         .body(new MessagedError(message));
   }
 

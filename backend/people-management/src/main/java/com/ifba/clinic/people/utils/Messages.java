@@ -9,8 +9,14 @@ public class Messages {
   public static final String GENERIC_CONFLICT =
       "A requisição não pôde ser concluída devido a um conflito com o estado atual do recurso.";
 
+  public static final String GENERIC_FORBIDDEN =
+      "A requisição foi recusada devido a falta de permissões adequadas para acessar o recurso solicitado.";
+
   public static final String GENERIC_NOT_FOUND =
       "A requisição não pôde ser concluída porque o recurso solicitado não foi encontrado.";
+
+  public static final String GENERIC_UNAUTHORIZED =
+      "A requisição não pôde ser concluída devido a falha na autenticação do usuário.";
 
   public static final String PATIENT_DUPLICATED =
       "Já existe um paciente cadastrado com este CPF ou e-mail.";

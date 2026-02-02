@@ -19,9 +19,9 @@ spring:
                filters:
 
              - id: people-management
-               uri: lb://clinic
+               uri: lb://people-management
                predicates:
-                - Path=/patients/**
+                - Path=/patients/**, /doctors/**
                filters:
                 - AuthenticationFilter
 

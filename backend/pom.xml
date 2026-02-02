@@ -29,4 +29,16 @@
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     </properties>
 
+    <profiles>
+        <profile>
+            <id>run-all</id>
+            <modules>
+                <module>server-service</module>
+                <module>gateway-service</module>
+                <module>access-control</module>
+                <module>people-management</module>
+            </modules>
+        </profile>
+    </profiles>
+
 </project>
