@@ -37,6 +37,9 @@ public class Messages {
   public static final String INTENT_ALREADY_EXISTS =
       "Você já possui uma intenção de perfil registrada para esse mesmo tipo";
 
+  public static final String ROLE_ALREADY_EXISTS =
+      "Você já possui um perfil deste tipo ativo.";
+
   // Generic User messages
 
   public static final String EMAIL_REQUIRED =

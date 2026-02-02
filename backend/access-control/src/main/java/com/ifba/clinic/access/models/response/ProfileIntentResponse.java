@@ -1,5 +1,6 @@
 package com.ifba.clinic.access.models.response;
 
+import com.ifba.clinic.access.entities.ProfileIntent;
 import com.ifba.clinic.access.entities.enums.EnumIntentStatus;
 import com.ifba.clinic.access.entities.enums.EnumRole;
 import lombok.Builder;
@@ -13,4 +14,12 @@ public record ProfileIntentResponse(
 
    String response
 ) {
+  public ProfileIntentResponse(ProfileIntent intent) {
+    this(
+        intent.getId(),
+        intent.getType(),
+        intent.getStatus(),
+        intent.getResponse()
+    );
+  }
 }

@@ -118,15 +118,6 @@ function Patient() {
 					>
 						Histórico de consultas
 					</Link>
-					<Link
-						className="flex items-center gap-1.5 px-4 py-2 text-sm transition-colors hover:rounded-tl hover:rounded-tr hover:bg-sidebar"
-						params={{
-							id,
-						}}
-						to="/onboarding"
-					>
-						Incrementar cadastro
-					</Link>
 				</div>
 			</div>
 

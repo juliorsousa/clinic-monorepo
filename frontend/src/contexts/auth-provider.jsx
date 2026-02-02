@@ -66,6 +66,14 @@ export function AuthProvider({ children }) {
 		return user?.roles?.find((r) => r.role === role) != null;
 	}
 
+	function hasPendingIntentFor(role) {
+		return user?.pendingIntents?.find((r) => r.type === role) != null;
+	}
+
+	function hasAnyPendingIntent() {
+		return user?.pendingIntents?.length > 0;
+	}
+
 	function signOut() {
 		setUser(null);
 		setIsAuthenticated(false);
@@ -202,6 +210,8 @@ export function AuthProvider({ children }) {
 				revalidate,
 				signOut,
 				getSpecificRoleId,
+				hasPendingIntentFor,
+				hasAnyPendingIntent,
 			}}
 		>
 			{children}

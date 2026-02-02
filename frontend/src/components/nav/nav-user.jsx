@@ -33,6 +33,12 @@ export function NavUser() {
 			: `${names[0][0]}${names[0][1]}`;
 	}, [user]);
 
+	const roleNameMappings = {
+		ADMIN: "Administrador",
+		DOCTOR: "Médico",
+		PATIENT: "Paciente",
+	};
+
 	return (
 		<SidebarMenu>
 			<SidebarMenuItem>
@@ -49,7 +55,11 @@ export function NavUser() {
 							</Avatar>
 							<div className="grid flex-1 text-left text-sm leading-tight">
 								<span className="truncate font-semibold">{user?.email}</span>
-								<span className="truncate text-xs">{user?.email}</span>
+								<span className="truncate text-xs">
+									{user?.roles
+										.map((role) => roleNameMappings[role?.role] || role?.role)
+										.join(", ")}
+								</span>
 							</div>
 							<ChevronsUpDown className="ml-auto size-4" />
 						</SidebarMenuButton>
@@ -69,7 +79,11 @@ export function NavUser() {
 								</Avatar>
 								<div className="grid flex-1 text-left text-sm leading-tight">
 									<span className="truncate font-semibold">{user?.email}</span>
-									<span className="truncate text-xs">{user?.email}</span>
+									<span className="truncate text-xs">
+										{user?.roles
+											.map((role) => roleNameMappings[role?.role] || role?.role)
+											.join(", ")}
+									</span>
 								</div>
 							</div>
 						</DropdownMenuLabel>

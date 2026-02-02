@@ -28,6 +28,7 @@ import org.springframework.stereotype.Service;
 import static com.ifba.clinic.access.utils.Messages.GENERIC_BAD_REQUEST;
 import static com.ifba.clinic.access.utils.Messages.GENERIC_NO_CONTENT;
 import static com.ifba.clinic.access.utils.Messages.INTENT_ALREADY_EXISTS;
+import static com.ifba.clinic.access.utils.Messages.ROLE_ALREADY_EXISTS;
 
 @Service
 @RequiredArgsConstructor
@@ -41,6 +42,9 @@ public class ProfilingService {
   private final ProfileIntentProducer profileIntentProducer;
 
   private final ObjectMapper objectMapper;
+
+  private static String LOG_USER_ALREADY_HAS_ROLE =
+      "User with email: {} already has any role, skipping trait updates.";
 
   @Transactional
   @AuthRequired
@@ -79,6 +83,7 @@ public class ProfilingService {
     log.info("Creating profile setup intent for user with email: {}", currentUser.getEmail());
 
     checkExistingIntent(currentUser, requestedRole);
+    checkExistingRole(currentUser, requestedRole);
 
     if (requestedRole == EnumRole.PATIENT) {
       String body;
@@ -104,8 +109,12 @@ public class ProfilingService {
 
       log.info("Profile intent created with ID: {}", saved.getId());
 
-      userService.removeTraitsFromUser(currentUser.getId(), List.of("PENDING_ONBOARDING"));
-      userService.addTraitToUser(currentUser.getId(), "AWAITING_PROFILE_CREATION");
+      if (alreadyHasAnyRole(currentUser)) {
+        log.info(LOG_USER_ALREADY_HAS_ROLE, currentUser.getEmail());
+      } else {
+        userService.removeTraitsFromUser(currentUser.getId(), List.of("PENDING_ONBOARDING"));
+        userService.addTraitToUser(currentUser.getId(), "AWAITING_PROFILE_CREATION");
+      }
 
       try {
         profileIntentProducer.sendRunProfileIntent(saved);
@@ -146,8 +155,12 @@ public class ProfilingService {
 
       log.info("Profile intent created with ID: {}", saved.getId());
 
-      userService.removeTraitsFromUser(currentUser.getId(), List.of("PENDING_ONBOARDING"));
-      userService.addTraitToUser(currentUser.getId(), "AWAITING_INTENT_APPROVAL");
+      if (alreadyHasAnyRole(currentUser)) {
+        log.info(LOG_USER_ALREADY_HAS_ROLE, currentUser.getEmail());
+      } else {
+        userService.removeTraitsFromUser(currentUser.getId(), List.of("PENDING_ONBOARDING"));
+        userService.addTraitToUser(currentUser.getId(), "AWAITING_INTENT_APPROVAL");
+      }
 
       return ProfileIntentResponse.builder()
           .id(saved.getId())
@@ -227,6 +240,21 @@ public class ProfilingService {
     if (!existingIntent.isEmpty()) {
       throw new ConflictException(INTENT_ALREADY_EXISTS);
     }
+  }
+
+  private void checkExistingRole(User user, EnumRole type) {
+    boolean hasRole = user.getRoles().stream()
+        .anyMatch(role -> role.getRole().equals(type));
+
+    if (hasRole) {
+      throw new ConflictException(ROLE_ALREADY_EXISTS);
+    }
+  }
+
+  private boolean alreadyHasAnyRole(User user) {
+    return user.getRoles().stream()
+        .findAny()
+        .isPresent();
   }
 
 }

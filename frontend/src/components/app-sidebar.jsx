@@ -90,7 +90,7 @@ export function AppSidebar({ ...props }) {
 		return [
 			{
 				title: "Novo perfil",
-				url: "/onboarding",
+				url: "/reprofiling",
 				icon: Plus,
 			},
 			{
