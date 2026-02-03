@@ -1,6 +1,7 @@
 package com.ifba.appointment.repository;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -26,8 +27,10 @@ public interface AppointmentRepository extends JpaRepository<Appointment, String
     boolean existsConflictByPatientInDateTime(String idPatient, LocalDateTime data);
 
     Page<Appointment> findAllByIdPatient(Pageable pageable, String idPatient);
+    List<Appointment> findAllByIdPatient(String idPatient);
 
     Page<Appointment> findAllByIdDoctor(Pageable pageable, String idDoctor);
+    List<Appointment> findAllByIdDoctor(String idDoctor);
 
     @Query("SELECT a FROM Appointment a WHERE a.dateTime >= :start " +
        "AND a.dateTime <= :finish " +

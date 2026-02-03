@@ -12,6 +12,7 @@ import org.springdoc.core.annotations.ParameterObject;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -206,7 +207,7 @@ public interface AppointmentController {
       )
   })
 
-  @DeleteMapping("/delete/{id}")
+  @DeleteMapping("/cancel/{id}")
   ResponseEntity<Void> cancelAppointment(
       @PathVariable
       @Parameter(
@@ -236,8 +237,10 @@ public interface AppointmentController {
       )
   })
 
-  @DeleteMapping("/delete/all/patient")   //Id pelo userContext
-  ResponseEntity<Void> deleteAllPatientAppointment();
+  @DeleteMapping("/delete/patient/{id}")   //Id pelo userContext
+  ResponseEntity<Void> deleteAllPatientAppointment(
+    @RequestParam String id
+  );
 
     @Operation(
       summary = "apagar todas as consultas",
@@ -258,6 +261,8 @@ public interface AppointmentController {
       )
   })
 
-  @DeleteMapping("/delete/all/doctor")    //Id pelo userContext
-  ResponseEntity<Void> deleteAllDoctorAppointment();
+  @DeleteMapping("/delete/doctor/{id}")    
+  ResponseEntity<Void> deleteAllDoctorAppointment(
+    @RequestParam String id
+  );
 }

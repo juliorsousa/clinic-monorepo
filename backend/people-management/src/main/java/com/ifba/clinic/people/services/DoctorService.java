@@ -4,6 +4,7 @@ import com.ifba.clinic.people.entities.Address;
 import com.ifba.clinic.people.entities.Doctor;
 import com.ifba.clinic.people.exceptions.ConflictException;
 import com.ifba.clinic.people.exceptions.NotFoundException;
+import com.ifba.clinic.people.feign.AppointmentClient;
 import com.ifba.clinic.people.models.requests.CreateDoctorRequest;
 import com.ifba.clinic.people.models.requests.PageableRequest;
 import com.ifba.clinic.people.models.requests.UpdateDoctorRequest;
@@ -32,6 +33,7 @@ public class DoctorService {
 
   private final DoctorRepository doctorRepository;
   private final AddressRepository addressRepository;
+  private final AppointmentClient appointmentClient;
 
   public PageResponse<GetDoctorResponse> listDoctors(PageableRequest pageableRequest) {
     Pageable pageable = PageRequest.of(
@@ -91,10 +93,13 @@ public class DoctorService {
     Doctor doctor = doctorRepository.findById(id)
         .orElseThrow(() -> new NotFoundException(DOCTOR_NOT_FOUND));
 
+    appointmentClient.deleteDoctorAppointments(id);
+
     doctorRepository.delete(doctor);
 
     log.info("Doctor with id: {} deleted successfully", id);
   }
+
 
   public Boolean isAvaiable(String id) {
     log.info("validating doctor with id: {}", id);

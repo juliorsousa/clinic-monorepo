@@ -56,8 +56,8 @@ public class AppointmentControllerImpl implements AppointmentController {
     }
 
     @Override
-    public ResponseEntity<Void> deleteAllDoctorAppointment() {
-            appointmentService.deleteDoctorAppointments();
+    public ResponseEntity<Void> deleteAllDoctorAppointment(String id) {
+            appointmentService.deleteDoctorAppointments(id);
 
         return ResponseEntity
             .status(HttpStatus.NO_CONTENT)
@@ -65,8 +65,8 @@ public class AppointmentControllerImpl implements AppointmentController {
     }
 
     @Override
-    public ResponseEntity<Void> deleteAllPatientAppointment() {
-            appointmentService.deletePatientAppointments();
+    public ResponseEntity<Void> deleteAllPatientAppointment(String id) {
+            appointmentService.deletePatientAppointments(id);
 
         return ResponseEntity
             .status(HttpStatus.NO_CONTENT)

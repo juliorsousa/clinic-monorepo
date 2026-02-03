@@ -4,6 +4,7 @@ import com.ifba.clinic.people.entities.Address;
 import com.ifba.clinic.people.entities.Patient;
 import com.ifba.clinic.people.exceptions.ConflictException;
 import com.ifba.clinic.people.exceptions.NotFoundException;
+import com.ifba.clinic.people.feign.AppointmentClient;
 import com.ifba.clinic.people.models.requests.CreatePatientRequest;
 import com.ifba.clinic.people.models.requests.PageableRequest;
 import com.ifba.clinic.people.models.requests.UpdatePatientRequest;
@@ -32,6 +33,7 @@ public class PatientService {
 
   private final PatientRepository patientRepository;
   private final AddressRepository addressRepository;
+  private final AppointmentClient appointmentClient;
 
   @AuthRequired
   @RoleRestricted("ADMIN")
@@ -92,6 +94,8 @@ public class PatientService {
 
     Patient patient = patientRepository.findById(id)
         .orElseThrow(() -> new NotFoundException(PATIENT_NOT_FOUND));
+
+    appointmentClient.deletePatientAppointments(id);
 
     patientRepository.delete(patient);
 

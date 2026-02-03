@@ -1,6 +1,7 @@
 package com.ifba.appointment.services;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -142,31 +143,27 @@ public class AppointmentService {
         log.info("Appoinment with id: {} cancelled successfully", id);
     }
 
-    @AuthRequired
-    @RoleRestricted("PATIENT")
     @Transactional
-    public void deletePatientAppointments() {
-        log.info("Deleting appointment with id: {}", UserContext.getUserId());
+    public void deletePatientAppointments(String id) {
+        log.info("Deleting appointment with id: {}", id);
 
-        Appointment appointment = appointmentRepository.findById(UserContext.getUserId())
-            .orElseThrow(() -> new NotFoundException(Messages.APPOINTMENT_NOT_FOUND));
+        List<Appointment> appointments = appointmentRepository.findAllByIdDoctor(id);
+        
+        for (Appointment appointment : appointments) 
+            appointmentRepository.delete(appointment);
 
-        appointmentRepository.delete(appointment);
-
-        log.info("Appoinment with id: {} deleted successfully", UserContext.getUserId());
+        log.info("Appoitnment with id: {} deleted successfully", id);
     }
 
-    @AuthRequired
-    @RoleRestricted("DOCTOR")
     @Transactional
-    public void deleteDoctorAppointments() {
-        log.info("Deleting appointment with id: {}", UserContext.getUserId());
+    public void deleteDoctorAppointments(String id) {
+        log.info("Deleting appointment with id: {}", id);
 
-        Appointment appointment = appointmentRepository.findById(UserContext.getUserId())
-            .orElseThrow(() -> new NotFoundException(Messages.APPOINTMENT_NOT_FOUND));
+        List<Appointment> appointments = appointmentRepository.findAllByIdDoctor(id);
+        
+        for (Appointment appointment : appointments) 
+            appointmentRepository.delete(appointment);
 
-        appointmentRepository.delete(appointment);
-
-        log.info("Appoinment with id: {} deleted successfully", UserContext.getUserId());
+        log.info("Appoiment with id: {} deleted successfully", id);
     }
 }
