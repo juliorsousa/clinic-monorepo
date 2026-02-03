@@ -1,6 +1,6 @@
 package com.ifba.clinic.people.entities;
 
-import com.ifba.clinic.people.entities.enums.EnumDoctorSpeciality;
+import com.ifba.clinic.people.entities.enums.EnumDoctorSpecialty;
 import com.ifba.clinic.people.models.requests.CreateDoctorRequest;
 import com.ifba.clinic.people.models.requests.UpdateDoctorRequest;
 import jakarta.persistence.CascadeType;
@@ -52,7 +52,7 @@ public class Doctor {
 
   @Column(name = "VL_SPECIALITY", nullable = false)
   @Enumerated
-  private EnumDoctorSpeciality speciality;
+  private EnumDoctorSpecialty specialty;
 
   @Column(name = "IN_DELETED", nullable = false, columnDefinition = "BOOLEAN DEFAULT FALSE")
   private boolean deleted = false;
@@ -66,13 +66,13 @@ public class Doctor {
   }
 
   public void updateFromRequest(UpdateDoctorRequest request) {
-    this.speciality = request.speciality();
+    this.specialty = request.specialty();
   }
 
   public static Doctor fromCreationRequest(Person person, CreateDoctorRequest request) {
     return Doctor.builder()
         .credential(request.credential())
-        .speciality(request.speciality())
+        .specialty(request.specialty())
         .userId(person.getUserId())
         .person(person)
         .build();

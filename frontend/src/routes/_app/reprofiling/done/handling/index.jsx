@@ -84,7 +84,6 @@ export default function HandlingReprofilingPage() {
 				setResult(result);
 				setStatus("errored");
 
-				// bloqueia botão por 5s
 				setCanGoBackAfterError(false);
 				setTimeout(() => {
 					setCanGoBackAfterError(true);

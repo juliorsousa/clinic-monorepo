@@ -81,7 +81,6 @@ export default function SubmitReprofilingPage() {
 				</p>
 			</div>
 
-			{/* ====== CASE: DOCTOR ====== */}
 			{profile === "DOCTOR" && (
 				<Card>
 					<CardHeader>
@@ -102,7 +101,6 @@ export default function SubmitReprofilingPage() {
 				</Card>
 			)}
 
-			{/* ====== CASE: PATIENT ====== */}
 			{profile !== "DOCTOR" && (
 				<Card>
 					<CardHeader>

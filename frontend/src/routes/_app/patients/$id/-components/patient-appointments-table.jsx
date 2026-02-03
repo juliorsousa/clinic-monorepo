@@ -56,9 +56,9 @@ import {
 import { usePatientAppointments } from "@/lib/hooks/use-patient-appointments";
 import { useSummarizedDoctor } from "@/lib/hooks/use-summarized-doctor";
 import { queryClient } from "@/lib/query-client";
+import { CancelAppointmentDialog } from "@/routes/_app/appointments/-components/cancel-appointment-dialog";
 import { formatDate } from "@/utils/format-date";
 import { toast } from "sonner";
-import { CancelAppointmentDialog } from "./cancel-appointment-dialog";
 
 export function PatientAppointmentsTable({ patientId }) {
 	const navigate = useNavigate();
@@ -135,12 +135,6 @@ export function PatientAppointmentsTable({ patientId }) {
 				if (isLoading) {
 					return <Loading />;
 				}
-
-				console.log(
-					doctor,
-					doctor?.specialty,
-					specialtyLabelMap[doctor?.specialty],
-				);
 
 				return (
 					<Badge className={specialtyClassNamesMap[doctor?.specialty] ?? ""}>

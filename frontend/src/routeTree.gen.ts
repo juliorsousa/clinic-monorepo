@@ -25,14 +25,19 @@ import { Route as AuthLoginIndexRouteImport } from './routes/auth/login/index'
 import { Route as AppReprofilingIndexRouteImport } from './routes/_app/reprofiling/index'
 import { Route as AppPatientsIndexRouteImport } from './routes/_app/patients/index'
 import { Route as AppIntentsIndexRouteImport } from './routes/_app/intents/index'
+import { Route as AppDoctorsIndexRouteImport } from './routes/_app/doctors/index'
+import { Route as AppDiaryIndexRouteImport } from './routes/_app/diary/index'
 import { Route as OnboardingDonePendingIndexRouteImport } from './routes/onboarding/done/pending/index'
 import { Route as OnboardingDoneHandlingIndexRouteImport } from './routes/onboarding/done/handling/index'
 import { Route as AppReprofilingSubmitIndexRouteImport } from './routes/_app/reprofiling/submit/index'
 import { Route as AppReprofilingSpecificIndexRouteImport } from './routes/_app/reprofiling/specific/index'
 import { Route as AppPatientsIdIndexRouteImport } from './routes/_app/patients/$id/index'
+import { Route as AppDoctorsIdIndexRouteImport } from './routes/_app/doctors/$id/index'
 import { Route as AppAppointmentsScheduleIndexRouteImport } from './routes/_app/appointments/schedule/index'
 import { Route as AppPatientsIdEditRouteImport } from './routes/_app/patients/$id/edit'
 import { Route as AppPatientsIdAppointmentsRouteImport } from './routes/_app/patients/$id/appointments'
+import { Route as AppDoctorsIdEditRouteImport } from './routes/_app/doctors/$id/edit'
+import { Route as AppDoctorsIdAppointmentsRouteImport } from './routes/_app/doctors/$id/appointments'
 import { Route as AppReprofilingDonePendingIndexRouteImport } from './routes/_app/reprofiling/done/pending/index'
 import { Route as AppReprofilingDoneHandlingIndexRouteImport } from './routes/_app/reprofiling/done/handling/index'
 
@@ -115,6 +120,16 @@ const AppIntentsIndexRoute = AppIntentsIndexRouteImport.update({
   path: '/intents/',
   getParentRoute: () => AppLayoutRoute,
 } as any)
+const AppDoctorsIndexRoute = AppDoctorsIndexRouteImport.update({
+  id: '/doctors/',
+  path: '/doctors/',
+  getParentRoute: () => AppLayoutRoute,
+} as any)
+const AppDiaryIndexRoute = AppDiaryIndexRouteImport.update({
+  id: '/diary/',
+  path: '/diary/',
+  getParentRoute: () => AppLayoutRoute,
+} as any)
 const OnboardingDonePendingIndexRoute =
   OnboardingDonePendingIndexRouteImport.update({
     id: '/done/pending/',
@@ -144,6 +159,11 @@ const AppPatientsIdIndexRoute = AppPatientsIdIndexRouteImport.update({
   path: '/patients/$id/',
   getParentRoute: () => AppLayoutRoute,
 } as any)
+const AppDoctorsIdIndexRoute = AppDoctorsIdIndexRouteImport.update({
+  id: '/doctors/$id/',
+  path: '/doctors/$id/',
+  getParentRoute: () => AppLayoutRoute,
+} as any)
 const AppAppointmentsScheduleIndexRoute =
   AppAppointmentsScheduleIndexRouteImport.update({
     id: '/appointments/schedule/',
@@ -159,6 +179,17 @@ const AppPatientsIdAppointmentsRoute =
   AppPatientsIdAppointmentsRouteImport.update({
     id: '/patients/$id/appointments',
     path: '/patients/$id/appointments',
+    getParentRoute: () => AppLayoutRoute,
+  } as any)
+const AppDoctorsIdEditRoute = AppDoctorsIdEditRouteImport.update({
+  id: '/doctors/$id/edit',
+  path: '/doctors/$id/edit',
+  getParentRoute: () => AppLayoutRoute,
+} as any)
+const AppDoctorsIdAppointmentsRoute =
+  AppDoctorsIdAppointmentsRouteImport.update({
+    id: '/doctors/$id/appointments',
+    path: '/doctors/$id/appointments',
     getParentRoute: () => AppLayoutRoute,
   } as any)
 const AppReprofilingDonePendingIndexRoute =
@@ -180,6 +211,8 @@ export interface FileRoutesByFullPath {
   '/onboarding': typeof OnboardingLayoutRouteWithChildren
   '/reprofiling': typeof AppReprofilingLayoutRouteWithChildren
   '/onboarding/': typeof OnboardingIndexRoute
+  '/diary/': typeof AppDiaryIndexRoute
+  '/doctors/': typeof AppDoctorsIndexRoute
   '/intents/': typeof AppIntentsIndexRoute
   '/patients/': typeof AppPatientsIndexRoute
   '/reprofiling/': typeof AppReprofilingIndexRoute
@@ -190,9 +223,12 @@ export interface FileRoutesByFullPath {
   '/onboarding/personal/': typeof OnboardingPersonalIndexRoute
   '/onboarding/specific/': typeof OnboardingSpecificIndexRoute
   '/onboarding/submit/': typeof OnboardingSubmitIndexRoute
+  '/doctors/$id/appointments': typeof AppDoctorsIdAppointmentsRoute
+  '/doctors/$id/edit': typeof AppDoctorsIdEditRoute
   '/patients/$id/appointments': typeof AppPatientsIdAppointmentsRoute
   '/patients/$id/edit': typeof AppPatientsIdEditRoute
   '/appointments/schedule/': typeof AppAppointmentsScheduleIndexRoute
+  '/doctors/$id/': typeof AppDoctorsIdIndexRoute
   '/patients/$id/': typeof AppPatientsIdIndexRoute
   '/reprofiling/specific/': typeof AppReprofilingSpecificIndexRoute
   '/reprofiling/submit/': typeof AppReprofilingSubmitIndexRoute
@@ -205,6 +241,8 @@ export interface FileRoutesByTo {
   '/auth': typeof AuthLayoutRouteWithChildren
   '/': typeof AppIndexRoute
   '/onboarding': typeof OnboardingIndexRoute
+  '/diary': typeof AppDiaryIndexRoute
+  '/doctors': typeof AppDoctorsIndexRoute
   '/intents': typeof AppIntentsIndexRoute
   '/patients': typeof AppPatientsIndexRoute
   '/reprofiling': typeof AppReprofilingIndexRoute
@@ -215,9 +253,12 @@ export interface FileRoutesByTo {
   '/onboarding/personal': typeof OnboardingPersonalIndexRoute
   '/onboarding/specific': typeof OnboardingSpecificIndexRoute
   '/onboarding/submit': typeof OnboardingSubmitIndexRoute
+  '/doctors/$id/appointments': typeof AppDoctorsIdAppointmentsRoute
+  '/doctors/$id/edit': typeof AppDoctorsIdEditRoute
   '/patients/$id/appointments': typeof AppPatientsIdAppointmentsRoute
   '/patients/$id/edit': typeof AppPatientsIdEditRoute
   '/appointments/schedule': typeof AppAppointmentsScheduleIndexRoute
+  '/doctors/$id': typeof AppDoctorsIdIndexRoute
   '/patients/$id': typeof AppPatientsIdIndexRoute
   '/reprofiling/specific': typeof AppReprofilingSpecificIndexRoute
   '/reprofiling/submit': typeof AppReprofilingSubmitIndexRoute
@@ -234,6 +275,8 @@ export interface FileRoutesById {
   '/_app/reprofiling': typeof AppReprofilingLayoutRouteWithChildren
   '/_app/': typeof AppIndexRoute
   '/onboarding/': typeof OnboardingIndexRoute
+  '/_app/diary/': typeof AppDiaryIndexRoute
+  '/_app/doctors/': typeof AppDoctorsIndexRoute
   '/_app/intents/': typeof AppIntentsIndexRoute
   '/_app/patients/': typeof AppPatientsIndexRoute
   '/_app/reprofiling/': typeof AppReprofilingIndexRoute
@@ -244,9 +287,12 @@ export interface FileRoutesById {
   '/onboarding/personal/': typeof OnboardingPersonalIndexRoute
   '/onboarding/specific/': typeof OnboardingSpecificIndexRoute
   '/onboarding/submit/': typeof OnboardingSubmitIndexRoute
+  '/_app/doctors/$id/appointments': typeof AppDoctorsIdAppointmentsRoute
+  '/_app/doctors/$id/edit': typeof AppDoctorsIdEditRoute
   '/_app/patients/$id/appointments': typeof AppPatientsIdAppointmentsRoute
   '/_app/patients/$id/edit': typeof AppPatientsIdEditRoute
   '/_app/appointments/schedule/': typeof AppAppointmentsScheduleIndexRoute
+  '/_app/doctors/$id/': typeof AppDoctorsIdIndexRoute
   '/_app/patients/$id/': typeof AppPatientsIdIndexRoute
   '/_app/reprofiling/specific/': typeof AppReprofilingSpecificIndexRoute
   '/_app/reprofiling/submit/': typeof AppReprofilingSubmitIndexRoute
@@ -263,6 +309,8 @@ export interface FileRouteTypes {
     | '/onboarding'
     | '/reprofiling'
     | '/onboarding/'
+    | '/diary/'
+    | '/doctors/'
     | '/intents/'
     | '/patients/'
     | '/reprofiling/'
@@ -273,9 +321,12 @@ export interface FileRouteTypes {
     | '/onboarding/personal/'
     | '/onboarding/specific/'
     | '/onboarding/submit/'
+    | '/doctors/$id/appointments'
+    | '/doctors/$id/edit'
     | '/patients/$id/appointments'
     | '/patients/$id/edit'
     | '/appointments/schedule/'
+    | '/doctors/$id/'
     | '/patients/$id/'
     | '/reprofiling/specific/'
     | '/reprofiling/submit/'
@@ -288,6 +339,8 @@ export interface FileRouteTypes {
     | '/auth'
     | '/'
     | '/onboarding'
+    | '/diary'
+    | '/doctors'
     | '/intents'
     | '/patients'
     | '/reprofiling'
@@ -298,9 +351,12 @@ export interface FileRouteTypes {
     | '/onboarding/personal'
     | '/onboarding/specific'
     | '/onboarding/submit'
+    | '/doctors/$id/appointments'
+    | '/doctors/$id/edit'
     | '/patients/$id/appointments'
     | '/patients/$id/edit'
     | '/appointments/schedule'
+    | '/doctors/$id'
     | '/patients/$id'
     | '/reprofiling/specific'
     | '/reprofiling/submit'
@@ -316,6 +372,8 @@ export interface FileRouteTypes {
     | '/_app/reprofiling'
     | '/_app/'
     | '/onboarding/'
+    | '/_app/diary/'
+    | '/_app/doctors/'
     | '/_app/intents/'
     | '/_app/patients/'
     | '/_app/reprofiling/'
@@ -326,9 +384,12 @@ export interface FileRouteTypes {
     | '/onboarding/personal/'
     | '/onboarding/specific/'
     | '/onboarding/submit/'
+    | '/_app/doctors/$id/appointments'
+    | '/_app/doctors/$id/edit'
     | '/_app/patients/$id/appointments'
     | '/_app/patients/$id/edit'
     | '/_app/appointments/schedule/'
+    | '/_app/doctors/$id/'
     | '/_app/patients/$id/'
     | '/_app/reprofiling/specific/'
     | '/_app/reprofiling/submit/'
@@ -458,6 +519,20 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AppIntentsIndexRouteImport
       parentRoute: typeof AppLayoutRoute
     }
+    '/_app/doctors/': {
+      id: '/_app/doctors/'
+      path: '/doctors'
+      fullPath: '/doctors/'
+      preLoaderRoute: typeof AppDoctorsIndexRouteImport
+      parentRoute: typeof AppLayoutRoute
+    }
+    '/_app/diary/': {
+      id: '/_app/diary/'
+      path: '/diary'
+      fullPath: '/diary/'
+      preLoaderRoute: typeof AppDiaryIndexRouteImport
+      parentRoute: typeof AppLayoutRoute
+    }
     '/onboarding/done/pending/': {
       id: '/onboarding/done/pending/'
       path: '/done/pending'
@@ -493,6 +568,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AppPatientsIdIndexRouteImport
       parentRoute: typeof AppLayoutRoute
     }
+    '/_app/doctors/$id/': {
+      id: '/_app/doctors/$id/'
+      path: '/doctors/$id'
+      fullPath: '/doctors/$id/'
+      preLoaderRoute: typeof AppDoctorsIdIndexRouteImport
+      parentRoute: typeof AppLayoutRoute
+    }
     '/_app/appointments/schedule/': {
       id: '/_app/appointments/schedule/'
       path: '/appointments/schedule'
@@ -512,6 +594,20 @@ declare module '@tanstack/react-router' {
       path: '/patients/$id/appointments'
       fullPath: '/patients/$id/appointments'
       preLoaderRoute: typeof AppPatientsIdAppointmentsRouteImport
+      parentRoute: typeof AppLayoutRoute
+    }
+    '/_app/doctors/$id/edit': {
+      id: '/_app/doctors/$id/edit'
+      path: '/doctors/$id/edit'
+      fullPath: '/doctors/$id/edit'
+      preLoaderRoute: typeof AppDoctorsIdEditRouteImport
+      parentRoute: typeof AppLayoutRoute
+    }
+    '/_app/doctors/$id/appointments': {
+      id: '/_app/doctors/$id/appointments'
+      path: '/doctors/$id/appointments'
+      fullPath: '/doctors/$id/appointments'
+      preLoaderRoute: typeof AppDoctorsIdAppointmentsRouteImport
       parentRoute: typeof AppLayoutRoute
     }
     '/_app/reprofiling/done/pending/': {
@@ -553,22 +649,32 @@ const AppReprofilingLayoutRouteWithChildren =
 interface AppLayoutRouteChildren {
   AppReprofilingLayoutRoute: typeof AppReprofilingLayoutRouteWithChildren
   AppIndexRoute: typeof AppIndexRoute
+  AppDiaryIndexRoute: typeof AppDiaryIndexRoute
+  AppDoctorsIndexRoute: typeof AppDoctorsIndexRoute
   AppIntentsIndexRoute: typeof AppIntentsIndexRoute
   AppPatientsIndexRoute: typeof AppPatientsIndexRoute
+  AppDoctorsIdAppointmentsRoute: typeof AppDoctorsIdAppointmentsRoute
+  AppDoctorsIdEditRoute: typeof AppDoctorsIdEditRoute
   AppPatientsIdAppointmentsRoute: typeof AppPatientsIdAppointmentsRoute
   AppPatientsIdEditRoute: typeof AppPatientsIdEditRoute
   AppAppointmentsScheduleIndexRoute: typeof AppAppointmentsScheduleIndexRoute
+  AppDoctorsIdIndexRoute: typeof AppDoctorsIdIndexRoute
   AppPatientsIdIndexRoute: typeof AppPatientsIdIndexRoute
 }
 
 const AppLayoutRouteChildren: AppLayoutRouteChildren = {
   AppReprofilingLayoutRoute: AppReprofilingLayoutRouteWithChildren,
   AppIndexRoute: AppIndexRoute,
+  AppDiaryIndexRoute: AppDiaryIndexRoute,
+  AppDoctorsIndexRoute: AppDoctorsIndexRoute,
   AppIntentsIndexRoute: AppIntentsIndexRoute,
   AppPatientsIndexRoute: AppPatientsIndexRoute,
+  AppDoctorsIdAppointmentsRoute: AppDoctorsIdAppointmentsRoute,
+  AppDoctorsIdEditRoute: AppDoctorsIdEditRoute,
   AppPatientsIdAppointmentsRoute: AppPatientsIdAppointmentsRoute,
   AppPatientsIdEditRoute: AppPatientsIdEditRoute,
   AppAppointmentsScheduleIndexRoute: AppAppointmentsScheduleIndexRoute,
+  AppDoctorsIdIndexRoute: AppDoctorsIdIndexRoute,
   AppPatientsIdIndexRoute: AppPatientsIdIndexRoute,
 }
 

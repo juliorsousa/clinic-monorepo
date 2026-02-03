@@ -290,10 +290,11 @@ function EditPatientPage() {
 						onSubmit={form.handleSubmit(onSubmit)}
 						className="space-y-6 mx-auto w-full"
 					>
-						<div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-							<Card className="p-6 w-full">
-								<h2 className="text-lg font-bold mb-4">Dados Pessoais</h2>
+						<Card className="p-6 w-full">
+							<div className="grid grid-cols-1 lg:grid-cols-[1fr_auto_1fr] gap-6">
 								<div className="space-y-4">
+									<h2 className="text-lg font-bold mb-4">Dados Pessoais</h2>
+
 									<FormField
 										control={form.control}
 										name="email"
@@ -302,7 +303,7 @@ function EditPatientPage() {
 												<FormLabel>Email</FormLabel>
 												<FormControl>
 													<Input
-														disabled="true"
+														disabled
 														placeholder="email@exemplo.com"
 														{...field}
 													/>
@@ -311,6 +312,7 @@ function EditPatientPage() {
 											</FormItem>
 										)}
 									/>
+
 									<FormField
 										control={form.control}
 										name="document"
@@ -320,7 +322,7 @@ function EditPatientPage() {
 												<FormControl>
 													<Input
 														placeholder="000.000.000-00"
-														disabled="true"
+														disabled
 														onChange={(e) =>
 															field.onChange(unmaskCPF(e.target.value))
 														}
@@ -331,6 +333,7 @@ function EditPatientPage() {
 											</FormItem>
 										)}
 									/>
+
 									<FormField
 										control={form.control}
 										name="fullName"
@@ -344,6 +347,7 @@ function EditPatientPage() {
 											</FormItem>
 										)}
 									/>
+
 									<FormField
 										control={form.control}
 										name="phone"
@@ -364,25 +368,55 @@ function EditPatientPage() {
 										)}
 									/>
 								</div>
-							</Card>
 
-							<Card className="p-6 w-full">
-								<h2 className="text-lg font-bold mb-4">Endereço</h2>
+								<Separator
+									orientation="vertical"
+									className="hidden lg:block h-full"
+								/>
+
 								<div className="space-y-4">
-									<FormField
-										control={form.control}
-										name="street"
-										render={({ field }) => (
-											<FormItem>
-												<FormLabel>Logradouro</FormLabel>
-												<FormControl>
-													<Input placeholder="Av. Tancredo Neves" {...field} />
-												</FormControl>
-												<FormMessage />
-											</FormItem>
-										)}
-									/>
-									<div className="grid grid-cols-2 gap-4">
+									<h2 className="text-lg font-bold mb-4">Endereço</h2>
+
+									<div className="grid grid-cols-4 gap-4">
+										<FormField
+											control={form.control}
+											name="zipCode"
+											render={({ field }) => (
+												<FormItem>
+													<FormLabel>CEP</FormLabel>
+													<FormControl>
+														<Input
+															placeholder="40000-000"
+															onChange={(e) =>
+																field.onChange(unmaskPostalCode(e.target.value))
+															}
+															value={maskPostalCode(field.value)}
+														/>
+													</FormControl>
+													<FormMessage />
+												</FormItem>
+											)}
+										/>
+
+										<FormField
+											control={form.control}
+											name="street"
+											render={({ field }) => (
+												<FormItem className="col-span-3">
+													<FormLabel>Logradouro</FormLabel>
+													<FormControl>
+														<Input
+															placeholder="Av. Tancredo Neves"
+															{...field}
+														/>
+													</FormControl>
+													<FormMessage />
+												</FormItem>
+											)}
+										/>
+									</div>
+
+									<div className="grid grid-cols-6 gap-4">
 										<FormField
 											control={form.control}
 											name="house"
@@ -396,11 +430,12 @@ function EditPatientPage() {
 												</FormItem>
 											)}
 										/>
+
 										<FormField
 											control={form.control}
 											name="complement"
 											render={({ field }) => (
-												<FormItem>
+												<FormItem className="col-span-5">
 													<FormLabel>Complemento</FormLabel>
 													<FormControl>
 														<Input placeholder="Apto 101" {...field} />
@@ -410,6 +445,7 @@ function EditPatientPage() {
 											)}
 										/>
 									</div>
+
 									<FormField
 										control={form.control}
 										name="neighborhood"
@@ -423,6 +459,7 @@ function EditPatientPage() {
 											</FormItem>
 										)}
 									/>
+
 									<div className="grid grid-cols-2 gap-4 items-start">
 										<FormField
 											control={form.control}
@@ -440,6 +477,7 @@ function EditPatientPage() {
 																value !== cityValue &&
 																form.setValue("city", value, {
 																	shouldValidate: true,
+																	shouldDirty: true,
 																})
 															}
 														/>
@@ -448,6 +486,7 @@ function EditPatientPage() {
 												</FormItem>
 											)}
 										/>
+
 										<FormField
 											control={form.control}
 											name="state"
@@ -466,9 +505,11 @@ function EditPatientPage() {
 																) {
 																	form.setValue("state", value, {
 																		shouldValidate: true,
+																		shouldDirty: true,
 																	});
 																	form.setValue("city", "", {
 																		shouldValidate: true,
+																		shouldDirty: true,
 																	});
 																}
 															}}
@@ -479,37 +520,20 @@ function EditPatientPage() {
 											)}
 										/>
 									</div>
-									<FormField
-										control={form.control}
-										name="zipCode"
-										render={({ field }) => (
-											<FormItem>
-												<FormLabel>CEP</FormLabel>
-												<FormControl>
-													<Input
-														placeholder="40000-000"
-														onChange={(e) =>
-															field.onChange(unmaskPostalCode(e.target.value))
-														}
-														value={maskPostalCode(field.value)}
-													/>
-												</FormControl>
-												<FormMessage />
-											</FormItem>
-										)}
-									/>
 								</div>
-							</Card>
-						</div>
+							</div>
 
-						<div className="flex justify-end">
-							<Button
-								type="submit"
-								disabled={!form.formState.isValid || !form.formState.isDirty}
-							>
-								Salvar alterações
-							</Button>
-						</div>
+							<Separator className="my-2" />
+
+							<div className="flex justify-end mt-0">
+								<Button
+									type="submit"
+									disabled={!form.formState.isValid || !form.formState.isDirty}
+								>
+									Salvar alterações
+								</Button>
+							</div>
+						</Card>
 					</form>
 				</Form>
 			</div>

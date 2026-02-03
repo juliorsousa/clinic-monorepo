@@ -103,7 +103,7 @@ public class Messages {
   public static final String CREDENTIAL_MAX_LENGTH = 
 		  "A credencial deve ter no máximo 20 caracteres.";
   
-  public static final String SPECIALITY_REQUIRED = 
+  public static final String SPECIALTY_REQUIRED =
 		  "A especialidade médica é obrigatória.";
   
   public static final String ADDRESS_REQUIRED = 

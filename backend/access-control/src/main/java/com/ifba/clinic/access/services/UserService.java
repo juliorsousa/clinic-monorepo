@@ -96,6 +96,7 @@ public class UserService {
   }
 
   @AuthRequired
+  @Transactional
   public void changePassword(ChangePasswordRequest request) {
     User currentUser = getCurrentUser();
 

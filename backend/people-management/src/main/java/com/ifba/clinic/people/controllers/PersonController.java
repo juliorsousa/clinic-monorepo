@@ -74,6 +74,32 @@ public interface PersonController {
   );
 
   @Operation(
+      summary = "Buscar pessoa pelo ID de usuário",
+      description = "Retorna as informações de uma pessoa específica pelo seu ID de usuário associado"
+  )
+  @ApiResponses({
+      @ApiResponse(
+          responseCode = "200",
+          description = "Pessoa recuperada com sucesso",
+          content = @Content(
+              mediaType = "application/json",
+              schema = @Schema(implementation = GetPersonResponse.class)
+          )
+      ),
+      @ApiResponse(responseCode = "401", description = "Não autorizado")
+  })
+  @GetMapping("/by-user/{id}")
+  GetPersonResponse getPersonByUserId(
+      @PathVariable
+      @Parameter(
+          description = "ID do usuário",
+          example = "a3f1a9e4-7b20-4fa3-bc1b-5e57b51fd123",
+          required = true
+      )
+      String id
+  );
+
+  @Operation(
       summary = "Atualizar pessoa",
       description = "Atualiza parcialmente as informações da pessoa."
   )

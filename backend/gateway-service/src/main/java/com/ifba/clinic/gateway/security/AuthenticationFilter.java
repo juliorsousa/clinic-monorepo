@@ -2,8 +2,6 @@ package com.ifba.clinic.gateway.security;
 
 import com.ifba.clinic.gateway.exceptions.UnauthorizedException;
 import com.ifba.clinic.gateway.model.ValidateUserResponse;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.cloud.gateway.filter.GatewayFilter;
 import org.springframework.cloud.gateway.filter.factory.AbstractGatewayFilterFactory;
 import org.springframework.http.HttpHeaders;
@@ -53,11 +51,14 @@ public class AuthenticationFilter extends AbstractGatewayFilterFactory<Authentic
                 .header("X-User-Id", user.id())
                 .header("X-User-Email", user.email());
 
-            user.roles().forEach(role ->
-                requestBuilder.header("X-User-Role", role.role() + ";" + role.referencedEntityId())
-            );
+            String[] mappedRoles = user.roles().stream()
+                .map(role -> role.referencedEntityId() != null ?
+                    role.role() + ";" + role.referencedEntityId() :
+                    role.role())
+                .toArray(String[]::new);
 
-            user.traits().forEach(trait -> requestBuilder.header("X-User-Trait", trait));
+            requestBuilder.header("X-User-Role", mappedRoles);
+            requestBuilder.header("X-User-Trait", user.traits().toArray(new String[0]));
 
             return chain.filter(exchange.mutate().request(requestBuilder.build()).build());
           })

@@ -23,7 +23,6 @@ import jakarta.transaction.Transactional;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.Arrays;
-import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
@@ -49,12 +48,12 @@ public class AppointmentService {
   private final AppointmentRepository appointmentRepository;
   private final DoctorsClient doctorsClient;
 
-//  @AuthRequired
+  @AuthRequired
   public List<LocalDate> getAvailableDatesForDoctors(List<String> doctorIds) {
     return appointmentRepository.findAvailableDatesForDoctors(doctorIds);
   }
 
-//  @AuthRequired
+  @AuthRequired
   public Map<String, List<LocalDateTime>> getAvailableHoursForDoctorsOnDate(List<String> doctorIds, LocalDate date) {
     return appointmentRepository.findAvailableHoursForDoctorsOnDate(doctorIds, date);
   }
@@ -86,7 +85,12 @@ public class AppointmentService {
         Sort.by("scheduledTo").descending()
     );
 
-    Page<GetAppointmentResponse> patientPage = appointmentRepository.findAllByPatientId(id, pageable)
+    Page<GetAppointmentResponse> patientPage = appointmentRepository.findAllByPatientBetweenDatePeriod(
+            id,
+            request.startDateTime(),
+            request.finishDateTime(),
+            pageable
+        )
         .map(GetAppointmentResponse::from);
 
     return PageResponse.from(patientPage);
@@ -98,6 +102,8 @@ public class AppointmentService {
       throw new ForbiddenException();
     }
 
+    log.info("Listing appointments for Doctor with id: {} between {} and {}", id, request.startDateTime(), request.finishDateTime());
+
     Pageable pageable = PageRequest.of(
         pageableRequest.page(),
         pageableRequest.size(),
@@ -107,8 +113,12 @@ public class AppointmentService {
     LocalDateTime startDateTime = request.startDateTime();
     LocalDateTime finishDateTime = request.finishDateTime();
 
-    Page<GetAppointmentResponse> doctorPage = appointmentRepository.findAllBetweenDatePeriod(id, startDateTime,
-            finishDateTime, pageable)
+    Page<GetAppointmentResponse> doctorPage = appointmentRepository.findAllByDoctorBetweenDatePeriod(
+            id,
+            startDateTime,
+            finishDateTime,
+            pageable
+        )
         .map(GetAppointmentResponse::from);
 
     return PageResponse.from(doctorPage);
@@ -131,7 +141,7 @@ public class AppointmentService {
     }
 
     List<String> doctorIds =
-        doctorsClient.getDoctorsSummaryBySpeciality(request.specialty())
+        doctorsClient.getDoctorsSummaryBySpecialty(request.specialty())
             .stream()
             .map(SummarizedDoctorResponse::id)
             .toList();
@@ -208,9 +218,9 @@ public class AppointmentService {
         .filter(role -> Objects.equals(role.role(), "DOCTOR"))
         .findAny();
 
-    if (patientRole.isPresent()) {
+    if (patientRole.isPresent() && appointment.getPatientId().equals(patientRole.get().referencedEntityId())) {
       reason = "Desistência";
-    } else if (doctorRole.isPresent()) {
+    } else if (doctorRole.isPresent() && appointment.getDoctorId().equals(doctorRole.get().referencedEntityId())) {
       reason = "Cancelada pelo médico";
     } else {
       reason = "Cancelada pelo administrador";
@@ -225,6 +235,8 @@ public class AppointmentService {
   }
 
   @Transactional
+  @AuthRequired
+  @RoleRestricted("SYSTEM")
   public void deletePatientAppointments(String id) {
     log.info("Deleting appointments for Patient with id: {}", id);
 
@@ -234,6 +246,7 @@ public class AppointmentService {
   }
 
   @Transactional
+  @RoleRestricted("SYSTEM")
   public void deleteDoctorAppointments(String id) {
     log.info("Deleting appointments for Doctor with id: {}", id);
 

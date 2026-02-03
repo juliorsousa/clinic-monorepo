@@ -18,6 +18,7 @@ import com.ifba.clinic.access.models.response.ProfileIntentProcessingResponse;
 import com.ifba.clinic.access.models.response.ProfileIntentResponse;
 import com.ifba.clinic.access.repositories.ProfileIntentRepository;
 import com.ifba.clinic.access.security.annotations.AuthRequired;
+import com.ifba.clinic.access.security.annotations.RoleRestricted;
 import com.ifba.clinic.access.security.services.AuthenticationService;
 import jakarta.transaction.Transactional;
 import java.util.List;
@@ -54,6 +55,7 @@ public class ProfilingService {
 
   @Transactional
   @AuthRequired
+  @RoleRestricted("ADMIN")
   public PageResponse<ProfileIntentResponse> listProfileIntents(
       PageableRequest pageableRequest
   ) {
@@ -197,6 +199,7 @@ public class ProfilingService {
 
   @Transactional
   @AuthRequired
+  @RoleRestricted("ADMIN")
   public void rejectProfileIntent(String intentId) {
     log.info("Rejecting profile intent with ID: {}", intentId);
 
@@ -230,6 +233,7 @@ public class ProfilingService {
 
   @Transactional
   @AuthRequired
+  @RoleRestricted("ADMIN")
   public void approveProfileIntent(String intentId) {
     log.info("Approving profile intent with ID: {}", intentId);
 

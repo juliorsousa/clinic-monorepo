@@ -89,7 +89,7 @@ public class DoctorProfileGeneratingStrategy implements ProfileGeneratingStrateg
 
       CreateDoctorRequest doctorRequest = CreateDoctorRequest.builder()
           .credential(specific.credential())
-          .speciality(specific.getSpecialtyEnum())
+          .specialty(specific.getSpecialtyEnum())
           .build();
 
       GetDoctorResponse doctorResponse = doctorService.createDoctor(person.getId(), doctorRequest);

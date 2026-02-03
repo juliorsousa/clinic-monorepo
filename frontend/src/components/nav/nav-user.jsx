@@ -1,4 +1,4 @@
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import {
 	DropdownMenu,
 	DropdownMenuContent,
@@ -15,9 +15,9 @@ import {
 	useSidebar,
 } from "@/components/ui/sidebar";
 import { useAuth } from "@/hooks/use-auth";
-import { BadgeCheck, ChevronsUpDown, LogOut } from "lucide-react";
+import { usePersonByUserId } from "@/lib/hooks/use-person";
+import { ChevronsUpDown, LogOut } from "lucide-react";
 import { useMemo } from "react";
-import { NavLink } from "./nav-link";
 
 export function NavUser() {
 	const { isMobile } = useSidebar();
@@ -25,13 +25,21 @@ export function NavUser() {
 
 	if (isAuthLoading) return null;
 
+	const { data: person } = usePersonByUserId(user?.id);
+
 	const avatarInitials = useMemo(() => {
-		if (!user) return "??";
-		const names = user.email?.split(" ");
-		return names.length > 1
-			? `${names[0][0]}${names[1][0]}`
-			: `${names[0][0]}${names[0][1]}`;
-	}, [user]);
+		if (!person) return "??";
+
+		const names = person.name?.split(" ");
+
+		if (names.length > 1) {
+			const lastName = names.pop();
+
+			return `${names[0][0]}${lastName[0]}`;
+		}
+
+		return `${names[0][0]}${names[0][1]}`;
+	}, [person]);
 
 	const roleNameMappings = {
 		ADMIN: "Administrador",
@@ -54,12 +62,8 @@ export function NavUser() {
 								</AvatarFallback>
 							</Avatar>
 							<div className="grid flex-1 text-left text-sm leading-tight">
-								<span className="truncate font-semibold">{user?.email}</span>
-								<span className="truncate text-xs">
-									{user?.roles
-										.map((role) => roleNameMappings[role?.role] || role?.role)
-										.join(", ")}
-								</span>
+								<span className="truncate font-semibold">{person?.name}</span>
+								<span className="truncate text-xs">{user?.email}</span>
 							</div>
 							<ChevronsUpDown className="ml-auto size-4" />
 						</SidebarMenuButton>
@@ -78,7 +82,9 @@ export function NavUser() {
 									</AvatarFallback>
 								</Avatar>
 								<div className="grid flex-1 text-left text-sm leading-tight">
-									<span className="truncate font-semibold">{user?.email}</span>
+									<span className="truncate font-semibold">
+										{person?.name || ""}
+									</span>
 									<span className="truncate text-xs">
 										{user?.roles
 											.map((role) => roleNameMappings[role?.role] || role?.role)
@@ -88,18 +94,9 @@ export function NavUser() {
 							</div>
 						</DropdownMenuLabel>
 						<DropdownMenuSeparator />
-						<DropdownMenuGroup>
-							<DropdownMenuItem asChild>
-								<NavLink to={`/users/${user?.id}`}>
-									<BadgeCheck className="mr-2 size-4" />
-									Account
-								</NavLink>
-							</DropdownMenuItem>
-						</DropdownMenuGroup>
-						<DropdownMenuSeparator />
 						<DropdownMenuItem onClick={signOut}>
 							<LogOut className="mr-2 size-4" />
-							Log out
+							Sair
 						</DropdownMenuItem>
 					</DropdownMenuContent>
 				</DropdownMenu>

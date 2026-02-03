@@ -45,7 +45,7 @@ public class SecurityAspect {
   private boolean hasRole(String role) {
     return UserContext.getUserRoles()
         .stream()
-        .anyMatch(userRole -> userRole.role().equals(role));
+        .anyMatch(userRole -> userRole.role().equals(role)) || UserContext.isSystemCall();
   }
 
 }

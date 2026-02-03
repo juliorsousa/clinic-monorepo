@@ -9,10 +9,9 @@ export function ReprofilingProvider({ children }) {
 	const isReprofilingLoading = isAuthLoading || user === null;
 	const routerNavigateRef = useRef(null);
 
-	// ====== STEPS ======
 	const STEPS = {
 		PROFILE: "profile",
-		SPECIFIC: "specific", // doctors only
+		SPECIFIC: "specific",
 		SUBMIT: "submit",
 		DONE: "done",
 	};
@@ -24,11 +23,9 @@ export function ReprofilingProvider({ children }) {
 		specific: {},
 	});
 
-	// ====== ROLE LOGIC ======
 	const hasDoctor = user?.roles?.some((r) => r.role === "DOCTOR");
 	const hasPatient = user?.roles?.some((r) => r.role === "PATIENT");
 
-	// Optional reprofiling eligibility
 	const isReprofilingEligible =
 		isAuthenticated &&
 		!!user &&
@@ -42,7 +39,6 @@ export function ReprofilingProvider({ children }) {
 				? "DOCTOR"
 				: null;
 
-	// ====== HELPERS ======
 	function updateReprofilingData(step, data) {
 		setReprofilingData((prev) => ({
 			...prev,
@@ -67,7 +63,6 @@ export function ReprofilingProvider({ children }) {
 		routerNavigateRef.current({ to: path });
 	}
 
-	// ====== NAVIGATION ======
 	function goToProfile() {
 		goTo(STEPS.PROFILE, "/reprofiling");
 	}
@@ -85,7 +80,6 @@ export function ReprofilingProvider({ children }) {
 		goTo(STEPS.DONE, `/reprofiling/done/${correctedPath}`);
 	}
 
-	// ====== STEP FLOW ======
 	function nextStep(path = undefined) {
 		if (currentStep === STEPS.PROFILE) {
 			if (reprofilingData.profile?.value === "DOCTOR") {

@@ -10,7 +10,6 @@ import com.ifba.clinic.people.models.requests.PageableRequest;
 import com.ifba.clinic.people.models.requests.person.CreatePersonRequest;
 import com.ifba.clinic.people.models.requests.person.UpdatePersonRequest;
 import com.ifba.clinic.people.models.response.PageResponse;
-import com.ifba.clinic.people.models.response.person.CreatePersonResponse;
 import com.ifba.clinic.people.models.response.person.GetPersonResponse;
 import com.ifba.clinic.people.repositories.AddressRepository;
 import com.ifba.clinic.people.repositories.PersonRepository;
@@ -72,8 +71,22 @@ public class PersonService {
     return GetPersonResponse.from(person);
   }
 
+  @AuthRequired
+  public GetPersonResponse getPersonByUserId(String userId) {
+    log.info("Fetching person with userId: {}", userId);
+
+    Person person = personRepository.findByUserId(userId)
+        .orElseThrow(() -> new NotFoundException(PERSON_NOT_FOUND));
+
+    if (!authorizationComponent.hasPermissionToManageResource(person.getUserId())) {
+      throw new NotFoundException(PERSON_NOT_FOUND);
+    }
+
+    return GetPersonResponse.from(person);
+  }
+
   @Transactional
-  public Person createPerson(String userId, CreatePersonRequest request) {
+  public void createPerson(String userId, CreatePersonRequest request) {
     log.info("Creating person with document: {} - {}", request.document(), userId);
 
     boolean personAlreadyExists =
@@ -93,13 +106,11 @@ public class PersonService {
 
     log.info("Person created with id: {}", savedPerson.getId());
 
-    return savedPerson;
   }
 
   @Transactional
   @AuthRequired
   public void updatePerson(String id, UpdatePersonRequest request) {
-
     log.info("Updating person with id: {}", id);
 
     Person person = personRepository.findById(id)
@@ -116,8 +127,9 @@ public class PersonService {
   }
 
   @Transactional
+  @AuthRequired
+  @RoleRestricted("ADMIN")
   public void deletePerson(String id) {
-
     log.info("Deleting person with id: {}", id);
 
     Person person = personRepository.findById(id)

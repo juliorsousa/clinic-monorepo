@@ -5,7 +5,7 @@ import lombok.RequiredArgsConstructor;
 
 @Getter
 @RequiredArgsConstructor
-public enum EnumDoctorSpeciality {
+public enum EnumDoctorSpecialty {
 
   ORTHOPEDICS("Ortopedia"),
   CARDIOLOGY("Cardiologia"),

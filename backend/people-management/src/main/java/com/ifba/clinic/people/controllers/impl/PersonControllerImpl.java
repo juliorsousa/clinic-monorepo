@@ -30,6 +30,11 @@ public class PersonControllerImpl implements PersonController {
   }
 
   @Override
+  public GetPersonResponse getPersonByUserId(String id) {
+    return personService.getPersonByUserId(id);
+  }
+
+  @Override
   public ResponseEntity<Void> updatePerson(String id, UpdatePersonRequest request) {
     personService.updatePerson(id, request);
 

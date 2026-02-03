@@ -15,6 +15,7 @@ import {
 	Activity,
 	Ban,
 	BriefcaseMedical,
+	Calendar,
 	ClipboardList,
 	HeartHandshake,
 	ListCheck,
@@ -28,16 +29,10 @@ import { NavMain } from "./nav/nav-main";
 import { NavUser } from "./nav/nav-user";
 
 export function AppSidebar({ ...props }) {
-	const { user, hasRole } = useAuth();
+	const { hasRole } = useAuth();
 
 	const adminNav = useMemo(() => {
 		return [
-			// {
-			// 	title: "Consultas",
-			// 	url: "/appointments",
-			// 	icon: ClipboardList,
-			// 	role: "ADMIN",
-			// },
 			{
 				title: "Médicos",
 				url: "/doctors",
@@ -69,8 +64,8 @@ export function AppSidebar({ ...props }) {
 			},
 			{
 				title: "Minha Agenda",
-				url: "/appointments/me",
-				icon: PersonStanding,
+				url: "/diary",
+				icon: Calendar,
 				role: "DOCTOR",
 			},
 		];

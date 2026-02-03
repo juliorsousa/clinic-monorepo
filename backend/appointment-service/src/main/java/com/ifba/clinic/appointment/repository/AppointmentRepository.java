@@ -33,16 +33,28 @@ public interface AppointmentRepository extends JpaRepository<Appointment, String
       @Param("date") LocalDateTime date
   );
 
-  Page<Appointment> findAllByPatientId(String patientId, Pageable pageable);
+  @Query("""
+    SELECT a FROM Appointment a
+    WHERE a.scheduledTo >= COALESCE(:startDateTime, a.scheduledTo)
+    AND a.scheduledTo <= COALESCE(:finishDateTime, a.scheduledTo)
+    AND a.patientId = :patientId
+    ORDER BY a.scheduledTo DESC
+  """)
+  Page<Appointment> findAllByPatientBetweenDatePeriod(
+      @Param("patientId") String patientId,
+      @Param("startDateTime") LocalDateTime startDateTime,
+      @Param("finishDateTime") LocalDateTime finishDateTime,
+      Pageable pageable
+  );
 
-  List<Appointment> findAllByDoctorId(String doctorId);
-
-  @Query("SELECT a FROM Appointment a " +
-      "WHERE (:startDateTime IS NULL OR a.scheduledTo >= :startDateTime) " +
-      "AND (:finishDateTime IS NULL OR a.scheduledTo <= :finishDateTime) " +
-      "AND a.doctorId = :doctorId " +
-      "ORDER BY a.scheduledTo ASC")
-  Page<Appointment> findAllBetweenDatePeriod(
+  @Query("""
+    SELECT a FROM Appointment a
+    WHERE a.scheduledTo >= COALESCE(:startDateTime, a.scheduledTo)
+    AND a.scheduledTo <= COALESCE(:finishDateTime, a.scheduledTo)
+    AND a.doctorId = :doctorId
+    ORDER BY a.scheduledTo DESC
+  """)
+  Page<Appointment> findAllByDoctorBetweenDatePeriod(
       @Param("doctorId") String doctorId,
       @Param("startDateTime") LocalDateTime startDateTime,
       @Param("finishDateTime") LocalDateTime finishDateTime,

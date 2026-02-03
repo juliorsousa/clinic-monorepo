@@ -1,6 +1,6 @@
 package com.ifba.clinic.people.messaging.intents.models.requests;
 
-import com.ifba.clinic.people.entities.enums.EnumDoctorSpeciality;
+import com.ifba.clinic.people.entities.enums.EnumDoctorSpecialty;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Pattern;
@@ -88,12 +88,12 @@ public record ProfileIntentRequest(
       String credential,
       String specialty
   ) {
-    public EnumDoctorSpeciality getSpecialtyEnum() {
+    public EnumDoctorSpecialty getSpecialtyEnum() {
       if (specialty == null) {
         return null;
       }
 
-      return EnumDoctorSpeciality.valueOf(specialty);
+      return EnumDoctorSpecialty.valueOf(specialty);
     }
   }
 }

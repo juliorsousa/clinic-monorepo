@@ -63,7 +63,6 @@ export function IntentsDataTable() {
 		totalElements: 0,
 	});
 
-	// Dialog States
 	const [selectedIntent, setSelectedIntent] = useState(null);
 	const [isDetailsOpen, setIsDetailsOpen] = useState(false);
 	const [isRefuseOpen, setIsRefuseOpen] = useState(false);
@@ -86,10 +85,11 @@ export function IntentsDataTable() {
 
 	const handleRefuse = async () => {
 		try {
-			// Replace with your actual refusal endpoint
 			await api.post(`/profiling/profile-intent/${selectedIntent.id}/reject`);
+
 			queryClient.invalidateQueries(["profile-intents"]);
 			toast.success("Solicitação recusada.");
+
 			setIsRefuseOpen(false);
 		} catch (error) {
 			toast.error("Erro ao recusar solicitação.");
@@ -374,7 +374,7 @@ export function IntentsDataTable() {
 					</div>
 				</div>
 			</div>
-			{/* --- DETAILS DIALOG --- */}
+
 			<IntentDetailsDialog
 				isOpen={isDetailsOpen}
 				onOpenChange={setIsDetailsOpen}
@@ -384,7 +384,6 @@ export function IntentsDataTable() {
 				errorData={errorData}
 				isReprofilingIntent={isReprofilingIntent}
 			/>
-			{/* --- REFUSAL DIALOG --- */}
 
 			<IntentRefuseDialog
 				isOpen={isRefuseOpen}

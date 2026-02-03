@@ -146,57 +146,6 @@ export function AuthProvider({ children }) {
 		window.location.replace("/");
 	}
 
-	// function refresh() {
-	// 	if (alreadyRefreshed || redirectUri === "") return;
-
-	// 	const refreshToken = getCookie("refresh_token");
-
-	// 	if (!refreshToken) {
-	// 		signOut();
-	// 		return;
-	// 	}
-
-	// 	oauth
-	// 		.post("/refresh", {
-	// 			grant_type: "refresh_token",
-	// 			refresh_token: refreshToken,
-	// 		})
-	// 		.then((response) => {
-	// 			const { access_token, refresh_token } = response.data;
-
-	// 			setCookie("access_token", access_token, {
-	// 				expires: new Date(Date.now() + 15 * 60 * 1000),
-	// 				sameSite: "strict",
-	// 			});
-
-	// 			setCookie("refresh_token", refresh_token, {
-	// 				expires: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000),
-	// 				sameSite: "strict",
-	// 			});
-
-	// 			setIsAuthenticated(true);
-	// 			setIsAuthLoading(false);
-	// 			setAlreadyRefreshed(true);
-
-	// 			const decoded = decodeURIComponent(redirectUri);
-
-	// 			let target = decoded + "?access_token=" + access_token;
-
-	// 			const returnTo = searchParams.get("return");
-
-	// 			if (returnTo) {
-	// 				target += "&return=" + encodeURIComponent(returnTo);
-	// 			}
-
-	// 			const currentUrl = window.location.pathname;
-
-	// 			if (isValidUrlToRedirect(currentUrl)) {
-	// 				router.replace(target);
-	// 			}
-	// 		})
-	// 		.catch(() => signOut());
-	// }
-
 	return (
 		<AuthContext.Provider
 			value={{

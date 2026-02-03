@@ -1,0 +1,72 @@
+import { Loading } from "@/components/loading";
+import {
+	Breadcrumb,
+	BreadcrumbItem,
+	BreadcrumbList,
+	BreadcrumbPage,
+} from "@/components/ui/breadcrumb";
+import { Separator } from "@/components/ui/separator";
+import { SidebarTrigger } from "@/components/ui/sidebar";
+import { useAuth } from "@/hooks/use-auth";
+import { createFileRoute, redirect } from "@tanstack/react-router";
+import DoctorAppointmentsDiaryGrid from "./-components/doctor-appointments-diary-grid";
+
+export const Route = createFileRoute("/_app/diary/")({
+	component: DoctorsComponent,
+	head: () => ({
+		meta: [
+			{
+				title: "Agenda | Clínica",
+			},
+		],
+	}),
+	beforeLoad: async ({ context }) => {
+		const { auth } = context;
+
+		if (auth.isAuthLoading) {
+			return <Loading />;
+		}
+
+		if (!auth.hasRole("DOCTOR")) {
+			throw redirect({ to: "/" });
+		}
+	},
+});
+
+function DoctorsComponent() {
+	const { auth, getSpecificRoleId, isAuthLoading } = useAuth();
+
+	if (isAuthLoading) {
+		return <Loading />;
+	}
+
+	const doctor = getSpecificRoleId("DOCTOR");
+
+	if (!doctor) {
+		return <Loading />;
+	}
+
+	return (
+		<>
+			<header className="flex h-16 shrink-0 items-center gap-2">
+				<div className="flex items-center gap-2 px-4">
+					<SidebarTrigger className="-ml-1" />
+					<Separator
+						orientation="vertical"
+						className="mx-2 data-[orientation=vertical]:h-4 "
+					/>
+					<Breadcrumb>
+						<BreadcrumbList>
+							<BreadcrumbItem>
+								<BreadcrumbPage>Agenda</BreadcrumbPage>
+							</BreadcrumbItem>
+						</BreadcrumbList>
+					</Breadcrumb>
+				</div>
+			</header>
+			<div className="flex flex-1 flex-col gap-4 p-4 pt-0">
+				<DoctorAppointmentsDiaryGrid doctorId={doctor} />
+			</div>
+		</>
+	);
+}

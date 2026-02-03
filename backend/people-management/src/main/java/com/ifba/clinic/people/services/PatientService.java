@@ -10,6 +10,7 @@ import com.ifba.clinic.people.messaging.roles.producers.UserRoleProducer;
 import com.ifba.clinic.people.models.requests.PageableRequest;
 import com.ifba.clinic.people.models.response.GetPatientResponse;
 import com.ifba.clinic.people.models.response.PageResponse;
+import com.ifba.clinic.people.models.response.SummarizedPatientResponse;
 import com.ifba.clinic.people.repositories.PatientRepository;
 import com.ifba.clinic.people.repositories.PersonRepository;
 import com.ifba.clinic.people.security.annotations.AuthRequired;
@@ -68,6 +69,16 @@ public class PatientService {
     return GetPatientResponse.from(patient);
   }
 
+  @AuthRequired
+  public SummarizedPatientResponse getSummarizedPatientById(String id) {
+    log.info("Fetching summarized patient with id: {}", id);
+
+    Patient patient = patientRepository.findById(id)
+        .orElseThrow(() -> new NotFoundException(PATIENT_NOT_FOUND));
+
+    return new SummarizedPatientResponse(patient);
+  }
+
   @Transactional
   public GetPatientResponse createPatient(String personId) {
     log.info("Creating patient for personId: {}", personId);
@@ -91,6 +102,8 @@ public class PatientService {
   }
 
   @Transactional
+  @AuthRequired
+  @RoleRestricted("ADMIN")
   public void deletePatient(String id) {
     log.info("Deleting patient with id: {}", id);
 

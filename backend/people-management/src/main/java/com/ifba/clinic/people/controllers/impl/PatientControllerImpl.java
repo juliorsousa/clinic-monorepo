@@ -4,6 +4,7 @@ import com.ifba.clinic.people.controllers.PatientController;
 import com.ifba.clinic.people.models.requests.PageableRequest;
 import com.ifba.clinic.people.models.response.GetPatientResponse;
 import com.ifba.clinic.people.models.response.PageResponse;
+import com.ifba.clinic.people.models.response.SummarizedPatientResponse;
 import com.ifba.clinic.people.services.PatientService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -22,6 +23,10 @@ public class PatientControllerImpl implements PatientController {
 
   public GetPatientResponse getPatientById(String id) {
     return patientService.getPatientById(id);
+  }
+
+  public SummarizedPatientResponse getSummarizedPatientById(String id) {
+    return patientService.getSummarizedPatientById(id);
   }
 
   public ResponseEntity<Void> deletePatient(String id) {

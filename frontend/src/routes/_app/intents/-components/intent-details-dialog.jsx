@@ -43,7 +43,6 @@ export function IntentDetailsDialog({
 
 				{intentData && (
 					<div className="flex flex-col gap-6 py-4">
-						{/* Intent Info */}
 						<section className="space-y-3">
 							<h3 className="text-sm font-bold uppercase tracking-wider text-muted-foreground">
 								Informações
@@ -76,7 +75,6 @@ export function IntentDetailsDialog({
 							</div>
 						</section>
 
-						{/* Persona Info */}
 						<section className="space-y-3">
 							<h3 className="text-sm font-bold uppercase tracking-wider text-muted-foreground">
 								Informações Pessoais
@@ -131,7 +129,6 @@ export function IntentDetailsDialog({
 							</div>
 						</section>
 
-						{/* Address Info */}
 						{intentData.personal?.address && (
 							<section className="space-y-3">
 								<h3 className="text-sm font-bold uppercase tracking-wider text-muted-foreground">
@@ -166,7 +163,6 @@ export function IntentDetailsDialog({
 							</section>
 						)}
 
-						{/* Doctor Info */}
 						{intentData.specific && intentData.profile?.value === "DOCTOR" && (
 							<section className="space-y-3">
 								<h3 className="text-sm font-bold uppercase tracking-wider text-muted-foreground">
@@ -199,7 +195,6 @@ export function IntentDetailsDialog({
 							</section>
 						)}
 
-						{/* Error Info */}
 						{selectedIntent.status === "ERRORED" && (
 							<section className="space-y-3">
 								<h3 className="text-sm font-bold uppercase tracking-wider text-destructive">

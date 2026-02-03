@@ -1,6 +1,6 @@
 package com.ifba.clinic.people.models.requests;
 
-import com.ifba.clinic.people.entities.enums.EnumDoctorSpeciality;
+import com.ifba.clinic.people.entities.enums.EnumDoctorSpecialty;
 import com.ifba.clinic.people.utils.Messages;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
@@ -14,8 +14,8 @@ public record CreateDoctorRequest(
     @Size(max = 20, message = Messages.CREDENTIAL_MAX_LENGTH)
     String credential,
 
-    @NotNull(message = Messages.SPECIALITY_REQUIRED)
-    EnumDoctorSpeciality speciality
+    @NotNull(message = Messages.SPECIALTY_REQUIRED)
+    EnumDoctorSpecialty specialty
 
 ) {
 }

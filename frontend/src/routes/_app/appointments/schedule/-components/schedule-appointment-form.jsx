@@ -204,7 +204,6 @@ export default function ScheduleAppointmentForm() {
 									)}
 								/>
 
-								{/* DATA - largura fixa */}
 								<FormField
 									control={form.control}
 									name="date"
@@ -261,7 +260,6 @@ export default function ScheduleAppointmentForm() {
 									)}
 								/>
 
-								{/* HORÁRIO - largura fixa */}
 								<FormField
 									control={form.control}
 									name="time"

@@ -2,7 +2,7 @@ package com.ifba.clinic.people.services;
 
 import com.ifba.clinic.people.entities.Doctor;
 import com.ifba.clinic.people.entities.Person;
-import com.ifba.clinic.people.entities.enums.EnumDoctorSpeciality;
+import com.ifba.clinic.people.entities.enums.EnumDoctorSpecialty;
 import com.ifba.clinic.people.exceptions.ConflictException;
 import com.ifba.clinic.people.exceptions.NotFoundException;
 import com.ifba.clinic.people.feign.AppointmentClient;
@@ -17,6 +17,7 @@ import com.ifba.clinic.people.models.response.SummarizedDoctorResponse;
 import com.ifba.clinic.people.repositories.DoctorRepository;
 import com.ifba.clinic.people.repositories.PersonRepository;
 import com.ifba.clinic.people.security.annotations.AuthRequired;
+import com.ifba.clinic.people.security.annotations.RoleRestricted;
 import com.ifba.clinic.people.security.components.AuthorizationComponent;
 import jakarta.transaction.Transactional;
 import java.util.List;
@@ -44,6 +45,8 @@ public class DoctorService {
   private final PersonService personService;
   private final UserRoleProducer userRoleProducer;
 
+  @AuthRequired
+  @RoleRestricted("ADMIN")
   public PageResponse<GetDoctorResponse> listDoctors(PageableRequest pageableRequest) {
     Pageable pageable = PageRequest.of(
         pageableRequest.page(),
@@ -65,6 +68,8 @@ public class DoctorService {
         .orElseThrow(() -> new NotFoundException(DOCTOR_NOT_FOUND));
 
     if (!authorizationComponent.hasPermissionToManageResource(doctor.getPerson().getUserId())) {
+      log.warn("Unauthorized access attempt to doctor with id: {}", id);
+
       throw new NotFoundException(DOCTOR_NOT_FOUND);
     }
 
@@ -82,10 +87,10 @@ public class DoctorService {
   }
 
   @AuthRequired
-  public List<SummarizedDoctorResponse> getSummarizedDoctorsBySpecialty(EnumDoctorSpeciality speciality) {
-    log.info("Fetching summarized data of Doctors with specialty: {}", speciality);
+  public List<SummarizedDoctorResponse> getSummarizedDoctorsBySpecialty(EnumDoctorSpecialty specialty) {
+    log.info("Fetching summarized data of Doctors with specialty: {}", specialty);
 
-    List<Doctor> doctors = doctorRepository.findAllBySpeciality(speciality);
+    List<Doctor> doctors = doctorRepository.findAllBySpecialty(specialty);
 
     return doctors.stream()
         .map(SummarizedDoctorResponse::new)
@@ -125,6 +130,12 @@ public class DoctorService {
     Doctor doctor = doctorRepository.findById(id)
         .orElseThrow(() -> new NotFoundException(DOCTOR_NOT_FOUND));
 
+    if (!authorizationComponent.hasPermissionToManageResource(doctor.getPerson().getUserId())) {
+      log.warn("Unauthorized update attempt to doctor with id: {}", id);
+
+      throw new NotFoundException(DOCTOR_NOT_FOUND);
+    }
+
     doctor.updateFromRequest(request);
 
     doctorRepository.save(doctor);
@@ -133,6 +144,7 @@ public class DoctorService {
   }
 
   @Transactional
+  @RoleRestricted("ADMIN")
   public void deleteDoctor(String id) {
     log.info("Deleting doctor with id: {}", id);
 
