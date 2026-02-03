@@ -1,5 +1,7 @@
 import { brazilStates } from "@/utils/cities-states";
 
+import { useIsMobile } from "@/hooks/use-mobile";
+import { cn } from "@/lib/utils";
 import {
 	Select,
 	SelectContent,
@@ -10,10 +12,17 @@ import {
 	SelectValue,
 } from "./ui/select";
 
-export default function StatePicker({ value, onChange, disabled = false }) {
+export default function StatePicker({
+	value,
+	onChange,
+	disabled = false,
+	fullNames = false,
+}) {
+	const isMobile = useIsMobile();
+
 	return (
 		<Select onValueChange={onChange} value={value} disabled={disabled}>
-			<SelectTrigger className="w-20">
+			<SelectTrigger className={cn("w-20", fullNames && "w-60")}>
 				<SelectValue placeholder="-" />
 			</SelectTrigger>
 
@@ -21,9 +30,15 @@ export default function StatePicker({ value, onChange, disabled = false }) {
 				<SelectGroup>
 					<SelectLabel>Estados do Brasil</SelectLabel>
 
-					{brazilStates.map(([uf]) => (
+					{brazilStates.map(([uf, label]) => (
 						<SelectItem key={uf} value={uf}>
-							{uf}
+							{fullNames ? (
+								<>
+									{label} <span className="text-muted-foreground">({uf})</span>
+								</>
+							) : (
+								<>{uf}</>
+							)}
 						</SelectItem>
 					))}
 				</SelectGroup>

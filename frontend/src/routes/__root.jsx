@@ -1,5 +1,5 @@
 import { OnboardingRouterBridge } from "@/bridges/onboarding-router-bridge";
-import { Loading } from "@/components/loading";
+import { ReprofilingRouterBridge } from "@/bridges/reprofiling-router-bridge";
 import { NotFound } from "@/routes/404";
 import {
 	HeadContent,
@@ -15,17 +15,16 @@ export const Route = createRootRouteWithContext()({
 		<>
 			<HeadContent />
 			<OnboardingRouterBridge />
+			<ReprofilingRouterBridge />
 			<Outlet />
-			<TanStackRouterDevtools />
+			<TanStackRouterDevtools position="top-right" />
 		</>
 	),
 	notFoundComponent: () => <NotFound />,
 	beforeLoad: ({ context, location }) => {
-		const { auth, onboarding } = context;
+		const { auth, onboarding, reprofiling } = context;
 		const { isAuthLoading, hasTrait } = auth;
 		const { isOnboardingLoading } = onboarding;
-
-		console.log("Loading state:", { isAuthLoading, isOnboardingLoading });
 
 		if (isAuthLoading || isOnboardingLoading) {
 			return <LoadingPage />;
@@ -36,24 +35,43 @@ export const Route = createRootRouteWithContext()({
 			location.pathname.startsWith("/onboarding/done");
 
 		if (isOnboardingDoneRoute) {
-			console.log("Usuário está na rota de onboarding concluído.", context);
-
 			if (
 				hasTrait("AWAITING_PROFILE_CREATION") ||
 				hasTrait("AWAITING_INTENT_APPROVAL")
 			) {
+				console.log("User is on onboarding done route");
 				return <Outlet />;
 			}
 		}
 
-		if (context.onboarding.isOnboardingEligible && !isOnboardingRoute) {
-			console.log("Usuário é elegível para onboarding.", context);
+		if (onboarding.isOnboardingEligible && !isOnboardingRoute) {
+			console.log("Redirecting to onboarding from non-onboarding route");
 			throw redirect({ to: "/onboarding" });
 		}
 
-		if (!context.onboarding.isOnboardingEligible && isOnboardingRoute) {
-			console.log("Usuário não é elegível para onboarding.", context);
+		if (!onboarding.isOnboardingEligible && isOnboardingRoute) {
+			console.log("Redirecting to home from onboarding route");
 			throw redirect({ to: "/" });
+		}
+
+		const isReprofilingRoute = location.pathname.startsWith("/reprofiling");
+		const isReprofilingDoneRoute =
+			location.pathname.startsWith("/reprofiling/done");
+
+		if (
+			auth.hasPendingIntentFor("PATIENT") &&
+			isReprofilingRoute &&
+			!isReprofilingDoneRoute
+		) {
+			throw redirect({ to: "/reprofiling/done/handling" });
+		}
+
+		if (
+			auth.hasPendingIntentFor("DOCTOR") &&
+			isReprofilingRoute &&
+			!isReprofilingDoneRoute
+		) {
+			throw redirect({ to: "/reprofiling/done/pending" });
 		}
 	},
 });

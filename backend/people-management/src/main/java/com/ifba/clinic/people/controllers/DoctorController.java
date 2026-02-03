@@ -3,8 +3,8 @@ package com.ifba.clinic.people.controllers;
 import com.ifba.clinic.people.models.requests.CreateDoctorRequest;
 import com.ifba.clinic.people.models.requests.PageableRequest;
 import com.ifba.clinic.people.models.requests.UpdateDoctorRequest;
-import com.ifba.clinic.people.models.response.CreateDoctorResponse;
 import com.ifba.clinic.people.models.response.GetDoctorResponse;
+import com.ifba.clinic.people.models.response.GetPatientResponse;
 import com.ifba.clinic.people.models.response.PageResponse;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
@@ -20,7 +20,13 @@ import java.time.LocalDateTime;
 import org.springdoc.core.annotations.ParameterObject;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
 
 @RequestMapping("/doctors")
 @SecurityRequirement(name = "bearerAuth")
@@ -57,11 +63,41 @@ public interface DoctorController {
       @ParameterObject PageableRequest pageable
   );
 
+  @Operation(
+      summary = "Buscar médico pelo ID",
+      description = """
+          Retorna as informações de um médico específico pelo seu ID.
+          """
+  )
+  @ApiResponses({
+      @ApiResponse(
+          responseCode = "200",
+          description = "Médico recuperado com sucesso",
+          content = @Content(
+              mediaType = "application/json",
+              schema = @Schema(implementation = GetDoctorResponse.class)
+          )
+      ),
+      @ApiResponse(
+          responseCode = "401",
+          description = "Não autorizado"
+      )
+  })
+  @GetMapping("/{id}")
+  GetDoctorResponse getDoctorById(
+      @PathVariable
+      @Parameter(
+          description = "ID do médico",
+          example = "a3f1a9e4-7b20-4fa3-bc1b-5e57b51fd123",
+          required = true
+      )
+      String id
+  );
 
   @Operation(
-      summary = "Valida disponibilidade do médico",
+      summary = "Valida existência do médico",
       description = """
-          Retorna um booleano true para caso o médico seja válido e esteja disponível na data da consulta.
+          Retorna verdadeiro caso o médico exista no sistema.
 
           """
   )
@@ -71,7 +107,7 @@ public interface DoctorController {
           description = "Médico validado com sucesso",
           content = @Content(
               mediaType = "application/json",
-              schema = @Schema(implementation = PageResponse.class)
+              schema = @Schema(implementation = Boolean.class)
           )
       ),
       @ApiResponse(
@@ -88,7 +124,7 @@ public interface DoctorController {
       )
   })
   @GetMapping("/{id}")
-  ResponseEntity<Boolean> isAvaiable(
+  ResponseEntity<Boolean> validateDoctor(
         @PathVariable
         @Parameter(
             description = "ID do Médico",
@@ -96,38 +132,6 @@ public interface DoctorController {
             required = true
         )
         String id
-  );
-
-  @Operation(
-      summary = "Criar Médico",
-      description = "Cria um novo registro de Médico no sistema."
-  )
-  @ApiResponses({
-      @ApiResponse(
-          responseCode = "201",
-          description = "Médico criado com sucesso",
-          content = @Content(
-              mediaType = "application/json",
-              schema = @Schema(implementation = CreateDoctorResponse.class)
-          )
-      ),
-      @ApiResponse(
-          responseCode = "400",
-          description = "Corpo da requisição inválido"
-      ),
-      @ApiResponse(
-          responseCode = "409",
-          description = "Médico já existe"
-      ),
-      @ApiResponse(
-          responseCode = "401",
-          description = "Não autorizado"
-      )
-  })
-  @PostMapping
-  ResponseEntity<CreateDoctorResponse> createDoctor(
-      @Valid
-      @RequestBody CreateDoctorRequest request
   );
 
   @Operation(

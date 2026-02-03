@@ -14,14 +14,24 @@ import { Route as AuthLayoutRouteImport } from './routes/auth/layout'
 import { Route as AppLayoutRouteImport } from './routes/_app/layout'
 import { Route as OnboardingIndexRouteImport } from './routes/onboarding/index'
 import { Route as AppIndexRouteImport } from './routes/_app/index'
+import { Route as AppReprofilingLayoutRouteImport } from './routes/_app/reprofiling/layout'
 import { Route as OnboardingSubmitIndexRouteImport } from './routes/onboarding/submit/index'
 import { Route as OnboardingSpecificIndexRouteImport } from './routes/onboarding/specific/index'
 import { Route as OnboardingPersonalIndexRouteImport } from './routes/onboarding/personal/index'
 import { Route as AuthRegisterIndexRouteImport } from './routes/auth/register/index'
 import { Route as AuthPasswordIndexRouteImport } from './routes/auth/password/index'
+import { Route as AuthLogoutIndexRouteImport } from './routes/auth/logout/index'
 import { Route as AuthLoginIndexRouteImport } from './routes/auth/login/index'
+import { Route as AppReprofilingIndexRouteImport } from './routes/_app/reprofiling/index'
+import { Route as AppPatientsIndexRouteImport } from './routes/_app/patients/index'
 import { Route as OnboardingDonePendingIndexRouteImport } from './routes/onboarding/done/pending/index'
 import { Route as OnboardingDoneHandlingIndexRouteImport } from './routes/onboarding/done/handling/index'
+import { Route as AppReprofilingSubmitIndexRouteImport } from './routes/_app/reprofiling/submit/index'
+import { Route as AppReprofilingSpecificIndexRouteImport } from './routes/_app/reprofiling/specific/index'
+import { Route as AppPatientsIdIndexRouteImport } from './routes/_app/patients/$id/index'
+import { Route as AppPatientsIdEditRouteImport } from './routes/_app/patients/$id/edit'
+import { Route as AppReprofilingDonePendingIndexRouteImport } from './routes/_app/reprofiling/done/pending/index'
+import { Route as AppReprofilingDoneHandlingIndexRouteImport } from './routes/_app/reprofiling/done/handling/index'
 
 const OnboardingLayoutRoute = OnboardingLayoutRouteImport.update({
   id: '/onboarding',
@@ -45,6 +55,11 @@ const OnboardingIndexRoute = OnboardingIndexRouteImport.update({
 const AppIndexRoute = AppIndexRouteImport.update({
   id: '/',
   path: '/',
+  getParentRoute: () => AppLayoutRoute,
+} as any)
+const AppReprofilingLayoutRoute = AppReprofilingLayoutRouteImport.update({
+  id: '/reprofiling',
+  path: '/reprofiling',
   getParentRoute: () => AppLayoutRoute,
 } as any)
 const OnboardingSubmitIndexRoute = OnboardingSubmitIndexRouteImport.update({
@@ -72,10 +87,25 @@ const AuthPasswordIndexRoute = AuthPasswordIndexRouteImport.update({
   path: '/password/',
   getParentRoute: () => AuthLayoutRoute,
 } as any)
+const AuthLogoutIndexRoute = AuthLogoutIndexRouteImport.update({
+  id: '/logout/',
+  path: '/logout/',
+  getParentRoute: () => AuthLayoutRoute,
+} as any)
 const AuthLoginIndexRoute = AuthLoginIndexRouteImport.update({
   id: '/login/',
   path: '/login/',
   getParentRoute: () => AuthLayoutRoute,
+} as any)
+const AppReprofilingIndexRoute = AppReprofilingIndexRouteImport.update({
+  id: '/',
+  path: '/',
+  getParentRoute: () => AppReprofilingLayoutRoute,
+} as any)
+const AppPatientsIndexRoute = AppPatientsIndexRouteImport.update({
+  id: '/patients/',
+  path: '/patients/',
+  getParentRoute: () => AppLayoutRoute,
 } as any)
 const OnboardingDonePendingIndexRoute =
   OnboardingDonePendingIndexRouteImport.update({
@@ -89,49 +119,112 @@ const OnboardingDoneHandlingIndexRoute =
     path: '/done/handling/',
     getParentRoute: () => OnboardingLayoutRoute,
   } as any)
+const AppReprofilingSubmitIndexRoute =
+  AppReprofilingSubmitIndexRouteImport.update({
+    id: '/submit/',
+    path: '/submit/',
+    getParentRoute: () => AppReprofilingLayoutRoute,
+  } as any)
+const AppReprofilingSpecificIndexRoute =
+  AppReprofilingSpecificIndexRouteImport.update({
+    id: '/specific/',
+    path: '/specific/',
+    getParentRoute: () => AppReprofilingLayoutRoute,
+  } as any)
+const AppPatientsIdIndexRoute = AppPatientsIdIndexRouteImport.update({
+  id: '/patients/$id/',
+  path: '/patients/$id/',
+  getParentRoute: () => AppLayoutRoute,
+} as any)
+const AppPatientsIdEditRoute = AppPatientsIdEditRouteImport.update({
+  id: '/patients/$id/edit',
+  path: '/patients/$id/edit',
+  getParentRoute: () => AppLayoutRoute,
+} as any)
+const AppReprofilingDonePendingIndexRoute =
+  AppReprofilingDonePendingIndexRouteImport.update({
+    id: '/done/pending/',
+    path: '/done/pending/',
+    getParentRoute: () => AppReprofilingLayoutRoute,
+  } as any)
+const AppReprofilingDoneHandlingIndexRoute =
+  AppReprofilingDoneHandlingIndexRouteImport.update({
+    id: '/done/handling/',
+    path: '/done/handling/',
+    getParentRoute: () => AppReprofilingLayoutRoute,
+  } as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof AppIndexRoute
   '/auth': typeof AuthLayoutRouteWithChildren
   '/onboarding': typeof OnboardingLayoutRouteWithChildren
+  '/reprofiling': typeof AppReprofilingLayoutRouteWithChildren
   '/onboarding/': typeof OnboardingIndexRoute
+  '/patients/': typeof AppPatientsIndexRoute
+  '/reprofiling/': typeof AppReprofilingIndexRoute
   '/auth/login/': typeof AuthLoginIndexRoute
+  '/auth/logout/': typeof AuthLogoutIndexRoute
   '/auth/password/': typeof AuthPasswordIndexRoute
   '/auth/register/': typeof AuthRegisterIndexRoute
   '/onboarding/personal/': typeof OnboardingPersonalIndexRoute
   '/onboarding/specific/': typeof OnboardingSpecificIndexRoute
   '/onboarding/submit/': typeof OnboardingSubmitIndexRoute
+  '/patients/$id/edit': typeof AppPatientsIdEditRoute
+  '/patients/$id/': typeof AppPatientsIdIndexRoute
+  '/reprofiling/specific/': typeof AppReprofilingSpecificIndexRoute
+  '/reprofiling/submit/': typeof AppReprofilingSubmitIndexRoute
   '/onboarding/done/handling/': typeof OnboardingDoneHandlingIndexRoute
   '/onboarding/done/pending/': typeof OnboardingDonePendingIndexRoute
+  '/reprofiling/done/handling/': typeof AppReprofilingDoneHandlingIndexRoute
+  '/reprofiling/done/pending/': typeof AppReprofilingDonePendingIndexRoute
 }
 export interface FileRoutesByTo {
   '/auth': typeof AuthLayoutRouteWithChildren
   '/': typeof AppIndexRoute
   '/onboarding': typeof OnboardingIndexRoute
+  '/patients': typeof AppPatientsIndexRoute
+  '/reprofiling': typeof AppReprofilingIndexRoute
   '/auth/login': typeof AuthLoginIndexRoute
+  '/auth/logout': typeof AuthLogoutIndexRoute
   '/auth/password': typeof AuthPasswordIndexRoute
   '/auth/register': typeof AuthRegisterIndexRoute
   '/onboarding/personal': typeof OnboardingPersonalIndexRoute
   '/onboarding/specific': typeof OnboardingSpecificIndexRoute
   '/onboarding/submit': typeof OnboardingSubmitIndexRoute
+  '/patients/$id/edit': typeof AppPatientsIdEditRoute
+  '/patients/$id': typeof AppPatientsIdIndexRoute
+  '/reprofiling/specific': typeof AppReprofilingSpecificIndexRoute
+  '/reprofiling/submit': typeof AppReprofilingSubmitIndexRoute
   '/onboarding/done/handling': typeof OnboardingDoneHandlingIndexRoute
   '/onboarding/done/pending': typeof OnboardingDonePendingIndexRoute
+  '/reprofiling/done/handling': typeof AppReprofilingDoneHandlingIndexRoute
+  '/reprofiling/done/pending': typeof AppReprofilingDonePendingIndexRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/_app': typeof AppLayoutRouteWithChildren
   '/auth': typeof AuthLayoutRouteWithChildren
   '/onboarding': typeof OnboardingLayoutRouteWithChildren
+  '/_app/reprofiling': typeof AppReprofilingLayoutRouteWithChildren
   '/_app/': typeof AppIndexRoute
   '/onboarding/': typeof OnboardingIndexRoute
+  '/_app/patients/': typeof AppPatientsIndexRoute
+  '/_app/reprofiling/': typeof AppReprofilingIndexRoute
   '/auth/login/': typeof AuthLoginIndexRoute
+  '/auth/logout/': typeof AuthLogoutIndexRoute
   '/auth/password/': typeof AuthPasswordIndexRoute
   '/auth/register/': typeof AuthRegisterIndexRoute
   '/onboarding/personal/': typeof OnboardingPersonalIndexRoute
   '/onboarding/specific/': typeof OnboardingSpecificIndexRoute
   '/onboarding/submit/': typeof OnboardingSubmitIndexRoute
+  '/_app/patients/$id/edit': typeof AppPatientsIdEditRoute
+  '/_app/patients/$id/': typeof AppPatientsIdIndexRoute
+  '/_app/reprofiling/specific/': typeof AppReprofilingSpecificIndexRoute
+  '/_app/reprofiling/submit/': typeof AppReprofilingSubmitIndexRoute
   '/onboarding/done/handling/': typeof OnboardingDoneHandlingIndexRoute
   '/onboarding/done/pending/': typeof OnboardingDonePendingIndexRoute
+  '/_app/reprofiling/done/handling/': typeof AppReprofilingDoneHandlingIndexRoute
+  '/_app/reprofiling/done/pending/': typeof AppReprofilingDonePendingIndexRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
@@ -139,43 +232,72 @@ export interface FileRouteTypes {
     | '/'
     | '/auth'
     | '/onboarding'
+    | '/reprofiling'
     | '/onboarding/'
+    | '/patients/'
+    | '/reprofiling/'
     | '/auth/login/'
+    | '/auth/logout/'
     | '/auth/password/'
     | '/auth/register/'
     | '/onboarding/personal/'
     | '/onboarding/specific/'
     | '/onboarding/submit/'
+    | '/patients/$id/edit'
+    | '/patients/$id/'
+    | '/reprofiling/specific/'
+    | '/reprofiling/submit/'
     | '/onboarding/done/handling/'
     | '/onboarding/done/pending/'
+    | '/reprofiling/done/handling/'
+    | '/reprofiling/done/pending/'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/auth'
     | '/'
     | '/onboarding'
+    | '/patients'
+    | '/reprofiling'
     | '/auth/login'
+    | '/auth/logout'
     | '/auth/password'
     | '/auth/register'
     | '/onboarding/personal'
     | '/onboarding/specific'
     | '/onboarding/submit'
+    | '/patients/$id/edit'
+    | '/patients/$id'
+    | '/reprofiling/specific'
+    | '/reprofiling/submit'
     | '/onboarding/done/handling'
     | '/onboarding/done/pending'
+    | '/reprofiling/done/handling'
+    | '/reprofiling/done/pending'
   id:
     | '__root__'
     | '/_app'
     | '/auth'
     | '/onboarding'
+    | '/_app/reprofiling'
     | '/_app/'
     | '/onboarding/'
+    | '/_app/patients/'
+    | '/_app/reprofiling/'
     | '/auth/login/'
+    | '/auth/logout/'
     | '/auth/password/'
     | '/auth/register/'
     | '/onboarding/personal/'
     | '/onboarding/specific/'
     | '/onboarding/submit/'
+    | '/_app/patients/$id/edit'
+    | '/_app/patients/$id/'
+    | '/_app/reprofiling/specific/'
+    | '/_app/reprofiling/submit/'
     | '/onboarding/done/handling/'
     | '/onboarding/done/pending/'
+    | '/_app/reprofiling/done/handling/'
+    | '/_app/reprofiling/done/pending/'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -221,6 +343,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AppIndexRouteImport
       parentRoute: typeof AppLayoutRoute
     }
+    '/_app/reprofiling': {
+      id: '/_app/reprofiling'
+      path: '/reprofiling'
+      fullPath: '/reprofiling'
+      preLoaderRoute: typeof AppReprofilingLayoutRouteImport
+      parentRoute: typeof AppLayoutRoute
+    }
     '/onboarding/submit/': {
       id: '/onboarding/submit/'
       path: '/submit'
@@ -256,12 +385,33 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthPasswordIndexRouteImport
       parentRoute: typeof AuthLayoutRoute
     }
+    '/auth/logout/': {
+      id: '/auth/logout/'
+      path: '/logout'
+      fullPath: '/auth/logout/'
+      preLoaderRoute: typeof AuthLogoutIndexRouteImport
+      parentRoute: typeof AuthLayoutRoute
+    }
     '/auth/login/': {
       id: '/auth/login/'
       path: '/login'
       fullPath: '/auth/login/'
       preLoaderRoute: typeof AuthLoginIndexRouteImport
       parentRoute: typeof AuthLayoutRoute
+    }
+    '/_app/reprofiling/': {
+      id: '/_app/reprofiling/'
+      path: '/'
+      fullPath: '/reprofiling/'
+      preLoaderRoute: typeof AppReprofilingIndexRouteImport
+      parentRoute: typeof AppReprofilingLayoutRoute
+    }
+    '/_app/patients/': {
+      id: '/_app/patients/'
+      path: '/patients'
+      fullPath: '/patients/'
+      preLoaderRoute: typeof AppPatientsIndexRouteImport
+      parentRoute: typeof AppLayoutRoute
     }
     '/onboarding/done/pending/': {
       id: '/onboarding/done/pending/'
@@ -277,15 +427,84 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof OnboardingDoneHandlingIndexRouteImport
       parentRoute: typeof OnboardingLayoutRoute
     }
+    '/_app/reprofiling/submit/': {
+      id: '/_app/reprofiling/submit/'
+      path: '/submit'
+      fullPath: '/reprofiling/submit/'
+      preLoaderRoute: typeof AppReprofilingSubmitIndexRouteImport
+      parentRoute: typeof AppReprofilingLayoutRoute
+    }
+    '/_app/reprofiling/specific/': {
+      id: '/_app/reprofiling/specific/'
+      path: '/specific'
+      fullPath: '/reprofiling/specific/'
+      preLoaderRoute: typeof AppReprofilingSpecificIndexRouteImport
+      parentRoute: typeof AppReprofilingLayoutRoute
+    }
+    '/_app/patients/$id/': {
+      id: '/_app/patients/$id/'
+      path: '/patients/$id'
+      fullPath: '/patients/$id/'
+      preLoaderRoute: typeof AppPatientsIdIndexRouteImport
+      parentRoute: typeof AppLayoutRoute
+    }
+    '/_app/patients/$id/edit': {
+      id: '/_app/patients/$id/edit'
+      path: '/patients/$id/edit'
+      fullPath: '/patients/$id/edit'
+      preLoaderRoute: typeof AppPatientsIdEditRouteImport
+      parentRoute: typeof AppLayoutRoute
+    }
+    '/_app/reprofiling/done/pending/': {
+      id: '/_app/reprofiling/done/pending/'
+      path: '/done/pending'
+      fullPath: '/reprofiling/done/pending/'
+      preLoaderRoute: typeof AppReprofilingDonePendingIndexRouteImport
+      parentRoute: typeof AppReprofilingLayoutRoute
+    }
+    '/_app/reprofiling/done/handling/': {
+      id: '/_app/reprofiling/done/handling/'
+      path: '/done/handling'
+      fullPath: '/reprofiling/done/handling/'
+      preLoaderRoute: typeof AppReprofilingDoneHandlingIndexRouteImport
+      parentRoute: typeof AppReprofilingLayoutRoute
+    }
   }
 }
 
+interface AppReprofilingLayoutRouteChildren {
+  AppReprofilingIndexRoute: typeof AppReprofilingIndexRoute
+  AppReprofilingSpecificIndexRoute: typeof AppReprofilingSpecificIndexRoute
+  AppReprofilingSubmitIndexRoute: typeof AppReprofilingSubmitIndexRoute
+  AppReprofilingDoneHandlingIndexRoute: typeof AppReprofilingDoneHandlingIndexRoute
+  AppReprofilingDonePendingIndexRoute: typeof AppReprofilingDonePendingIndexRoute
+}
+
+const AppReprofilingLayoutRouteChildren: AppReprofilingLayoutRouteChildren = {
+  AppReprofilingIndexRoute: AppReprofilingIndexRoute,
+  AppReprofilingSpecificIndexRoute: AppReprofilingSpecificIndexRoute,
+  AppReprofilingSubmitIndexRoute: AppReprofilingSubmitIndexRoute,
+  AppReprofilingDoneHandlingIndexRoute: AppReprofilingDoneHandlingIndexRoute,
+  AppReprofilingDonePendingIndexRoute: AppReprofilingDonePendingIndexRoute,
+}
+
+const AppReprofilingLayoutRouteWithChildren =
+  AppReprofilingLayoutRoute._addFileChildren(AppReprofilingLayoutRouteChildren)
+
 interface AppLayoutRouteChildren {
+  AppReprofilingLayoutRoute: typeof AppReprofilingLayoutRouteWithChildren
   AppIndexRoute: typeof AppIndexRoute
+  AppPatientsIndexRoute: typeof AppPatientsIndexRoute
+  AppPatientsIdEditRoute: typeof AppPatientsIdEditRoute
+  AppPatientsIdIndexRoute: typeof AppPatientsIdIndexRoute
 }
 
 const AppLayoutRouteChildren: AppLayoutRouteChildren = {
+  AppReprofilingLayoutRoute: AppReprofilingLayoutRouteWithChildren,
   AppIndexRoute: AppIndexRoute,
+  AppPatientsIndexRoute: AppPatientsIndexRoute,
+  AppPatientsIdEditRoute: AppPatientsIdEditRoute,
+  AppPatientsIdIndexRoute: AppPatientsIdIndexRoute,
 }
 
 const AppLayoutRouteWithChildren = AppLayoutRoute._addFileChildren(
@@ -294,12 +513,14 @@ const AppLayoutRouteWithChildren = AppLayoutRoute._addFileChildren(
 
 interface AuthLayoutRouteChildren {
   AuthLoginIndexRoute: typeof AuthLoginIndexRoute
+  AuthLogoutIndexRoute: typeof AuthLogoutIndexRoute
   AuthPasswordIndexRoute: typeof AuthPasswordIndexRoute
   AuthRegisterIndexRoute: typeof AuthRegisterIndexRoute
 }
 
 const AuthLayoutRouteChildren: AuthLayoutRouteChildren = {
   AuthLoginIndexRoute: AuthLoginIndexRoute,
+  AuthLogoutIndexRoute: AuthLogoutIndexRoute,
   AuthPasswordIndexRoute: AuthPasswordIndexRoute,
   AuthRegisterIndexRoute: AuthRegisterIndexRoute,
 }

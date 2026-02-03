@@ -1,13 +1,15 @@
 package com.ifba.clinic.people.entities;
 
-import com.ifba.clinic.people.models.requests.CreatePatientRequest;
-import com.ifba.clinic.people.models.requests.UpdatePatientRequest;
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.OneToOne;
+import jakarta.persistence.PrePersist;
 import jakarta.persistence.Table;
+import java.time.LocalDateTime;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -34,35 +36,24 @@ public class Patient {
   @Column(name = "ID_PATIENT")
   private String id;
 
-  @Column(name = "NM_PATIENT", nullable = false)
-  private String name;
+  @JoinColumn(name = "ID_PERSON", nullable = false)
+  @OneToOne(fetch = FetchType.EAGER, cascade = CascadeType.ALL, orphanRemoval = true)
+  private Person person;
 
-  @Column(name = "VL_DOCUMENT", nullable = false, unique = true)
-  private String document;
-
-  @Column(name = "VL_PHONE", nullable = false)
-  private String phone;
-
-  @JoinColumn(name = "CD_ADDRESS", nullable = false)
-  @OneToOne
-  private Address address;
+  @Column(name = "DT_CREATED", nullable = false)
+  private LocalDateTime createdAt;
 
   @Column(name = "IN_DELETED", nullable = false, columnDefinition = "BOOLEAN DEFAULT FALSE")
   private boolean deleted = false;
 
-  public void updateFromRequest(UpdatePatientRequest request) {
-    this.name = request.name();
-    this.phone = request.phone();
-
-    this.address = address.updateFromRequest(request.address());
+  @PrePersist
+  protected void prePersist() {
+    createdAt = LocalDateTime.now();
   }
 
-  public static Patient fromCreationRequest(CreatePatientRequest request, Address address) {
+  public static Patient from(Person person) {
     return Patient.builder()
-        .name(request.name())
-        .document(request.document())
-        .phone(request.phone())
-        .address(address)
+        .person(person)
         .build();
   }
 

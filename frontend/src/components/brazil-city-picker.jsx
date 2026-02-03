@@ -22,7 +22,7 @@ export default function CityPicker({ value, state, onChange }) {
 
 	return (
 		<Select value={value} onValueChange={onChange} disabled={!state}>
-			<SelectTrigger className="w-83">
+			<SelectTrigger className="w-60 lg:w-83">
 				<SelectValue
 					placeholder={
 						state ? "Selecione uma cidade" : "Selecione um estado primeiro"

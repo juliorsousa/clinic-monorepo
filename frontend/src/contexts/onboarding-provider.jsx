@@ -76,7 +76,6 @@ export function OnboardingProvider({ children }) {
 	}
 
 	function nextStep(path = undefined) {
-		console.log(" ==== GOING TO NEXT STEP =====");
 		if (currentStep === STEPS.PROFILE) goToPersonal();
 		else if (currentStep === STEPS.PERSONAL) {
 			if (onboardingData.profile?.value === "DOCTOR") goToSpecific();

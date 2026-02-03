@@ -1,15 +1,17 @@
+import { AppSidebar } from "@/components/app-sidebar";
+import { SidebarInset, SidebarProvider } from "@/components/ui/sidebar";
+import { useAuth } from "@/hooks/use-auth";
 import { Outlet, createFileRoute, redirect } from "@tanstack/react-router";
+import { LoadingPage } from "../loading";
 
 export const Route = createFileRoute("/_app")({
 	component: AppLayout,
 	beforeLoad: ({ context }) => {
 		const { auth } = context;
 
-		console.log("Auth beforeLoad:", {
-			isAuthLoading: auth.isAuthLoading,
-			isAuthenticated: auth.isAuthenticated,
-			user: auth.user,
-		});
+		if (auth.isAuthLoading) {
+			return <LoadingPage />;
+		}
 
 		if (!auth.isAuthenticated) {
 			throw redirect({ to: "/auth/login" });
@@ -30,5 +32,20 @@ export const Route = createFileRoute("/_app")({
 });
 
 function AppLayout() {
-	return <Outlet />;
+	const { isAuthLoading } = useAuth();
+
+	return (
+		<>
+			{isAuthLoading ? (
+				<LoadingPage />
+			) : (
+				<SidebarProvider>
+					<AppSidebar />
+					<SidebarInset>
+						<Outlet />
+					</SidebarInset>
+				</SidebarProvider>
+			)}
+		</>
+	);
 }

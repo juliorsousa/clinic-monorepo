@@ -26,12 +26,10 @@ export const Route = createFileRoute("/onboarding/specific/")({
 		const onboardingData = onboarding.onboardingData;
 
 		if (!hasSelectedProfile(onboardingData)) {
-			console.log("NO PROFILE SELECTED");
 			throw redirect({ to: "/onboarding" });
 		}
 
 		if (validateCustomerData(onboardingData).length !== 0) {
-			console.log("FAILED TO VALIDATE CUSTOMER DATA");
 			throw redirect({ to: "/onboarding" });
 		}
 	},

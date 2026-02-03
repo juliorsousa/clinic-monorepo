@@ -1,18 +1,13 @@
 package com.ifba.clinic.people.models.response;
 
 import com.ifba.clinic.people.entities.Patient;
-import com.ifba.clinic.people.models.requests.AddressRequest;
+import com.ifba.clinic.people.models.response.person.GetPersonResponse;
 
-public record GetPatientResponse(String id,
-                                 String name,
-                                 String document,
-                                 AddressRequest address) {
+public record GetPatientResponse(String id, GetPersonResponse person) {
   public static GetPatientResponse from(Patient patient) {
     return new GetPatientResponse(
         patient.getId(),
-        patient.getName(),
-        patient.getDocument(),
-        AddressRequest.fromAddress(patient.getAddress())
+        GetPersonResponse.from(patient.getPerson())
     );
   }
 }

@@ -33,6 +33,10 @@ export function AuthProvider({ children }) {
 
 					signOut();
 				});
+		} else {
+			setIsAuthLoading(false);
+			setIsAuthenticated(false);
+			setUser(null);
 		}
 	}, []);
 
@@ -58,15 +62,34 @@ export function AuthProvider({ children }) {
 		return user?.traits?.includes(trait);
 	}
 
+	function hasRole(role) {
+		return user?.roles?.find((r) => r.role === role) != null;
+	}
+
+	function hasPendingIntentFor(role) {
+		return user?.pendingIntents?.find((r) => r.type === role) != null;
+	}
+
+	function hasAnyPendingIntent() {
+		return user?.pendingIntents?.length > 0;
+	}
+
 	function signOut() {
 		setUser(null);
 		setIsAuthenticated(false);
+		setIsAuthLoading(false);
 
 		if (!Cookies.get("access_token")) return;
 
 		api.post("/auth/log-out").finally(() => {
 			Cookies.remove("access_token");
 		});
+	}
+
+	function getSpecificRoleId(role) {
+		return (
+			user?.roles?.find((r) => r.role === role)?.referencedEntityId || null
+		);
 	}
 
 	async function signIn({ email, password }) {
@@ -88,7 +111,7 @@ export function AuthProvider({ children }) {
 		const { accessToken } = response.data;
 
 		Cookies.set("access_token", accessToken, {
-			expires: new Date(Date.now() + 15 * 60 * 1000),
+			expires: new Date(Date.now() + 60 * 60 * 1000),
 			sameSite: "strict",
 		});
 
@@ -116,7 +139,7 @@ export function AuthProvider({ children }) {
 		const { token } = data;
 
 		Cookies.set("access_token", token.accessToken, {
-			expires: new Date(Date.now() + 15 * 60 * 1000),
+			expires: new Date(Date.now() + 60 * 60 * 1000),
 			sameSite: "strict",
 		});
 
@@ -183,7 +206,12 @@ export function AuthProvider({ children }) {
 				user,
 				register,
 				hasTrait,
+				hasRole,
 				revalidate,
+				signOut,
+				getSpecificRoleId,
+				hasPendingIntentFor,
+				hasAnyPendingIntent,
 			}}
 		>
 			{children}

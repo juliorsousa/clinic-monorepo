@@ -6,7 +6,9 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
 import jakarta.persistence.Id;
 import jakarta.persistence.OneToMany;
+import jakarta.persistence.PrePersist;
 import jakarta.persistence.Table;
+import java.time.LocalDateTime;
 import java.util.List;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -34,7 +36,7 @@ public class User {
   @Column(name = "ID_USER")
   private String id;
 
-  @Column(name = "VL_EMAIL", nullable = false, unique = true)
+  @Column(name = "VL_EMAIL", nullable = false)
   private String email;
 
   @Column(name = "VL_PASSWORD_HASH", nullable = false)
@@ -56,7 +58,23 @@ public class User {
   )
   private List<UserTrait> traits;
 
+  @OneToMany(
+      mappedBy = "user",
+      cascade = CascadeType.ALL,
+      orphanRemoval = true,
+      fetch = FetchType.EAGER
+  )
+  private List<ProfileIntent> profileIntents;
+
+  @Column(name = "DT_CREATED", nullable = false)
+  private LocalDateTime createdAt;
+
   @Column(name = "IN_DELETED", nullable = false, columnDefinition = "BOOLEAN DEFAULT FALSE")
   private boolean deleted = false;
+
+  @PrePersist
+  protected void prePersist() {
+    createdAt = LocalDateTime.now();
+  }
 
 }

@@ -132,7 +132,7 @@
                             <artifactId>lombok</artifactId>
                         </exclude>
                     </excludes>
-                    <mainClass>com.ifba.appointment.AppointmentServiceApplication</mainClass>
+                    <mainClass>com.ifba.clinic.appointment.ClinicAppointmentsApplication</mainClass>
                 </configuration>
             </plugin>
         </plugins>
