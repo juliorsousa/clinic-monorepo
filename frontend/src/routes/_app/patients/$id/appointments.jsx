@@ -103,7 +103,10 @@ function Patient() {
 				<div className="flex flex-col gap-1.5 border-b lg:flex-row">
 					<Link
 						className="flex items-center gap-1.5 px-4 py-2 text-sm transition-colors hover:rounded-tl hover:rounded-tr hover:bg-sidebar"
-						to="."
+						params={{
+							id,
+						}}
+						to="/patients/$id"
 					>
 						Visão geral
 					</Link>
@@ -118,10 +121,7 @@ function Patient() {
 					</Link>
 					<Link
 						className="border-b-2 border-b-primary px-4 py-2 text-sm transition-colors hover:rounded-tl hover:rounded-tr hover:bg-sidebar"
-						params={{
-							id,
-						}}
-						to="/patients/$id/appointments"
+						to="."
 					>
 						Histórico de consultas
 					</Link>

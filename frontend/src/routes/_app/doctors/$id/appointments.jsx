@@ -11,19 +11,7 @@ import { Separator } from "@/components/ui/separator";
 import { SidebarTrigger } from "@/components/ui/sidebar";
 import { useAuth } from "@/hooks/use-auth";
 import { useDoctor } from "@/lib/hooks/use-doctor";
-import { maskCPF } from "@/utils/cpf-utils";
-import { maskPhone } from "@/utils/phone-utils";
 import { Link, createFileRoute } from "@tanstack/react-router";
-import {
-	AtSign,
-	Calendar,
-	Hash,
-	IdCard,
-	Layers,
-	Mail,
-	MapPin,
-	Phone,
-} from "lucide-react";
 import { DoctorAppointmentsTable } from "./-components/doctor-appointments-table";
 
 export const Route = createFileRoute("/_app/doctors/$id/appointments")({

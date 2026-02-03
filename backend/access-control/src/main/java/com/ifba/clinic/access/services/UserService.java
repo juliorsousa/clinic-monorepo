@@ -199,7 +199,7 @@ public class UserService {
       boolean isSameEntity = (firstRole.getReferencedEntityId() == null && event.entityId() == null) ||
           (firstRole.getReferencedEntityId() != null && firstRole.getReferencedEntityId().equals(event.entityId()));
 
-      isUserUniqueRoleDropped = isSameRole && isSameEntity;
+      isUserUniqueRoleDropped = isSameRole && isSameEntity && user.getRoles().size() == 1;
     }
 
     if (user.getRoles().isEmpty() || isUserUniqueRoleDropped) {
