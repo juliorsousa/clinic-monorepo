@@ -20,7 +20,12 @@ public class GatewayHeaderInterceptor implements HandlerInterceptor {
     String userId = request.getHeader("X-User-Id");
     String userEmail = request.getHeader("X-User-Email");
 
-    if (userId == null) {
+    if (userId == null ) {
+      if (request.getHeader("X-System-Call") != null && request.getHeader("X-System-Call").equals("true")) {
+        UserContext.setSystemCallContext();
+        return true;
+      }
+
       throw new ForbiddenException("Acesso direto não permitido");
     }
 

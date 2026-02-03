@@ -69,22 +69,23 @@ public class Appointment {
       return AppointmentStatus.COMPLETED;
     }
 
-    if (this.scheduledTo.isBefore(LocalDateTime.now().plusHours(24))) {
-      return AppointmentStatus.CONFIRMED;
-    }
-
     if (this.scheduledTo.isBefore(LocalDateTime.now()) &&
         this.scheduledTo.plusHours(1).isAfter(LocalDateTime.now())) {
       return AppointmentStatus.ONGOING;
     }
 
+    if (this.scheduledTo.isBefore(LocalDateTime.now().plusHours(24))) {
+      return AppointmentStatus.CONFIRMED;
+    }
+
     return AppointmentStatus.SCHEDULED;
   }
 
-  public static Appointment fromCreationRequest(CreateAppointmentRequest request, String patient) {
+  public static Appointment fromCreationRequest(CreateAppointmentRequest request, String patient, String doctorId) {
     return Appointment.builder()
         .patientId(patient)
-        .doctorId(request.doctorId())
+        .doctorId(request.doctorId() != null && !request.doctorId().isBlank()
+            ? request.doctorId() : doctorId)
         .scheduledTo(request.dateTime())
         .cancelled(false)
         .deleted(false)

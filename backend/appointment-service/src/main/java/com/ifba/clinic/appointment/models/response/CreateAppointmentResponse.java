@@ -6,8 +6,8 @@ import com.ifba.clinic.appointment.entities.Appointment;
 
 public record CreateAppointmentResponse(
     String id,
-    String idPatient,
-    String idDoctor,
+    String patientId,
+    String doctorId,
     LocalDateTime dateTime
 ) {
   public CreateAppointmentResponse(Appointment appointment) {

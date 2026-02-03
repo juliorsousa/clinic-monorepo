@@ -39,7 +39,7 @@ public class SecurityAspect {
   private boolean hasAuthentication() {
     String userId = UserContext.getUserId();
 
-    return userId != null && !userId.isEmpty();
+    return (userId != null && !userId.isEmpty()) || UserContext.isSystemCall();
   }
 
   private boolean hasRole(String role) {

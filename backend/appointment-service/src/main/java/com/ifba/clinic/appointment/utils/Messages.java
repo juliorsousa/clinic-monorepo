@@ -18,13 +18,7 @@ public class Messages {
   public static final String GENERIC_UNAUTHORIZED =
       "A requisição não pôde ser concluída devido a falha na autenticação do usuário.";
 
-  public static final String PATIENT_DUPLICATED =
-      "Já existe um paciente cadastrado com este CPF ou e-mail.";
-
-  public static final String PATIENT_NOT_FOUND =
-      "Paciente não encontrado.";
-
-  // Generic Person messages
+  // Generic Appoint messages
 
   public static final String ID_PATIENT_REQUIRED =
       "O id do paciente é obrigatório";
@@ -46,5 +40,23 @@ public class Messages {
 
   public static final String APPOINTMENT_NOT_FOUND =
       "A consulta não foi encontrada";
+
+  public static final String PATIENT_ALREADY_HAS_APPOINTMENT =
+      "O paciente já possui uma consulta agendada para este dia.";
+
+  public static final String DOCTOR_NOT_AVAILABLE =
+      "O médico não está disponível neste dia e horário.";
+
+  public static final String DOCTOR_SPECIALTY_MISMATCH =
+      "A especialidade do médico não corresponde à especialidade requerida para a consulta.";
+
+  public static final String NO_DOCTORS_FOR_SPECIALTY =
+      "Não há médicos disponíveis para a especialidade selecionada.";
+
+  public static final String CANT_CANCEL_APPOINTMENT =
+      "Não é possível cancelar a consulta com menos de 24 horas de antecedência.";
+
+  public static final String CANT_CANCEL_PAST_APPOINTMENT =
+      "Não é possível cancelar uma consulta que já ocorreu ou foi cancelada.";
   
 }

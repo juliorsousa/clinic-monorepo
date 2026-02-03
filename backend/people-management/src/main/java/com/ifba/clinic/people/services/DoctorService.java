@@ -2,6 +2,7 @@ package com.ifba.clinic.people.services;
 
 import com.ifba.clinic.people.entities.Doctor;
 import com.ifba.clinic.people.entities.Person;
+import com.ifba.clinic.people.entities.enums.EnumDoctorSpeciality;
 import com.ifba.clinic.people.exceptions.ConflictException;
 import com.ifba.clinic.people.exceptions.NotFoundException;
 import com.ifba.clinic.people.feign.AppointmentClient;
@@ -18,6 +19,7 @@ import com.ifba.clinic.people.repositories.PersonRepository;
 import com.ifba.clinic.people.security.annotations.AuthRequired;
 import com.ifba.clinic.people.security.components.AuthorizationComponent;
 import jakarta.transaction.Transactional;
+import java.util.List;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
@@ -77,6 +79,17 @@ public class DoctorService {
         .orElseThrow(() -> new NotFoundException(DOCTOR_NOT_FOUND));
 
     return new SummarizedDoctorResponse(doctor);
+  }
+
+  @AuthRequired
+  public List<SummarizedDoctorResponse> getSummarizedDoctorsBySpecialty(EnumDoctorSpeciality speciality) {
+    log.info("Fetching summarized data of Doctors with specialty: {}", speciality);
+
+    List<Doctor> doctors = doctorRepository.findAllBySpeciality(speciality);
+
+    return doctors.stream()
+        .map(SummarizedDoctorResponse::new)
+        .toList();
   }
 
   @Transactional

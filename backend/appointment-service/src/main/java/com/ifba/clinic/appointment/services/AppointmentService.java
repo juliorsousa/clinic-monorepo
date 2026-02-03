@@ -1,10 +1,12 @@
 package com.ifba.clinic.appointment.services;
 
 import com.ifba.clinic.appointment.entities.Appointment;
+import com.ifba.clinic.appointment.entities.enums.AppointmentStatus;
 import com.ifba.clinic.appointment.exceptions.ConflictException;
 import com.ifba.clinic.appointment.exceptions.ForbiddenException;
 import com.ifba.clinic.appointment.exceptions.NotFoundException;
 import com.ifba.clinic.appointment.feign.DoctorsClient;
+import com.ifba.clinic.appointment.feign.models.SummarizedDoctorResponse;
 import com.ifba.clinic.appointment.models.request.CreateAppointmentRequest;
 import com.ifba.clinic.appointment.models.request.DatePeriodRequest;
 import com.ifba.clinic.appointment.models.request.PageableRequest;
@@ -18,9 +20,12 @@ import com.ifba.clinic.appointment.security.annotations.RoleRestricted;
 import com.ifba.clinic.appointment.security.models.UserContext;
 import com.ifba.clinic.appointment.utils.Messages;
 import jakarta.transaction.Transactional;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
+import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.stream.Stream;
@@ -31,6 +36,10 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
+import static com.ifba.clinic.appointment.utils.Messages.DOCTOR_NOT_AVAILABLE;
+import static com.ifba.clinic.appointment.utils.Messages.DOCTOR_SPECIALTY_MISMATCH;
+import static com.ifba.clinic.appointment.utils.Messages.NO_DOCTORS_FOR_SPECIALTY;
+import static com.ifba.clinic.appointment.utils.Messages.PATIENT_ALREADY_HAS_APPOINTMENT;
 
 @Service
 @RequiredArgsConstructor
@@ -39,6 +48,16 @@ public class AppointmentService {
 
   private final AppointmentRepository appointmentRepository;
   private final DoctorsClient doctorsClient;
+
+//  @AuthRequired
+  public List<LocalDate> getAvailableDatesForDoctors(List<String> doctorIds) {
+    return appointmentRepository.findAvailableDatesForDoctors(doctorIds);
+  }
+
+//  @AuthRequired
+  public Map<String, List<LocalDateTime>> getAvailableHoursForDoctorsOnDate(List<String> doctorIds, LocalDate date) {
+    return appointmentRepository.findAvailableHoursForDoctorsOnDate(doctorIds, date);
+  }
 
   @AuthRequired
   @RoleRestricted("ADMIN")
@@ -99,42 +118,88 @@ public class AppointmentService {
   @RoleRestricted("PATIENT")
   @Transactional
   public CreateAppointmentResponse createAppointment(CreateAppointmentRequest request) {
-
-    String patientId = UserContext.getUserId();
-
-    doctorsClient.isDoctorValid(request.doctorId());
+    String patientId = UserContext.getUserRoles().stream()
+        .filter(role -> Objects.equals(role.role(), "PATIENT"))
+        .findFirst()
+        .orElseThrow(ForbiddenException::new)
+        .referencedEntityId();
 
     LocalDateTime date = request.dateTime();
 
-    if (appointmentRepository.existsConflictByPatientInDateTime(patientId, date))
-      throw new ConflictException("The patient already has other appointment that day");
+    if (appointmentRepository.existsConflictByPatientInDateTime(patientId, date)) {
+      throw new ConflictException(PATIENT_ALREADY_HAS_APPOINTMENT);
+    }
 
-    LocalDateTime oneHourLater = request.dateTime().plusMinutes(59);
-    LocalDateTime oneHourbefore = request.dateTime().minusMinutes(59);
+    List<String> doctorIds =
+        doctorsClient.getDoctorsSummaryBySpeciality(request.specialty())
+            .stream()
+            .map(SummarizedDoctorResponse::id)
+            .toList();
 
-    if (appointmentRepository.existsConflictByDoctorInDateTime(request.doctorId(), oneHourbefore, oneHourLater))
-      throw new ConflictException("The doctor already has other appointment near that time");
+    if (doctorIds.isEmpty()) {
+      throw new ConflictException(NO_DOCTORS_FOR_SPECIALTY);
+    }
 
-    Appointment appointment = Appointment.fromCreationRequest(request, patientId);
+    Map<String, List<LocalDateTime>> availableHoursMap =
+        appointmentRepository.findAvailableHoursForDoctorsOnDate(
+            doctorIds,
+            date.toLocalDate()
+        );
 
-    return new CreateAppointmentResponse(appointmentRepository.save(appointment));
+    String selectedDoctorId;
+
+    if (request.doctorId() == null) {
+      selectedDoctorId = availableHoursMap.entrySet().stream()
+          .filter(e -> e.getValue().contains(date))
+          .map(Map.Entry::getKey)
+          .findAny()
+          .orElseThrow(() -> new ConflictException(DOCTOR_NOT_AVAILABLE));
+    } else {
+      if (!doctorIds.contains(request.doctorId())) {
+        throw new ConflictException(DOCTOR_SPECIALTY_MISMATCH);
+      }
+
+      if (!availableHoursMap
+          .getOrDefault(request.doctorId(), List.of())
+          .contains(date)) {
+
+        throw new ConflictException(DOCTOR_NOT_AVAILABLE);
+      }
+
+      selectedDoctorId = request.doctorId();
+    }
+
+    Appointment appointment =
+        Appointment.fromCreationRequest(request, patientId, selectedDoctorId);
+
+    return new CreateAppointmentResponse(
+        appointmentRepository.save(appointment)
+    );
   }
 
   @AuthRequired
   @Transactional
   public void cancelAppointment(String id) {
     log.info("Cancelling appointment with id: {}", id);
-    
+
     Appointment appointment = appointmentRepository.findById(id)
         .orElseThrow(() -> new NotFoundException(Messages.APPOINTMENT_NOT_FOUND));
 
     if (!hasPermissionToManageResource(appointment.getDoctorId(), appointment.getPatientId())) {
       throw new ForbiddenException();
     }
-    
-    String reason = "";
+
+    if (appointment.getStatus() != AppointmentStatus.SCHEDULED) {
+      throw new ConflictException(
+          appointment.getStatus() == AppointmentStatus.CONFIRMED || appointment.getStatus() == AppointmentStatus.ONGOING
+              ? Messages.CANT_CANCEL_APPOINTMENT
+              : Messages.CANT_CANCEL_PAST_APPOINTMENT
+      );
+    }
+
+    String reason;
     List<UserRole> roles = UserContext.getUserRoles();
-    
+
     Optional<UserRole> patientRole = roles.stream()
         .filter(role -> Objects.equals(role.role(), "PATIENT"))
         .findAny();
@@ -142,7 +207,7 @@ public class AppointmentService {
     Optional<UserRole> doctorRole = roles.stream()
         .filter(role -> Objects.equals(role.role(), "DOCTOR"))
         .findAny();
-    
+
     if (patientRole.isPresent()) {
       reason = "Desistência";
     } else if (doctorRole.isPresent()) {

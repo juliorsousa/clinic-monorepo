@@ -10,3 +10,12 @@ export function formatDate(date) {
 
 	return `${day}/${month}/${year} ${hours}:${minutes}`;
 }
+
+export function formatDateToHour(date) {
+	const pad = (n) => n.toString().padStart(2, "0");
+
+	const hours = pad(date.getHours());
+	const minutes = pad(date.getMinutes());
+
+	return `${hours}:${minutes}`;
+}

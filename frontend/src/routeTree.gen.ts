@@ -30,6 +30,7 @@ import { Route as OnboardingDoneHandlingIndexRouteImport } from './routes/onboar
 import { Route as AppReprofilingSubmitIndexRouteImport } from './routes/_app/reprofiling/submit/index'
 import { Route as AppReprofilingSpecificIndexRouteImport } from './routes/_app/reprofiling/specific/index'
 import { Route as AppPatientsIdIndexRouteImport } from './routes/_app/patients/$id/index'
+import { Route as AppAppointmentsScheduleIndexRouteImport } from './routes/_app/appointments/schedule/index'
 import { Route as AppPatientsIdEditRouteImport } from './routes/_app/patients/$id/edit'
 import { Route as AppPatientsIdAppointmentsRouteImport } from './routes/_app/patients/$id/appointments'
 import { Route as AppReprofilingDonePendingIndexRouteImport } from './routes/_app/reprofiling/done/pending/index'
@@ -143,6 +144,12 @@ const AppPatientsIdIndexRoute = AppPatientsIdIndexRouteImport.update({
   path: '/patients/$id/',
   getParentRoute: () => AppLayoutRoute,
 } as any)
+const AppAppointmentsScheduleIndexRoute =
+  AppAppointmentsScheduleIndexRouteImport.update({
+    id: '/appointments/schedule/',
+    path: '/appointments/schedule/',
+    getParentRoute: () => AppLayoutRoute,
+  } as any)
 const AppPatientsIdEditRoute = AppPatientsIdEditRouteImport.update({
   id: '/patients/$id/edit',
   path: '/patients/$id/edit',
@@ -185,6 +192,7 @@ export interface FileRoutesByFullPath {
   '/onboarding/submit/': typeof OnboardingSubmitIndexRoute
   '/patients/$id/appointments': typeof AppPatientsIdAppointmentsRoute
   '/patients/$id/edit': typeof AppPatientsIdEditRoute
+  '/appointments/schedule/': typeof AppAppointmentsScheduleIndexRoute
   '/patients/$id/': typeof AppPatientsIdIndexRoute
   '/reprofiling/specific/': typeof AppReprofilingSpecificIndexRoute
   '/reprofiling/submit/': typeof AppReprofilingSubmitIndexRoute
@@ -209,6 +217,7 @@ export interface FileRoutesByTo {
   '/onboarding/submit': typeof OnboardingSubmitIndexRoute
   '/patients/$id/appointments': typeof AppPatientsIdAppointmentsRoute
   '/patients/$id/edit': typeof AppPatientsIdEditRoute
+  '/appointments/schedule': typeof AppAppointmentsScheduleIndexRoute
   '/patients/$id': typeof AppPatientsIdIndexRoute
   '/reprofiling/specific': typeof AppReprofilingSpecificIndexRoute
   '/reprofiling/submit': typeof AppReprofilingSubmitIndexRoute
@@ -237,6 +246,7 @@ export interface FileRoutesById {
   '/onboarding/submit/': typeof OnboardingSubmitIndexRoute
   '/_app/patients/$id/appointments': typeof AppPatientsIdAppointmentsRoute
   '/_app/patients/$id/edit': typeof AppPatientsIdEditRoute
+  '/_app/appointments/schedule/': typeof AppAppointmentsScheduleIndexRoute
   '/_app/patients/$id/': typeof AppPatientsIdIndexRoute
   '/_app/reprofiling/specific/': typeof AppReprofilingSpecificIndexRoute
   '/_app/reprofiling/submit/': typeof AppReprofilingSubmitIndexRoute
@@ -265,6 +275,7 @@ export interface FileRouteTypes {
     | '/onboarding/submit/'
     | '/patients/$id/appointments'
     | '/patients/$id/edit'
+    | '/appointments/schedule/'
     | '/patients/$id/'
     | '/reprofiling/specific/'
     | '/reprofiling/submit/'
@@ -289,6 +300,7 @@ export interface FileRouteTypes {
     | '/onboarding/submit'
     | '/patients/$id/appointments'
     | '/patients/$id/edit'
+    | '/appointments/schedule'
     | '/patients/$id'
     | '/reprofiling/specific'
     | '/reprofiling/submit'
@@ -316,6 +328,7 @@ export interface FileRouteTypes {
     | '/onboarding/submit/'
     | '/_app/patients/$id/appointments'
     | '/_app/patients/$id/edit'
+    | '/_app/appointments/schedule/'
     | '/_app/patients/$id/'
     | '/_app/reprofiling/specific/'
     | '/_app/reprofiling/submit/'
@@ -480,6 +493,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AppPatientsIdIndexRouteImport
       parentRoute: typeof AppLayoutRoute
     }
+    '/_app/appointments/schedule/': {
+      id: '/_app/appointments/schedule/'
+      path: '/appointments/schedule'
+      fullPath: '/appointments/schedule/'
+      preLoaderRoute: typeof AppAppointmentsScheduleIndexRouteImport
+      parentRoute: typeof AppLayoutRoute
+    }
     '/_app/patients/$id/edit': {
       id: '/_app/patients/$id/edit'
       path: '/patients/$id/edit'
@@ -537,6 +557,7 @@ interface AppLayoutRouteChildren {
   AppPatientsIndexRoute: typeof AppPatientsIndexRoute
   AppPatientsIdAppointmentsRoute: typeof AppPatientsIdAppointmentsRoute
   AppPatientsIdEditRoute: typeof AppPatientsIdEditRoute
+  AppAppointmentsScheduleIndexRoute: typeof AppAppointmentsScheduleIndexRoute
   AppPatientsIdIndexRoute: typeof AppPatientsIdIndexRoute
 }
 
@@ -547,6 +568,7 @@ const AppLayoutRouteChildren: AppLayoutRouteChildren = {
   AppPatientsIndexRoute: AppPatientsIndexRoute,
   AppPatientsIdAppointmentsRoute: AppPatientsIdAppointmentsRoute,
   AppPatientsIdEditRoute: AppPatientsIdEditRoute,
+  AppAppointmentsScheduleIndexRoute: AppAppointmentsScheduleIndexRoute,
   AppPatientsIdIndexRoute: AppPatientsIdIndexRoute,
 }
 

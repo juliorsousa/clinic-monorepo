@@ -1,5 +1,6 @@
 package com.ifba.clinic.people.controllers;
 
+import com.ifba.clinic.people.entities.enums.EnumDoctorSpeciality;
 import com.ifba.clinic.people.models.requests.CreateDoctorRequest;
 import com.ifba.clinic.people.models.requests.PageableRequest;
 import com.ifba.clinic.people.models.requests.UpdateDoctorRequest;
@@ -18,6 +19,7 @@ import jakarta.validation.Valid;
 
 import java.time.LocalDateTime;
 
+import java.util.List;
 import org.springdoc.core.annotations.ParameterObject;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.ResponseEntity;
@@ -96,7 +98,7 @@ public interface DoctorController {
   );
 
   @Operation(
-      summary = "Buscar informações sumarizadas médico pelo ID",
+      summary = "Buscar informações sumarizadas de médico pelo ID",
       description = """
           Retorna as informações não confidenciais de um médico específico pelo seu ID.
           """
@@ -124,6 +126,37 @@ public interface DoctorController {
           required = true
       )
       String id
+  );
+
+  @Operation(
+      summary = "Buscar informações sumarizadas de médicos pela especialidade",
+      description = """
+          Retorna as informações não confidenciais de médicos específicos pela especialidade.
+          """
+  )
+  @ApiResponses({
+      @ApiResponse(
+          responseCode = "200",
+          description = "Médicos recuperado com sucesso",
+          content = @Content(
+              mediaType = "application/json",
+              schema = @Schema(implementation = PageResponse.class)
+          )
+      ),
+      @ApiResponse(
+          responseCode = "401",
+          description = "Não autorizado"
+      )
+  })
+  @GetMapping("/by-specialty/{specialty}/summary")
+  List<SummarizedDoctorResponse> getSummarizedDoctorsBySpecialty(
+      @PathVariable
+      @Parameter(
+          description = "Especialidade do médico",
+          example = "ORTHOPEDICS",
+          required = true
+      )
+      EnumDoctorSpeciality specialty
   );
 
   @Operation(

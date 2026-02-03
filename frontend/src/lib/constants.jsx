@@ -1,3 +1,5 @@
+import { CheckCircle, Clock, Loader, XCircle } from "lucide-react";
+
 export const profileTypeMap = {
 	PATIENT: "Paciente",
 	DOCTOR: "Médico",
@@ -28,16 +30,12 @@ export const appointmentStatusLabelMap = {
 	COMPLETED: "Concluída",
 };
 
-export const appointmentStatusClassNamesMap = {
-	SCHEDULED:
-		"border-transparent bg-gray-500 text-gray-50 [a&]:hover:bg-gray-600",
-	CONFIRMED:
-		"border-transparent bg-blue-500 text-blue-50 [a&]:hover:bg-blue-600",
-	CANCELLED: "border-transparent bg-red-500 text-red-50 [a&]:hover:bg-red-600",
-	ONGOING:
-		"border-transparent bg-yellow-500 text-yellow-50 [a&]:hover:bg-yellow-600",
-	COMPLETED:
-		"border-transparent bg-green-500 text-green-50 [a&]:hover:bg-green-600",
+export const appointmentStatusIconMap = {
+	SCHEDULED: <Clock className="size-6" />,
+	CONFIRMED: <CheckCircle className="size-6 text-blue-400" />,
+	CANCELLED: <XCircle className="size-6 text-red-400" />,
+	ONGOING: <Loader className="size-6 animate-spin text-amber-500" />,
+	COMPLETED: <CheckCircle className="size-6 text-green-500" />,
 };
 
 export const intentStatusLabelMap = {

@@ -46,15 +46,19 @@ import {
 	TableHeader,
 	TableRow,
 } from "@/components/ui/table";
+import { api } from "@/lib/api";
 import {
-	appointmentStatusClassNamesMap,
+	appointmentStatusIconMap,
 	appointmentStatusLabelMap,
 	specialtyClassNamesMap,
 	specialtyLabelMap,
 } from "@/lib/constants";
 import { usePatientAppointments } from "@/lib/hooks/use-patient-appointments";
 import { useSummarizedDoctor } from "@/lib/hooks/use-summarized-doctor";
+import { queryClient } from "@/lib/query-client";
+import { formatDate } from "@/utils/format-date";
 import { toast } from "sonner";
+import { CancelAppointmentDialog } from "./cancel-appointment-dialog";
 
 export function PatientAppointmentsTable({ patientId }) {
 	const navigate = useNavigate();
@@ -70,6 +74,9 @@ export function PatientAppointmentsTable({ patientId }) {
 		totalPages: 0,
 		totalElements: 0,
 	});
+
+	const [isCancelDialogOpen, setIsCancelDialogOpen] = useState(false);
+	const [appointmentToCancel, setAppointmentToCancel] = useState(null);
 
 	const { data: response, isLoading } = usePatientAppointments(
 		patientId,
@@ -118,7 +125,7 @@ export function PatientAppointmentsTable({ patientId }) {
 			enableHiding: false,
 		},
 		{
-			accessorKey: "doctorId",
+			accessorKey: "specialty",
 			header: "Especialidade",
 			cell: ({ row }) => {
 				const { data: doctor, isLoading } = useSummarizedDoctor(
@@ -152,10 +159,20 @@ export function PatientAppointmentsTable({ patientId }) {
 		},
 		{
 			accessorKey: "scheduledTo",
-			header: "Data / Hora",
+			header: "Início",
 			cell: ({ row }) => {
 				const date = new Date(row.original.scheduledTo);
-				return <span>{date.toLocaleString()}</span>;
+				return <span>{formatDate(date)}</span>;
+			},
+		},
+		{
+			accessorKey: "endAt",
+			header: "Fim",
+			cell: ({ row }) => {
+				const date = new Date(row.original.scheduledTo);
+				date.setHours(date.getHours() + 1);
+
+				return <span>{formatDate(date)}</span>;
 			},
 		},
 		{
@@ -165,7 +182,8 @@ export function PatientAppointmentsTable({ patientId }) {
 				const status = row.getValue("status");
 
 				return (
-					<Badge className={appointmentStatusClassNamesMap[status]}>
+					<Badge variant={"outline"} className="text-muted-foreground px-1.5">
+						{appointmentStatusIconMap[status]}
 						{appointmentStatusLabelMap[status]}
 					</Badge>
 				);
@@ -187,8 +205,12 @@ export function PatientAppointmentsTable({ patientId }) {
 					</DropdownMenuTrigger>
 					<DropdownMenuContent align="end" className="w-40">
 						<DropdownMenuItem
+							disabled={row.original.status !== "SCHEDULED"}
 							className="text-destructive"
-							onClick={() => toast.success("Cancelar agendamento (dumb)")}
+							onClick={() => {
+								setAppointmentToCancel(row.original);
+								setIsCancelDialogOpen(true);
+							}}
 						>
 							Cancelar
 						</DropdownMenuItem>
@@ -232,6 +254,25 @@ export function PatientAppointmentsTable({ patientId }) {
 		getPaginationRowModel: getPaginationRowModel(),
 		getSortedRowModel: getSortedRowModel(),
 	});
+
+	const handleConfirmCancel = async () => {
+		if (appointmentToCancel?.status !== "SCHEDULED") {
+			toast.error("A consulta não pode mais ser cancelada.");
+			return;
+		}
+
+		try {
+			await api.delete(`/appointments/${appointmentToCancel.id}`);
+
+			queryClient.invalidateQueries(["patient-appointments"]);
+			toast.success("Consulta cancelada com sucesso.");
+			setIsCancelDialogOpen(false);
+		} catch (error) {
+			console.error("Erro ao cancelar consulta:", error);
+
+			toast.error("Erro ao cancelar consulta.");
+		}
+	};
 
 	return (
 		<div className="flex flex-col gap-4 py-4">
@@ -370,6 +411,12 @@ export function PatientAppointmentsTable({ patientId }) {
 					</div>
 				</div>
 			</div>
+
+			<CancelAppointmentDialog
+				isOpen={isCancelDialogOpen}
+				onOpenChange={(value) => setIsCancelDialogOpen(value)}
+				onConfirm={handleConfirmCancel}
+			/>
 		</div>
 	);
 }

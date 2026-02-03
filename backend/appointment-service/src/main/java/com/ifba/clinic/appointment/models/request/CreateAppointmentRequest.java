@@ -14,11 +14,14 @@ import lombok.Builder;
 @Builder
 public record CreateAppointmentRequest (
 
-    @NotBlank(message = Messages.ID_DOCTOR_REQUIRED)
+    @NotNull
+    @NotBlank(message = "A especialidade da consulta não pode estar vazia.")
+    String specialty,
+
     String doctorId,
 
     @NotNull(message = Messages.DATE_TIME_NULL)
-    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd/MM/yyyy HH:mm")
+    @JsonFormat(shape = JsonFormat.Shape.STRING)
     @HorarioFuncionamento
     LocalDateTime dateTime
 

@@ -11,7 +11,7 @@ import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 @Repository
-public interface AppointmentRepository extends JpaRepository<Appointment, String> {
+public interface AppointmentRepository extends JpaRepository<Appointment, String>, AppointmentCustomRepository {
 
   @Query(
       "SELECT COUNT(a) > 0 FROM Appointment a WHERE a.doctorId = :doctorId " +

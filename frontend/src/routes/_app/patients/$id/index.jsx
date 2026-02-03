@@ -258,11 +258,11 @@ function Patient() {
 									</div>
 								</section>
 
-								<section className="flex flex-col gap-3">
+								{/* <section className="flex flex-col gap-3">
 									<h2 className="text-lg font-semibold tracking-tight">
 										Próximas Consultas
 									</h2>
-								</section>
+								</section> */}
 							</div>
 						)}
 					</>

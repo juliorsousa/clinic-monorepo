@@ -32,12 +32,12 @@ export function AppSidebar({ ...props }) {
 
 	const adminNav = useMemo(() => {
 		return [
-			{
-				title: "Consultas",
-				url: "/appointments",
-				icon: ClipboardList,
-				role: "ADMIN",
-			},
+			// {
+			// 	title: "Consultas",
+			// 	url: "/appointments",
+			// 	icon: ClipboardList,
+			// 	role: "ADMIN",
+			// },
 			{
 				title: "Médicos",
 				url: "/doctors",
@@ -68,7 +68,7 @@ export function AppSidebar({ ...props }) {
 				role: "DOCTOR",
 			},
 			{
-				title: "Minhas Consultas",
+				title: "Minha Agenda",
 				url: "/appointments/me",
 				icon: PersonStanding,
 				role: "DOCTOR",
@@ -85,7 +85,7 @@ export function AppSidebar({ ...props }) {
 				role: "PATIENT",
 			},
 			{
-				title: "Agendar Consultas",
+				title: "Marcação de Consultas",
 				url: "/appointments/schedule",
 				icon: Medal,
 				role: "PATIENT",

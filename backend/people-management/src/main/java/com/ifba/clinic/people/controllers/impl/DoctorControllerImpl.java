@@ -1,6 +1,7 @@
 package com.ifba.clinic.people.controllers.impl;
 
 import com.ifba.clinic.people.controllers.DoctorController;
+import com.ifba.clinic.people.entities.enums.EnumDoctorSpeciality;
 import com.ifba.clinic.people.models.requests.CreateDoctorRequest;
 import com.ifba.clinic.people.models.requests.PageableRequest;
 import com.ifba.clinic.people.models.requests.UpdateDoctorRequest;
@@ -8,6 +9,7 @@ import com.ifba.clinic.people.models.response.GetDoctorResponse;
 import com.ifba.clinic.people.models.response.PageResponse;
 import com.ifba.clinic.people.models.response.SummarizedDoctorResponse;
 import com.ifba.clinic.people.services.DoctorService;
+import java.util.List;
 import lombok.RequiredArgsConstructor;
 
 import java.time.LocalDateTime;
@@ -35,6 +37,11 @@ public class DoctorControllerImpl implements DoctorController {
   @Override
   public SummarizedDoctorResponse getSummarizedDoctorById(String id) {
     return doctorService.getSummarizedDoctorById(id);
+  }
+
+  @Override
+  public List<SummarizedDoctorResponse> getSummarizedDoctorsBySpecialty(EnumDoctorSpeciality specialty) {
+    return doctorService.getSummarizedDoctorsBySpecialty(specialty);
   }
 
   @Override

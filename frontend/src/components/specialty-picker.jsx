@@ -13,7 +13,7 @@ export default function SpecialtyPicker({ value, onChange, disabled = false }) {
 	return (
 		<Select onValueChange={onChange} value={value} disabled={disabled}>
 			<SelectTrigger className="w-full">
-				<SelectValue placeholder="Selecione sua especialidade" />
+				<SelectValue placeholder="Selecione a especialidade" />
 			</SelectTrigger>
 
 			<SelectContent>
