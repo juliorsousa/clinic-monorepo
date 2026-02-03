@@ -1,6 +1,5 @@
 package com.ifba.clinic.people.entities;
 
-import com.ifba.clinic.access.entities.ProfileIntent;
 import com.ifba.clinic.people.models.requests.CreateDoctorRequest;
 import com.ifba.clinic.people.models.requests.UpdateDoctorRequest;
 import com.ifba.clinic.people.models.requests.person.CreatePersonRequest;
