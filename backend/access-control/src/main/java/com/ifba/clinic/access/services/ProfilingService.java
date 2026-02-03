@@ -52,7 +52,7 @@ public class ProfilingService {
     User currentUser = userService.getCurrentUser();
 
     var results = profileIntentRepository
-        .findCurrentByUser(currentUser, true, PageRequest.of(0, 1));
+        .findCurrentByUser(currentUser, false, PageRequest.of(0, 1));
 
     log.info("Fetching current profile intent for user with email: {}", currentUser.getEmail());
 
@@ -103,7 +103,7 @@ public class ProfilingService {
           .body(body)
           .build();
 
-      deleteOldErroredIntents(currentUser, requestedRole);
+//      deleteOldErroredIntents(currentUser, requestedRole);
 
       ProfileIntent saved = profileIntentRepository.save(intent);
 
@@ -149,7 +149,7 @@ public class ProfilingService {
           .body(body)
           .build();
 
-      deleteOldErroredIntents(currentUser, requestedRole);
+//      deleteOldErroredIntents(currentUser, requestedRole);
 
       ProfileIntent saved = profileIntentRepository.save(intent);
 
@@ -172,19 +172,19 @@ public class ProfilingService {
     throw new BadRequestException("Only patient and doctor profile intents can be created at this time.");
   }
 
-  @Transactional
-  public void deleteOldErroredIntents(User user, EnumRole type) {
-    var oldErroredIntents = profileIntentRepository
-        .findByUserAndTypeAndStatus(user, type, EnumIntentStatus.ERRORED);
-
-    if (oldErroredIntents.isEmpty()) {
-      return;
-    }
-
-    profileIntentRepository.deleteAll(oldErroredIntents);
-
-    log.info("Deleted {} old errored profile intents for user with email: {}", oldErroredIntents.size(), user.getEmail());
-  }
+//  @Transactional
+//  public void deleteOldErroredIntents(User user, EnumRole type) {
+//    var oldErroredIntents = profileIntentRepository
+//        .findByUserAndTypeAndStatus(user, type, EnumIntentStatus.ERRORED);
+//
+//    if (oldErroredIntents.isEmpty()) {
+//      return;
+//    }
+//
+//    profileIntentRepository.deleteAll(oldErroredIntents);
+//
+//    log.info("Deleted {} old errored profile intents for user with email: {}", oldErroredIntents.size(), user.getEmail());
+//  }
 
   @Transactional(value = Transactional.TxType.REQUIRES_NEW)
   public void processProfileIntentResponse(ProfileIntentProcessingResponse response) {
@@ -207,7 +207,7 @@ public class ProfilingService {
           () -> {
             userService.removeTraitsFromUser(intent.getUser().getId(), List.of("AWAITING_PROFILE_CREATION", "AWAITING_INTENT_APPROVAL"));
           },
-          CompletableFuture.delayedExecutor(4, TimeUnit.SECONDS)
+          CompletableFuture.delayedExecutor(3, TimeUnit.SECONDS)
       );
 
       log.info("Profile intent with ID {} processed successfully.", intent.getId());
@@ -222,7 +222,7 @@ public class ProfilingService {
               userService.removeTraitsFromUser(intent.getUser().getId(), mandatoryOnboardingTraits);
               userService.addTraitToUser(intent.getUser().getId(), "PENDING_ONBOARDING");
             },
-            CompletableFuture.delayedExecutor(4, TimeUnit.SECONDS)
+            CompletableFuture.delayedExecutor(3, TimeUnit.SECONDS)
         );
       }
 

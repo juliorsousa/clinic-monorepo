@@ -2,6 +2,7 @@ package com.ifba.clinic.people.messaging.intents.strategies.impl;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.ifba.clinic.people.entities.Person;
 import com.ifba.clinic.people.entities.enums.EnumBrazilState;
 import com.ifba.clinic.people.exceptions.ConflictException;
 import com.ifba.clinic.people.messaging.intents.models.RunProfileIntentMessage;
@@ -11,11 +12,15 @@ import com.ifba.clinic.people.messaging.intents.strategies.ProfileGeneratingStra
 import com.ifba.clinic.people.models.error.MessagedError;
 import com.ifba.clinic.people.models.error.ValidationError;
 import com.ifba.clinic.people.models.requests.AddressRequest;
-import com.ifba.clinic.people.models.requests.CreatePatientRequest;
-import com.ifba.clinic.people.models.response.CreatePatientResponse;
+import com.ifba.clinic.people.models.requests.person.CreatePersonRequest;
+import com.ifba.clinic.people.models.response.GetPatientResponse;
+import com.ifba.clinic.people.repositories.PersonRepository;
 import com.ifba.clinic.people.services.PatientService;
+import com.ifba.clinic.people.services.PersonService;
 import com.ifba.clinic.people.utils.validation.ErrorUtils;
+import jakarta.transaction.Transactional;
 import jakarta.validation.Validator;
+import java.util.Optional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
@@ -26,6 +31,10 @@ import org.springframework.stereotype.Component;
 public class PatientProfileGeneratingStrategy implements ProfileGeneratingStrategy {
 
   private final PatientService patientService;
+  private final PersonService personService;
+
+  private final PersonRepository personRepository;
+
   private final ObjectMapper objectMapper;
   private final Validator validator;
 
@@ -50,15 +59,33 @@ public class PatientProfileGeneratingStrategy implements ProfileGeneratingStrate
       ProfileIntentRequest.Personal personalInfo = request.body().personal();
       AddressRequest address = mapToAddress(personalInfo.address());
 
-      CreatePatientRequest patientRequest = CreatePatientRequest.builder()
-          .name(personalInfo.personal().name())
-          .document(personalInfo.personal().document())
-          .phone(personalInfo.personal().phone())
-          .userId(request.userId())
-          .address(address)
-          .build();
+      Optional<Person> personOptional = personRepository.findByUserId(request.userId());
 
-      CreatePatientResponse patientResponse = patientService.createPatient(patientRequest);
+      if (personOptional.isEmpty()) {
+        CreatePersonRequest personRequest = CreatePersonRequest.builder()
+            .name(personalInfo.personal().name())
+            .phone(personalInfo.personal().phone())
+            .document(personalInfo.personal().document())
+            .userId(request.userId())
+            .address(address)
+            .build();
+
+        personService.createPerson(request.userId(), personRequest);
+
+        personOptional = personRepository.findByUserId(request.userId());
+
+        log.info("[ProfileGeneration] Person profile created successfully for userId: {}", request.userId());
+      }
+
+      if (personOptional.isEmpty()) {
+        log.error("Failed to create or retrieve person profile for userId: {}", request.userId());
+
+        return buildErrorResponse(request.intentId(), new MessagedError("Falha ao criar ou recuperar o perfil da pessoa."));
+      }
+
+      Person person = personOptional.get();
+
+      GetPatientResponse patientResponse = patientService.createPatient(person.getId());
 
       log.info("Patient profile created successfully for userId: {}", request.userId());
 
@@ -71,6 +98,7 @@ public class PatientProfileGeneratingStrategy implements ProfileGeneratingStrate
 
     } catch (IllegalArgumentException e) {
       log.error("Invalid data for patient creation: {}", e.getMessage());
+
       return buildErrorResponse(request.intentId(), new MessagedError("Dados inválidos: " + e.getMessage()));
     } catch (ConflictException e) {
       log.error("Conflict error creating patient profile: {}", e.getMessage());
@@ -78,6 +106,7 @@ public class PatientProfileGeneratingStrategy implements ProfileGeneratingStrate
       return buildErrorResponse(request.intentId(), new MessagedError(e.getMessage()));
     } catch (Exception e) {
       log.error("Unexpected error creating patient profile: {}", e.getMessage(), e);
+
       return buildErrorResponse(request.intentId(), new MessagedError("Ocorreu um erro inesperado ao criar o perfil do paciente."));
     }
   }

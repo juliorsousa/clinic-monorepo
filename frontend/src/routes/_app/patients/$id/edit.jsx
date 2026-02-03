@@ -113,17 +113,21 @@ function EditPatientPage() {
 		if (patient) {
 			form.reset(
 				{
-					fullName: patient.name || "",
-					document: patient.document ? unmaskCPF(patient.document) : "",
-					phone: patient.phone ? unmaskPhone(patient.phone) : "",
-					street: patient.address?.street || "",
-					house: patient.address?.house || "",
-					complement: patient.address?.complement || "",
-					neighborhood: patient.address?.neighborhood || "",
-					city: patient.address?.city || "",
-					state: patient.address?.state || "",
-					zipCode: patient.address?.zipCode
-						? unmaskPostalCode(patient.address.zipCode)
+					fullName: patient?.person?.name || "",
+					document: patient?.person?.document
+						? unmaskCPF(patient?.person?.document)
+						: "",
+					phone: patient?.person?.phone
+						? unmaskPhone(patient?.person?.phone)
+						: "",
+					street: patient?.person?.address?.street || "",
+					house: patient?.person?.address?.house || "",
+					complement: patient?.person?.address?.complement || "",
+					neighborhood: patient?.person?.address?.neighborhood || "",
+					city: patient?.person?.address?.city || "",
+					state: patient?.person?.address?.state || "",
+					zipCode: patient?.person?.address?.zipCode
+						? unmaskPostalCode(patient?.person?.address?.zipCode)
 						: "",
 					email: patient.email || "",
 				},
@@ -160,15 +164,19 @@ function EditPatientPage() {
 		};
 
 		try {
-			const response = await api.put(`/patients/${id}`, payload);
+			const response = await api.put(
+				`/persons/${patient?.person?.id}`,
+				payload,
+			);
 
 			if (response.status !== 200) {
 				throw new Error(
-					response.data?.message || "Erro ao atualizar paciente.",
+					response.data?.message ||
+						"Erro ao atualizar dados pessoais do paciente.",
 				);
 			}
 
-			toast.success("Paciente atualizado com sucesso!");
+			toast.success("Dados pessoais atualizados com sucesso!");
 
 			queryClient.invalidateQueries({
 				queryKey: ["patients"],
@@ -200,7 +208,7 @@ function EditPatientPage() {
 							</BreadcrumbItem>
 							<BreadcrumbSeparator className="hidden md:block" />
 							<BreadcrumbItem>
-								<BreadcrumbPage>{patient?.name || "—"}</BreadcrumbPage>
+								<BreadcrumbPage>{patient?.person?.name || "—"}</BreadcrumbPage>
 							</BreadcrumbItem>
 							<BreadcrumbSeparator className="hidden md:block" />
 							<BreadcrumbItem>

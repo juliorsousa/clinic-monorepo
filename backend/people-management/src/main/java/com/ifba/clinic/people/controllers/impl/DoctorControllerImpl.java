@@ -4,7 +4,6 @@ import com.ifba.clinic.people.controllers.DoctorController;
 import com.ifba.clinic.people.models.requests.CreateDoctorRequest;
 import com.ifba.clinic.people.models.requests.PageableRequest;
 import com.ifba.clinic.people.models.requests.UpdateDoctorRequest;
-import com.ifba.clinic.people.models.response.CreateDoctorResponse;
 import com.ifba.clinic.people.models.response.GetDoctorResponse;
 import com.ifba.clinic.people.models.response.PageResponse;
 import com.ifba.clinic.people.services.DoctorService;
@@ -18,17 +17,6 @@ import org.springframework.web.bind.annotation.RestController;
 public class DoctorControllerImpl implements DoctorController {
 
   private final DoctorService doctorService;
-
-  @Override
-  public ResponseEntity<CreateDoctorResponse> createDoctor(
-      CreateDoctorRequest request
-  ) {
-    var created = doctorService.createDoctor(request);
-
-    return ResponseEntity
-        .status(HttpStatus.CREATED)
-        .body(created);
-  }
 
   @Override
   public PageResponse<GetDoctorResponse> listDoctors(PageableRequest pageable) {

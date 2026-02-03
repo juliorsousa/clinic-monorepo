@@ -1,7 +1,5 @@
 package com.ifba.clinic.people.entities;
 
-import com.ifba.clinic.people.models.requests.CreatePatientRequest;
-import com.ifba.clinic.people.models.requests.UpdatePatientRequest;
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -38,21 +36,9 @@ public class Patient {
   @Column(name = "ID_PATIENT")
   private String id;
 
-  @Column(name = "ID_USER", nullable = false, unique = true)
-  private String userId;
-
-  @Column(name = "NM_PATIENT", nullable = false)
-  private String name;
-
-  @Column(name = "VL_DOCUMENT", nullable = false)
-  private String document;
-
-  @Column(name = "VL_PHONE", nullable = false)
-  private String phone;
-
-  @JoinColumn(name = "CD_ADDRESS", nullable = false)
+  @JoinColumn(name = "ID_PERSON", nullable = false)
   @OneToOne(fetch = FetchType.EAGER, cascade = CascadeType.ALL, orphanRemoval = true)
-  private Address address;
+  private Person person;
 
   @Column(name = "DT_CREATED", nullable = false)
   private LocalDateTime createdAt;
@@ -65,20 +51,9 @@ public class Patient {
     createdAt = LocalDateTime.now();
   }
 
-  public void updateFromRequest(UpdatePatientRequest request) {
-    this.name = request.name();
-    this.phone = request.phone();
-
-    this.address = address.updateFromRequest(request.address());
-  }
-
-  public static Patient fromCreationRequest(CreatePatientRequest request, Address address) {
+  public static Patient from(Person person) {
     return Patient.builder()
-        .name(request.name())
-        .document(request.document())
-        .userId(request.userId())
-        .phone(request.phone())
-        .address(address)
+        .person(person)
         .build();
   }
 

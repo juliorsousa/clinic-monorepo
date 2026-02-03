@@ -152,18 +152,18 @@ export function PatientsDataTable() {
 			accessorKey: "name",
 			header: "Nome do Paciente",
 			cell: ({ row }) => (
-				<span className="font-medium">{row.original.name}</span>
+				<span className="font-medium">{row.original.person.name}</span>
 			),
 		},
 		{
 			accessorKey: "document",
 			header: "Documento",
-			cell: ({ row }) => <span>{maskCPF(row.original.document)}</span>,
+			cell: ({ row }) => <span>{maskCPF(row.original.person.document)}</span>,
 		},
 		{
 			accessorKey: "phone",
 			header: "Telefone",
-			cell: ({ row }) => <span>{maskPhone(row.original.phone)}</span>,
+			cell: ({ row }) => <span>{maskPhone(row.original.person.phone)}</span>,
 		},
 		{
 			id: "actions",

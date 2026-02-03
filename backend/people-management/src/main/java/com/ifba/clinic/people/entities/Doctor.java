@@ -43,11 +43,9 @@ public class Doctor {
   @Column(name = "ID_USER", nullable = false, unique = true)
   private String userId;
 
-  @Column(name = "NM_DOCTOR", nullable = false)
-  private String name;
-
-  @Column(name = "VL_PHONE", nullable = false)
-  private String phone;
+  @JoinColumn(name = "ID_PERSON", nullable = false)
+  @OneToOne(fetch = FetchType.EAGER, cascade = CascadeType.ALL, orphanRemoval = true)
+  private Person person;
 
   @Column(name = "VL_CREDENTIAL", nullable = false)
   private String credential;
@@ -55,10 +53,6 @@ public class Doctor {
   @Column(name = "VL_SPECIALITY", nullable = false)
   @Enumerated
   private EnumDoctorSpeciality speciality;
-
-  @JoinColumn(name = "CD_ADDRESS", nullable = false)
-  @OneToOne(fetch = FetchType.EAGER, cascade = CascadeType.ALL, orphanRemoval = true)
-  private Address address;
 
   @Column(name = "IN_DELETED", nullable = false, columnDefinition = "BOOLEAN DEFAULT FALSE")
   private boolean deleted = false;
@@ -72,26 +66,14 @@ public class Doctor {
   }
 
   public void updateFromRequest(UpdateDoctorRequest request) {
-    this.name = request.name();
-    this.phone = request.phone();
     this.speciality = request.speciality();
-
-    if (request.address() != null) {
-      if (this.address == null) {
-        this.address = Address.fromCreationRequest(request.address());
-      } else {
-        this.address = this.address.updateFromRequest(request.address());
-      }
-    }
   }
 
-  public static Doctor fromCreationRequest(CreateDoctorRequest request, Address address) {
+  public static Doctor fromCreationRequest(Person person, CreateDoctorRequest request) {
     return Doctor.builder()
-        .name(request.name())
-        .phone(request.phone())
         .credential(request.credential())
         .speciality(request.speciality())
-        .address(address)
+        .person(person)
         .build();
   }
 

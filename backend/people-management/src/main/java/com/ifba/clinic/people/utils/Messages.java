@@ -26,6 +26,12 @@ public class Messages {
 
   // Generic Person messages
 
+  public static final String PERSON_DUPLICATED =
+      "Já existe uma pessoa cadastrada com este CPF";
+
+  public static final String PERSON_NOT_FOUND =
+      "Pessoa não encontrada.";
+
   public static final String USER_ID_REQUIRED =
       "O ID do usuário é obrigatório.";
 

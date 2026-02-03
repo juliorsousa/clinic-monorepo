@@ -57,7 +57,7 @@ function Patient() {
 							</BreadcrumbItem>
 							<BreadcrumbSeparator className="hidden md:block" />
 							<BreadcrumbItem>
-								<BreadcrumbPage>{patient?.name || "—"}</BreadcrumbPage>
+								<BreadcrumbPage>{patient?.person?.name || "—"}</BreadcrumbPage>
 							</BreadcrumbItem>
 						</BreadcrumbList>
 					</Breadcrumb>
@@ -157,7 +157,7 @@ function Patient() {
 														Nome Completo
 													</span>
 													<span className="text-sm font-medium text-foreground">
-														{patient?.name || "—"}
+														{patient?.person?.name || "—"}
 													</span>
 												</div>
 											</div>
@@ -171,8 +171,8 @@ function Patient() {
 														CPF / Documento
 													</span>
 													<span className="text-sm font-medium text-foreground">
-														{patient?.document
-															? maskCPF(patient.document)
+														{patient?.person?.document
+															? maskCPF(patient.person.document)
 															: "—"}
 													</span>
 												</div>
@@ -189,7 +189,9 @@ function Patient() {
 														Telefone
 													</span>
 													<span className="text-sm font-medium text-foreground">
-														{patient?.phone ? maskPhone(patient.phone) : "—"}
+														{patient?.person?.phone
+															? maskPhone(patient.person.phone)
+															: "—"}
 													</span>
 												</div>
 											</div>
@@ -203,7 +205,7 @@ function Patient() {
 														Email
 													</span>
 													<span className="text-sm font-medium text-foreground">
-														{patient?.email || "—"}
+														{patient?.person?.email || "—"}
 													</span>
 												</div>
 											</div>
@@ -225,13 +227,13 @@ function Patient() {
 													Logradouro
 												</span>
 												<span className="text-sm font-medium text-foreground">
-													{patient?.address.street || "—"},{" "}
-													{patient?.address.house || "—"}
-													{patient?.address.complement &&
-														` — ${patient?.address.complement}`}
+													{patient?.person?.address?.street || "—"},{" "}
+													{patient?.person?.address?.house || "—"}
+													{patient?.person?.address?.complement &&
+														` — ${patient?.person?.address?.complement}`}
 												</span>
 												<span className="text-xs text-muted-foreground">
-													{patient?.address.neighborhood || "—"}
+													{patient?.person?.address?.neighborhood || "—"}
 												</span>
 											</div>
 										</div>
@@ -245,11 +247,11 @@ function Patient() {
 													Localidade
 												</span>
 												<span className="text-sm font-medium text-foreground">
-													{patient?.address.city || "—"} —{" "}
-													{patient?.address.state || "—"}
+													{patient?.person?.address?.city || "—"} —{" "}
+													{patient?.person?.address?.state || "—"}
 												</span>
 												<span className="text-xs text-muted-foreground">
-													CEP: {patient?.address.zipCode || "—"}
+													CEP: {patient?.person?.address?.zipCode || "—"}
 												</span>
 											</div>
 										</div>

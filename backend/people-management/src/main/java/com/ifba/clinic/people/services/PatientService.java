@@ -1,19 +1,16 @@
 package com.ifba.clinic.people.services;
 
-import com.ifba.clinic.people.entities.Address;
 import com.ifba.clinic.people.entities.Patient;
+import com.ifba.clinic.people.entities.Person;
 import com.ifba.clinic.people.exceptions.ConflictException;
 import com.ifba.clinic.people.exceptions.NotFoundException;
 import com.ifba.clinic.people.messaging.roles.models.UserRoleDroppedEvent;
 import com.ifba.clinic.people.messaging.roles.producers.UserRoleProducer;
-import com.ifba.clinic.people.models.requests.CreatePatientRequest;
 import com.ifba.clinic.people.models.requests.PageableRequest;
-import com.ifba.clinic.people.models.requests.UpdatePatientRequest;
-import com.ifba.clinic.people.models.response.CreatePatientResponse;
 import com.ifba.clinic.people.models.response.GetPatientResponse;
 import com.ifba.clinic.people.models.response.PageResponse;
-import com.ifba.clinic.people.repositories.AddressRepository;
 import com.ifba.clinic.people.repositories.PatientRepository;
+import com.ifba.clinic.people.repositories.PersonRepository;
 import com.ifba.clinic.people.security.annotations.AuthRequired;
 import com.ifba.clinic.people.security.annotations.RoleRestricted;
 import com.ifba.clinic.people.security.components.AuthorizationComponent;
@@ -34,11 +31,12 @@ import static com.ifba.clinic.people.utils.Messages.PATIENT_NOT_FOUND;
 public class PatientService {
 
   private final PatientRepository patientRepository;
-  private final AddressRepository addressRepository;
+  private final PersonRepository personRepository;
 
   private final UserRoleProducer userRoleProducer;
 
   private final AuthorizationComponent authorizationComponent;
+  private final PersonService personService;
 
   @AuthRequired
   @RoleRestricted("ADMIN")
@@ -46,7 +44,7 @@ public class PatientService {
     Pageable pageable = PageRequest.of(
         pageableRequest.page(),
         pageableRequest.size(),
-        Sort.by("name").ascending()
+        Sort.by("person.name").ascending()
     );
 
     Page<GetPatientResponse> patientPage = patientRepository.findAll(pageable)
@@ -62,7 +60,7 @@ public class PatientService {
     Patient patient = patientRepository.findById(id)
         .orElseThrow(() -> new NotFoundException(PATIENT_NOT_FOUND));
 
-    if (!authorizationComponent.hasPermissionToManageResource(patient.getUserId())) {
+    if (!authorizationComponent.hasPermissionToManageResource(patient.getPerson().getUserId())) {
       throw new NotFoundException(PATIENT_NOT_FOUND);
     }
 
@@ -70,46 +68,25 @@ public class PatientService {
   }
 
   @Transactional
-  public CreatePatientResponse createPatient(CreatePatientRequest request) {
-    log.info("Creating patient with document: {}", request.document());
+  public GetPatientResponse createPatient(String personId) {
+    log.info("Creating patient for personId: {}", personId);
+
+    Person person = personRepository.findById(personId)
+        .orElseThrow(() -> new NotFoundException(PATIENT_NOT_FOUND));
 
     boolean patientAlreadyExists =
-        patientRepository.findByDocument(
-            request.document()
-        ).isPresent();
+        patientRepository.findByPerson(person).isPresent();
 
     if (patientAlreadyExists) {
       throw new ConflictException(PATIENT_DUPLICATED);
     }
 
-    Address address = Address.fromCreationRequest(request.address());
-    Address savedAddress = addressRepository.save(address);
-
-    Patient patient = Patient.fromCreationRequest(request, savedAddress);
+    Patient patient = Patient.from(person);
     Patient savedPatient = patientRepository.save(patient);
 
     log.info("Patient created with id: {}", savedPatient.getId());
 
-    return new CreatePatientResponse(savedPatient);
-  }
-
-  @Transactional
-  @AuthRequired
-  public void updatePatient(String id, UpdatePatientRequest request) {
-    log.info("Updating patient with id: {}", id);
-
-    Patient patient = patientRepository.findById(id)
-        .orElseThrow(() -> new NotFoundException(PATIENT_NOT_FOUND));
-
-    if (!authorizationComponent.hasPermissionToManageResource(patient.getUserId())) {
-      throw new NotFoundException(PATIENT_NOT_FOUND);
-    }
-
-    patient.updateFromRequest(request);
-
-    patientRepository.save(patient);
-
-    log.info("Patient with id: {} updated successfully", id);
+    return GetPatientResponse.from(savedPatient);
   }
 
   @Transactional
@@ -121,7 +98,10 @@ public class PatientService {
 
     patientRepository.delete(patient);
 
-    userRoleProducer.publishRoleDropped(new UserRoleDroppedEvent(patient.getId(), "PATIENT"));
+    String deletedRole = "PATIENT";
+
+    userRoleProducer.publishRoleDropped(new UserRoleDroppedEvent(patient.getId(), deletedRole));
+    personService.deleteIfNothingToParent(patient.getPerson().getId(), deletedRole);
 
     log.info("Patient with id: {} deleted successfully", id);
   }
