@@ -23,6 +23,8 @@ export const Route = createFileRoute("/_app/reprofiling/submit/")({
 			throw redirect({ to: "/reprofiling" });
 		}
 
+		const doctorValidation = validateDoctorSpecificData(reprofilingData);
+
 		if (doctorValidation.length !== 0) {
 			throw redirect({ to: "/reprofiling" });
 		}
@@ -112,7 +114,8 @@ export default function SubmitReprofilingPage() {
 					<CardContent>
 						<p className="text-sm">
 							Caso a reprofilagem seja concluída com sucesso, você passará a ter
-							**tanto perfil de paciente quanto de médico** na plataforma.
+							<strong> tanto perfil de paciente quanto de médico</strong> na
+							plataforma.
 						</p>
 					</CardContent>
 				</Card>

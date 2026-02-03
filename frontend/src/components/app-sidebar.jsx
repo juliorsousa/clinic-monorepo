@@ -12,6 +12,7 @@ import {
 import { useAuth } from "@/hooks/use-auth";
 import { Link } from "@tanstack/react-router";
 import {
+	Activity,
 	Ban,
 	BriefcaseMedical,
 	ClipboardList,
@@ -32,7 +33,7 @@ export function AppSidebar({ ...props }) {
 	const adminNav = useMemo(() => {
 		return [
 			{
-				title: "Todas as Consultas",
+				title: "Consultas",
 				url: "/appointments",
 				icon: ClipboardList,
 				role: "ADMIN",
@@ -47,6 +48,12 @@ export function AppSidebar({ ...props }) {
 				title: "Pacientes",
 				url: "/patients",
 				icon: HeartHandshake,
+				role: "ADMIN",
+			},
+			{
+				title: "Solicitações",
+				url: "/intents",
+				icon: Activity,
 				role: "ADMIN",
 			},
 		];
@@ -82,6 +89,17 @@ export function AppSidebar({ ...props }) {
 				url: "/appointments/schedule",
 				icon: Medal,
 				role: "PATIENT",
+			},
+		];
+	}, []);
+
+	const mainAdminNav = useMemo(() => {
+		return [
+			{
+				title: "Sair",
+				url: "/auth/logout",
+				className: "text-red-400",
+				icon: Ban,
 			},
 		];
 	}, []);
@@ -136,7 +154,11 @@ export function AppSidebar({ ...props }) {
 						)}
 					</div>
 
-					<NavMain name="Minha Conta" items={mainNav} />
+					{hasRole("ADMIN") ? (
+						<NavMain name="Minha Conta" items={mainAdminNav} />
+					) : (
+						<NavMain name="Minha Conta" items={mainNav} />
+					)}
 				</div>
 			</SidebarContent>
 

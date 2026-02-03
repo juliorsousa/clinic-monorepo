@@ -8,14 +8,14 @@ import {
 import { Separator } from "@/components/ui/separator";
 import { SidebarTrigger } from "@/components/ui/sidebar";
 import { createFileRoute, redirect } from "@tanstack/react-router";
-import { PatientsDataTable } from "./-components/patients-data-table";
+import { IntentsDataTable } from "./-components/intents-data-table";
 
-export const Route = createFileRoute("/_app/patients/")({
+export const Route = createFileRoute("/_app/intents/")({
 	component: PatientsComponent,
 	head: () => ({
 		meta: [
 			{
-				title: "Pacientes | Clínica",
+				title: "Solicitações de Cadastro | Clínica",
 			},
 		],
 	}),
@@ -45,15 +45,15 @@ function PatientsComponent() {
 					<Breadcrumb>
 						<BreadcrumbList>
 							<BreadcrumbItem>
-								<BreadcrumbPage>Pacientes</BreadcrumbPage>
+								<BreadcrumbPage>Solicitações de Cadastro</BreadcrumbPage>
 							</BreadcrumbItem>
 						</BreadcrumbList>
 					</Breadcrumb>
 				</div>
 			</header>
 			<div className="flex flex-1 flex-col gap-4 p-4 pt-0">
-				<PatientsDataTable />
+				<IntentsDataTable />
 			</div>
 		</>
-	)
+	);
 }

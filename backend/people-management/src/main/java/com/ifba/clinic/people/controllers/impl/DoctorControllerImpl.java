@@ -6,6 +6,7 @@ import com.ifba.clinic.people.models.requests.PageableRequest;
 import com.ifba.clinic.people.models.requests.UpdateDoctorRequest;
 import com.ifba.clinic.people.models.response.GetDoctorResponse;
 import com.ifba.clinic.people.models.response.PageResponse;
+import com.ifba.clinic.people.models.response.SummarizedDoctorResponse;
 import com.ifba.clinic.people.services.DoctorService;
 import lombok.RequiredArgsConstructor;
 
@@ -29,6 +30,11 @@ public class DoctorControllerImpl implements DoctorController {
   @Override
   public GetDoctorResponse getDoctorById(String id) {
     return doctorService.getDoctorById(id);
+  }
+
+  @Override
+  public SummarizedDoctorResponse getSummarizedDoctorById(String id) {
+    return doctorService.getSummarizedDoctorById(id);
   }
 
   @Override

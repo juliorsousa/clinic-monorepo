@@ -32,6 +32,13 @@ spring:
                filters:
                 - AuthenticationFilter
 
+             - id: appointment-service
+               uri: lb://appointment-service
+               predicates:
+                 - Path=/appointments/**
+               filters:
+                 - AuthenticationFilter
+
             globalcors:
                 cors-configurations:
                   '[/**]':

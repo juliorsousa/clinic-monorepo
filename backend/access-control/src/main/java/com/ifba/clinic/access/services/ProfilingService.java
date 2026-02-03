@@ -9,8 +9,11 @@ import com.ifba.clinic.access.entities.enums.EnumRole;
 import com.ifba.clinic.access.exceptions.BadRequestException;
 import com.ifba.clinic.access.exceptions.ConflictException;
 import com.ifba.clinic.access.exceptions.NoContentException;
+import com.ifba.clinic.access.exceptions.NotFoundException;
 import com.ifba.clinic.access.messaging.intents.producers.ProfileIntentProducer;
+import com.ifba.clinic.access.models.requests.PageableRequest;
 import com.ifba.clinic.access.models.requests.profiles.ProfileIntentRequest;
+import com.ifba.clinic.access.models.response.PageResponse;
 import com.ifba.clinic.access.models.response.ProfileIntentProcessingResponse;
 import com.ifba.clinic.access.models.response.ProfileIntentResponse;
 import com.ifba.clinic.access.repositories.ProfileIntentRepository;
@@ -23,7 +26,10 @@ import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.TimeUnit;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import static com.ifba.clinic.access.utils.Messages.GENERIC_BAD_REQUEST;
 import static com.ifba.clinic.access.utils.Messages.GENERIC_NO_CONTENT;
@@ -45,6 +51,23 @@ public class ProfilingService {
 
   private static String LOG_USER_ALREADY_HAS_ROLE =
       "User with email: {} already has any role, skipping trait updates.";
+
+  @Transactional
+  @AuthRequired
+  public PageResponse<ProfileIntentResponse> listProfileIntents(
+      PageableRequest pageableRequest
+  ) {
+    Pageable pageable = PageRequest.of(
+        pageableRequest.page(),
+        pageableRequest.size(),
+        Sort.by("createdAt").descending()
+    );
+
+    Page<ProfileIntentResponse> profileIntentResponsePage = profileIntentRepository.findAll(pageable)
+        .map(ProfileIntentResponse::new);
+
+    return PageResponse.from(profileIntentResponsePage);
+  }
 
   @Transactional
   @AuthRequired
@@ -172,19 +195,65 @@ public class ProfilingService {
     throw new BadRequestException("Only patient and doctor profile intents can be created at this time.");
   }
 
-//  @Transactional
-//  public void deleteOldErroredIntents(User user, EnumRole type) {
-//    var oldErroredIntents = profileIntentRepository
-//        .findByUserAndTypeAndStatus(user, type, EnumIntentStatus.ERRORED);
-//
-//    if (oldErroredIntents.isEmpty()) {
-//      return;
-//    }
-//
-//    profileIntentRepository.deleteAll(oldErroredIntents);
-//
-//    log.info("Deleted {} old errored profile intents for user with email: {}", oldErroredIntents.size(), user.getEmail());
-//  }
+  @Transactional
+  @AuthRequired
+  public void rejectProfileIntent(String intentId) {
+    log.info("Rejecting profile intent with ID: {}", intentId);
+
+    ProfileIntent intent = profileIntentRepository.findById(intentId)
+        .orElseThrow(NotFoundException::new);
+
+    if (intent.getStatus() != EnumIntentStatus.PENDING) {
+      throw new BadRequestException("Apenas solicitações de perfil com status PENDING podem ser rejeitadas.");
+    }
+
+    intent.setStatus(EnumIntentStatus.REJECTED);
+
+    profileIntentRepository.save(intent);
+
+    User intentOwner = intent.getUser();
+
+    List<String> mandatoryOnboardingTraits = List.of("AWAITING_PROFILE_CREATION", "AWAITING_INTENT_APPROVAL");
+
+    if (userService.hasAnyTrait(intentOwner.getId(), mandatoryOnboardingTraits)) {
+      CompletableFuture.runAsync(
+          () -> {
+            userService.removeTraitsFromUser(intentOwner.getId(), mandatoryOnboardingTraits);
+            userService.addTraitToUser(intentOwner.getId(), "PENDING_ONBOARDING");
+          },
+          CompletableFuture.delayedExecutor(3, TimeUnit.SECONDS)
+      );
+    }
+
+    log.info("Profile intent with ID: {} rejected successfully.", intentId);
+  }
+
+  @Transactional
+  @AuthRequired
+  public void approveProfileIntent(String intentId) {
+    log.info("Approving profile intent with ID: {}", intentId);
+
+    ProfileIntent intent = profileIntentRepository.findById(intentId)
+        .orElseThrow(NotFoundException::new);
+
+    if (intent.getStatus() != EnumIntentStatus.PENDING) {
+      throw new BadRequestException("Apenas solicitações de perfil com status PENDING podem ser aprovadas.");
+    }
+
+    intent.setStatus(EnumIntentStatus.APPROVED);
+
+    profileIntentRepository.save(intent);
+
+    try {
+      profileIntentProducer.sendRunProfileIntent(intent);
+    } catch (JsonProcessingException e) {
+      log.error("Failed to send profile intent to messaging queue: {}", e.getMessage());
+
+      throw new RuntimeException("Failed to process profile intent.", e);
+    }
+
+    log.info("Profile intent with ID: {} approved successfully.", intentId);
+  }
 
   @Transactional(value = Transactional.TxType.REQUIRES_NEW)
   public void processProfileIntentResponse(ProfileIntentProcessingResponse response) {

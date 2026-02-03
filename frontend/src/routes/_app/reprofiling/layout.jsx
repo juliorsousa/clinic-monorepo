@@ -1,6 +1,7 @@
 import { Card } from "@/components/ui/card";
 import { useReprofiling } from "@/hooks/use-reprofiling";
 import { cn } from "@/lib/utils";
+import { LoadingPage } from "@/routes/loading";
 import {
 	Outlet,
 	createFileRoute,
@@ -20,7 +21,11 @@ export const Route = createFileRoute("/_app/reprofiling")({
 		],
 	}),
 	beforeLoad: ({ context }) => {
-		const { auth } = context;
+		const { auth, reprofiling } = context;
+
+		if (auth.isAuthLoading) {
+			return <LoadingPage />;
+		}
 
 		if (!auth.isAuthenticated) {
 			throw redirect({ to: "/auth/login" });
@@ -28,6 +33,10 @@ export const Route = createFileRoute("/_app/reprofiling")({
 
 		if (auth.user?.traits?.includes("MUST_CHANGE_PASSWORD")) {
 			throw redirect({ to: "/auth/password" });
+		}
+
+		if (!reprofiling.isReprofilingEligible) {
+			throw redirect({ to: "/" });
 		}
 	},
 });

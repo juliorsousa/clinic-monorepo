@@ -56,14 +56,12 @@ public class DoctorProfileGeneratingStrategy implements ProfileGeneratingStrateg
     }
 
     try {
-      ProfileIntentRequest.Personal personalInfo = request.body().personal();
-      ProfileIntentRequest.Specific specific = request.body().specific();
-
-      AddressRequest address = mapToAddress(personalInfo.address());
-
       Optional<Person> personOptional = personRepository.findByUserId(request.userId());
 
       if (personOptional.isEmpty()) {
+        ProfileIntentRequest.Personal personalInfo = request.body().personal();
+        AddressRequest address = mapToAddress(personalInfo.address());
+
         CreatePersonRequest personRequest = CreatePersonRequest.builder()
             .name(personalInfo.personal().name())
             .phone(personalInfo.personal().phone())
@@ -86,6 +84,8 @@ public class DoctorProfileGeneratingStrategy implements ProfileGeneratingStrateg
       }
 
       Person person = personOptional.get();
+
+      ProfileIntentRequest.Specific specific = request.body().specific();
 
       CreateDoctorRequest doctorRequest = CreateDoctorRequest.builder()
           .credential(specific.credential())

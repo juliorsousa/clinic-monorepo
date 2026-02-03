@@ -7,7 +7,7 @@ import com.ifba.clinic.people.models.response.person.GetPersonResponse;
 public record GetDoctorResponse(
     String id,
     String credential,
-    EnumDoctorSpeciality speciality,
+    EnumDoctorSpeciality specialty,
     GetPersonResponse person
 ) {
   public GetDoctorResponse(Doctor doctor) {

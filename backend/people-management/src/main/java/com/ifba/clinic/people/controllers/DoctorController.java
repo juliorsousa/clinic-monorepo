@@ -6,6 +6,7 @@ import com.ifba.clinic.people.models.requests.UpdateDoctorRequest;
 import com.ifba.clinic.people.models.response.GetDoctorResponse;
 import com.ifba.clinic.people.models.response.GetPatientResponse;
 import com.ifba.clinic.people.models.response.PageResponse;
+import com.ifba.clinic.people.models.response.SummarizedDoctorResponse;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.media.Content;
@@ -95,6 +96,37 @@ public interface DoctorController {
   );
 
   @Operation(
+      summary = "Buscar informações sumarizadas médico pelo ID",
+      description = """
+          Retorna as informações não confidenciais de um médico específico pelo seu ID.
+          """
+  )
+  @ApiResponses({
+      @ApiResponse(
+          responseCode = "200",
+          description = "Médico recuperado com sucesso",
+          content = @Content(
+              mediaType = "application/json",
+              schema = @Schema(implementation = SummarizedDoctorResponse.class)
+          )
+      ),
+      @ApiResponse(
+          responseCode = "401",
+          description = "Não autorizado"
+      )
+  })
+  @GetMapping("/{id}/summary")
+  SummarizedDoctorResponse getSummarizedDoctorById(
+      @PathVariable
+      @Parameter(
+          description = "ID do médico",
+          example = "a3f1a9e4-7b20-4fa3-bc1b-5e57b51fd123",
+          required = true
+      )
+      String id
+  );
+
+  @Operation(
       summary = "Valida existência do médico",
       description = """
           Retorna verdadeiro caso o médico exista no sistema.
@@ -123,7 +155,7 @@ public interface DoctorController {
           description = "Não autorizado"
       )
   })
-  @GetMapping("/{id}")
+  @GetMapping("/{id}/validity")
   ResponseEntity<Boolean> validateDoctor(
         @PathVariable
         @Parameter(

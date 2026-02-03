@@ -6,13 +6,12 @@ import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 
 @FeignClient(name = "appointment-service")
-@Component
 public interface AppointmentClient {
 
-    @DeleteMapping("/appointments/delete/doctor/{id}")
-    void deleteDoctorAppointments(@PathVariable("id") String id);
+    @DeleteMapping("/appointments/by-doctor/{id}")
+    void deleteDoctorAppointments(@PathVariable String id);
 
-    @DeleteMapping("/appointments/delete/patient/{id}")
-    void deletePatientAppointments(@PathVariable("id") String id);
+    @DeleteMapping("/appointments/by-patient/{id}")
+    void deletePatientAppointments(@PathVariable String id);
 
 }

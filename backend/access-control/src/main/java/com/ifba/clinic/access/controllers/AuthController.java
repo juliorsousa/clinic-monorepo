@@ -86,10 +86,10 @@ public interface AuthController {
   );
 
   @Operation(
-    summary = "Valida o token JWT",
-    description = "Endpoint interno usado pelo Gateway para verificar se o token é válido e obter dados do usuário."
-)
-    @GetMapping("/validate")
-    ResponseEntity<ValidateUserResponse> validateToken();
+      summary = "Valida o token JWT",
+      description = "Endpoint interno usado pelo Gateway para verificar se o token é válido e obter dados do usuário."
+  )
+  @GetMapping("/validate")
+  ResponseEntity<ValidateUserResponse> validateToken();
 
 }

@@ -73,6 +73,7 @@ public class Doctor {
     return Doctor.builder()
         .credential(request.credential())
         .speciality(request.speciality())
+        .userId(person.getUserId())
         .person(person)
         .build();
   }

@@ -208,7 +208,9 @@ function EditPatientPage() {
 							</BreadcrumbItem>
 							<BreadcrumbSeparator className="hidden md:block" />
 							<BreadcrumbItem>
-								<BreadcrumbPage>{patient?.person?.name || "—"}</BreadcrumbPage>
+								<BreadcrumbLink asChild>
+									<Link to="/patients/$id">{patient?.person?.name || "—"}</Link>
+								</BreadcrumbLink>
 							</BreadcrumbItem>
 							<BreadcrumbSeparator className="hidden md:block" />
 							<BreadcrumbItem>

@@ -25,8 +25,9 @@ export const Route = createRootRouteWithContext()({
 		const { auth, onboarding, reprofiling } = context;
 		const { isAuthLoading, hasTrait } = auth;
 		const { isOnboardingLoading } = onboarding;
+		const { isReprofilingLoading } = reprofiling;
 
-		if (isAuthLoading || isOnboardingLoading) {
+		if (isAuthLoading || isOnboardingLoading || isReprofilingLoading) {
 			return <LoadingPage />;
 		}
 
@@ -57,6 +58,10 @@ export const Route = createRootRouteWithContext()({
 		const isReprofilingRoute = location.pathname.startsWith("/reprofiling");
 		const isReprofilingDoneRoute =
 			location.pathname.startsWith("/reprofiling/done");
+
+		if (isReprofilingRoute && auth.hasRole("ADMIN")) {
+			throw redirect({ to: "/" });
+		}
 
 		if (
 			auth.hasPendingIntentFor("PATIENT") &&

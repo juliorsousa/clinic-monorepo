@@ -1,0 +1,19 @@
+package com.ifba.clinic.appointment.config;
+
+import com.ifba.clinic.appointment.security.components.GatewayHeaderInterceptor;
+import lombok.RequiredArgsConstructor;
+import org.springframework.context.annotation.Configuration;
+import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
+import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
+
+@Configuration
+@RequiredArgsConstructor
+public class WebConfig implements WebMvcConfigurer {
+
+  private final GatewayHeaderInterceptor gatewayHeaderInterceptor;
+
+  @Override
+  public void addInterceptors(InterceptorRegistry registry) {
+    registry.addInterceptor(gatewayHeaderInterceptor).addPathPatterns("/**");
+  }
+}

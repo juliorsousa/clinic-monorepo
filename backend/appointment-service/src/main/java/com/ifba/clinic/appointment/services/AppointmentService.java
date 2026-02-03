@@ -1,11 +1,10 @@
 package com.ifba.clinic.appointment.services;
 
 import com.ifba.clinic.appointment.entities.Appointment;
-import com.ifba.clinic.appointment.entities.enums.AppointmentStatus;
 import com.ifba.clinic.appointment.exceptions.ConflictException;
 import com.ifba.clinic.appointment.exceptions.ForbiddenException;
 import com.ifba.clinic.appointment.exceptions.NotFoundException;
-import com.ifba.clinic.appointment.feign.DoctorClient;
+import com.ifba.clinic.appointment.feign.DoctorsClient;
 import com.ifba.clinic.appointment.models.request.CreateAppointmentRequest;
 import com.ifba.clinic.appointment.models.request.DatePeriodRequest;
 import com.ifba.clinic.appointment.models.request.PageableRequest;
@@ -39,7 +38,7 @@ import org.springframework.stereotype.Service;
 public class AppointmentService {
 
   private final AppointmentRepository appointmentRepository;
-  private final DoctorClient doctorClient;
+  private final DoctorsClient doctorsClient;
 
   @AuthRequired
   @RoleRestricted("ADMIN")
@@ -47,7 +46,7 @@ public class AppointmentService {
     Pageable pageable = PageRequest.of(
         pageableRequest.page(),
         pageableRequest.size(),
-        Sort.by("dateTime").ascending()
+        Sort.by("scheduledTo").descending()
     );
 
     Page<GetAppointmentResponse> appointmentPage = appointmentRepository.findAll(pageable)
@@ -65,7 +64,7 @@ public class AppointmentService {
     Pageable pageable = PageRequest.of(
         pageableRequest.page(),
         pageableRequest.size(),
-        Sort.by("dateTime").ascending()
+        Sort.by("scheduledTo").descending()
     );
 
     Page<GetAppointmentResponse> patientPage = appointmentRepository.findAllByPatientId(id, pageable)
@@ -83,7 +82,7 @@ public class AppointmentService {
     Pageable pageable = PageRequest.of(
         pageableRequest.page(),
         pageableRequest.size(),
-        Sort.by("dateTime").ascending()
+        Sort.by("scheduledTo").descending()
     );
 
     LocalDateTime startDateTime = request.startDateTime();
@@ -103,7 +102,7 @@ public class AppointmentService {
 
     String patientId = UserContext.getUserId();
 
-    doctorClient.isDoctorAvailable(request.doctorId());
+    doctorsClient.isDoctorValid(request.doctorId());
 
     LocalDateTime date = request.dateTime();
 

@@ -12,6 +12,7 @@ import com.ifba.clinic.people.models.requests.PageableRequest;
 import com.ifba.clinic.people.models.requests.UpdateDoctorRequest;
 import com.ifba.clinic.people.models.response.GetDoctorResponse;
 import com.ifba.clinic.people.models.response.PageResponse;
+import com.ifba.clinic.people.models.response.SummarizedDoctorResponse;
 import com.ifba.clinic.people.repositories.DoctorRepository;
 import com.ifba.clinic.people.repositories.PersonRepository;
 import com.ifba.clinic.people.security.annotations.AuthRequired;
@@ -66,6 +67,16 @@ public class DoctorService {
     }
 
     return new GetDoctorResponse(doctor);
+  }
+
+  @AuthRequired
+  public SummarizedDoctorResponse getSummarizedDoctorById(String id) {
+    log.info("Fetching summarized data of Doctor with id: {}", id);
+
+    Doctor doctor = doctorRepository.findById(id)
+        .orElseThrow(() -> new NotFoundException(DOCTOR_NOT_FOUND));
+
+    return new SummarizedDoctorResponse(doctor);
   }
 
   @Transactional
