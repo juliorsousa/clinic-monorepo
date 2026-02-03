@@ -42,6 +42,7 @@ public class PatientService {
 
   @AuthRequired
   @RoleRestricted("ADMIN")
+  @Transactional
   public PageResponse<GetPatientResponse> listPatients(PageableRequest pageableRequest) {
     Pageable pageable = PageRequest.of(
         pageableRequest.page(),
@@ -56,6 +57,7 @@ public class PatientService {
   }
 
   @AuthRequired
+  @Transactional
   public GetPatientResponse getPatientById(String id) {
     log.info("Fetching patient with id: {}", id);
 
@@ -70,6 +72,7 @@ public class PatientService {
   }
 
   @AuthRequired
+  @Transactional
   public SummarizedPatientResponse getSummarizedPatientById(String id) {
     log.info("Fetching summarized patient with id: {}", id);
 
@@ -111,14 +114,18 @@ public class PatientService {
         .orElseThrow(() -> new NotFoundException(PATIENT_NOT_FOUND));
 
     appointmentClient.deletePatientAppointments(id);
-    patientRepository.delete(patient);
+
+    patient.setDeleted(true);
+    patientRepository.saveAndFlush(patient);
 
     String deletedRole = "PATIENT";
 
-    userRoleProducer.publishRoleDropped(new UserRoleDroppedEvent(patient.getId(), deletedRole));
     personService.deleteIfNothingToParent(patient.getPerson().getId(), deletedRole);
 
     log.info("Patient with id: {} deleted successfully", id);
+
+    userRoleProducer.publishRoleDropped(new UserRoleDroppedEvent(patient.getId(), deletedRole));
+    log.info("Published UserRoleDroppedEvent for patient id: {}", patient.getId());
   }
 
 }

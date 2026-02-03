@@ -37,7 +37,7 @@ public class Patient {
   private String id;
 
   @JoinColumn(name = "ID_PERSON", nullable = false)
-  @OneToOne(fetch = FetchType.EAGER, cascade = CascadeType.ALL, orphanRemoval = true)
+  @OneToOne(fetch = FetchType.EAGER)
   private Person person;
 
   @Column(name = "DT_CREATED", nullable = false)

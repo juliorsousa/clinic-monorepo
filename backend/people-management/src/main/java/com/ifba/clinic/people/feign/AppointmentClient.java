@@ -8,10 +8,10 @@ import org.springframework.web.bind.annotation.PathVariable;
 @FeignClient(name = "appointment-service")
 public interface AppointmentClient {
 
-    @DeleteMapping("/appointments/by-doctor/{id}")
+    @DeleteMapping(path = "/appointments/by-doctor/{id}", headers = "X-System-Call=true")
     void deleteDoctorAppointments(@PathVariable String id);
 
-    @DeleteMapping("/appointments/by-patient/{id}")
+    @DeleteMapping(path = "/appointments/by-patient/{id}", headers = "X-System-Call=true")
     void deletePatientAppointments(@PathVariable String id);
 
 }

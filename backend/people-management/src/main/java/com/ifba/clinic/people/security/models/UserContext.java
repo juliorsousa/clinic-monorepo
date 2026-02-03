@@ -40,6 +40,10 @@ public class UserContext {
   }
 
   public static Boolean isSystemCall() {
+    if (isSystemCall.get() == null) {
+      return false;
+    }
+
     return isSystemCall.get();
   }
 

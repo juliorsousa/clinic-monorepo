@@ -174,7 +174,8 @@ public class UserService {
 
     UserRole userRole = optionalUserRole.get();
 
-    userRoleRepository.delete(userRole);
+    userRole.setDeleted(true);
+    userRoleRepository.saveAndFlush(userRole);
 
     log.info("Removed role '{} - {}' from user with ID: {}", role.name(), entityId, userRole.getUser().getId());
 
@@ -202,7 +203,9 @@ public class UserService {
     }
 
     if (user.getRoles().isEmpty() || isUserUniqueRoleDropped) {
-      userRepository.delete(user);
+      user.setDeleted(true);
+
+      userRepository.saveAndFlush(user);
 
       log.info("Deleted user with ID: {} as they had no roles left", user.getId());
     }

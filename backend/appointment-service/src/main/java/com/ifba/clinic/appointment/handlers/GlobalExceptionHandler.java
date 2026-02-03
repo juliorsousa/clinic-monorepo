@@ -85,11 +85,11 @@ public class GlobalExceptionHandler {
 
   @ExceptionHandler(HttpMessageNotReadableException.class)
     public ResponseEntity<String> handleInvalidFormat(HttpMessageNotReadableException ex) {
-        // Verifica se o erro foi causado por um problema de data/hora
         if (ex.getMessage().contains("LocalDateTime")) {
             return ResponseEntity.badRequest()
                 .body("Date format Invalid. Use: dd/MM/yyyy HH:mm");
         }
+
         return ResponseEntity.badRequest().body("Error in reading Json body");
     }
 

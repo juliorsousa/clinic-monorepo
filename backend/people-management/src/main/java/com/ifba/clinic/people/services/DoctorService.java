@@ -47,6 +47,7 @@ public class DoctorService {
 
   @AuthRequired
   @RoleRestricted("ADMIN")
+  @Transactional
   public PageResponse<GetDoctorResponse> listDoctors(PageableRequest pageableRequest) {
     Pageable pageable = PageRequest.of(
         pageableRequest.page(),
@@ -61,6 +62,7 @@ public class DoctorService {
   }
 
   @AuthRequired
+  @Transactional
   public GetDoctorResponse getDoctorById(String id) {
     log.info("Fetching doctor with id: {}", id);
 
@@ -77,6 +79,7 @@ public class DoctorService {
   }
 
   @AuthRequired
+  @Transactional
   public SummarizedDoctorResponse getSummarizedDoctorById(String id) {
     log.info("Fetching summarized data of Doctor with id: {}", id);
 
@@ -87,6 +90,7 @@ public class DoctorService {
   }
 
   @AuthRequired
+  @Transactional
   public List<SummarizedDoctorResponse> getSummarizedDoctorsBySpecialty(EnumDoctorSpecialty specialty) {
     log.info("Fetching summarized data of Doctors with specialty: {}", specialty);
 
@@ -152,7 +156,10 @@ public class DoctorService {
         .orElseThrow(() -> new NotFoundException(DOCTOR_NOT_FOUND));
 
     appointmentClient.deleteDoctorAppointments(id);
-    doctorRepository.delete(doctor);
+
+    doctor.setDeleted(true);
+
+    doctorRepository.saveAndFlush(doctor);
 
     String deletedRole = "DOCTOR";
 

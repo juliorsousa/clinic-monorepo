@@ -135,11 +135,9 @@ public class PersonService {
     Person person = personRepository.findById(id)
         .orElseThrow(() -> new NotFoundException(PERSON_NOT_FOUND));
 
-    personRepository.delete(person);
+    person.setDeleted(true);
 
-    userRoleProducer.publishRoleDropped(
-        new UserRoleDroppedEvent(person.getId(), "PERSON")
-    );
+    personRepository.saveAndFlush(person);
 
     log.info("Person with id: {} deleted successfully", id);
   }
@@ -158,11 +156,10 @@ public class PersonService {
       Person person = personRepository.findById(personId)
           .orElseThrow(() -> new NotFoundException(PERSON_NOT_FOUND));
 
-      personRepository.delete(person);
+      person.setDeleted(true);
 
-      userRoleProducer.publishRoleDropped(
-          new UserRoleDroppedEvent(person.getId(), "PERSON")
-      );
+      personRepository.saveAndFlush(person);
+      personRepository.flush();
 
       log.info("Person with id: {} deleted successfully because isn't parenting nothing anymore.", personId);
     }

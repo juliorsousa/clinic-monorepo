@@ -128,8 +128,6 @@ public class ProfilingService {
           .body(body)
           .build();
 
-//      deleteOldErroredIntents(currentUser, requestedRole);
-
       ProfileIntent saved = profileIntentRepository.save(intent);
 
       log.info("Profile intent created with ID: {}", saved.getId());
@@ -173,8 +171,6 @@ public class ProfilingService {
           .status(EnumIntentStatus.PENDING)
           .body(body)
           .build();
-
-//      deleteOldErroredIntents(currentUser, requestedRole);
 
       ProfileIntent saved = profileIntentRepository.save(intent);
 

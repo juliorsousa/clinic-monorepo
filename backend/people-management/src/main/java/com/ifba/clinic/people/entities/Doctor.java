@@ -44,7 +44,7 @@ public class Doctor {
   private String userId;
 
   @JoinColumn(name = "ID_PERSON", nullable = false)
-  @OneToOne(fetch = FetchType.EAGER, cascade = CascadeType.ALL, orphanRemoval = true)
+  @OneToOne(fetch = FetchType.EAGER)
   private Person person;
 
   @Column(name = "VL_CREDENTIAL", nullable = false)
