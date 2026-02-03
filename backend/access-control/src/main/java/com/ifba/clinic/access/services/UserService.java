@@ -13,8 +13,10 @@ import com.ifba.clinic.access.models.requests.ChangePasswordRequest;
 import com.ifba.clinic.access.models.response.CreateUserResponse;
 import com.ifba.clinic.access.models.response.UserRoleResponse;
 import com.ifba.clinic.access.models.response.ValidateUserResponse;
+import com.ifba.clinic.access.repositories.ProfileIntentRepository;
 import com.ifba.clinic.access.repositories.UserRepository;
 import com.ifba.clinic.access.repositories.UserRoleRepository;
+import com.ifba.clinic.access.repositories.UserTraitRepository;
 import com.ifba.clinic.access.security.annotations.AuthRequired;
 import com.ifba.clinic.access.security.services.AuthenticationService;
 import jakarta.transaction.Transactional;
@@ -39,6 +41,8 @@ public class UserService {
   private final UserRepository userRepository;
   private final UserRoleRepository userRoleRepository;
   private final PasswordEncoder passwordEncoder;
+  private final UserTraitRepository userTraitRepository;
+  private final ProfileIntentRepository profileIntentRepository;
 
   @Transactional
   public CreateUserResponse createUser(CreateUserRequest request, EnumRole role, String... traits) {
@@ -204,6 +208,15 @@ public class UserService {
 
     if (user.getRoles().isEmpty() || isUserUniqueRoleDropped) {
       user.setDeleted(true);
+
+      user.getRoles().forEach(role -> role.setDeleted(true));
+      userRoleRepository.saveAllAndFlush(user.getRoles());
+
+      user.getTraits().forEach(trait -> trait.setDeleted(true));
+      userTraitRepository.saveAllAndFlush(user.getTraits());
+
+      user.getProfileIntents().forEach(intent -> intent.setDeleted(true));
+      profileIntentRepository.saveAllAndFlush(user.getProfileIntents());
 
       userRepository.saveAndFlush(user);
 
