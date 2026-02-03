@@ -4,6 +4,7 @@ import com.ifba.clinic.people.models.requests.CreateDoctorRequest;
 import com.ifba.clinic.people.models.requests.PageableRequest;
 import com.ifba.clinic.people.models.requests.UpdateDoctorRequest;
 import com.ifba.clinic.people.models.response.GetDoctorResponse;
+import com.ifba.clinic.people.models.response.GetPatientResponse;
 import com.ifba.clinic.people.models.response.PageResponse;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
@@ -13,7 +14,11 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import jakarta.validation.Valid;
+
+import java.time.LocalDateTime;
+
 import org.springdoc.core.annotations.ParameterObject;
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -56,6 +61,77 @@ public interface DoctorController {
   @GetMapping
   PageResponse<GetDoctorResponse> listDoctors(
       @ParameterObject PageableRequest pageable
+  );
+
+  @Operation(
+      summary = "Buscar médico pelo ID",
+      description = """
+          Retorna as informações de um médico específico pelo seu ID.
+          """
+  )
+  @ApiResponses({
+      @ApiResponse(
+          responseCode = "200",
+          description = "Médico recuperado com sucesso",
+          content = @Content(
+              mediaType = "application/json",
+              schema = @Schema(implementation = GetDoctorResponse.class)
+          )
+      ),
+      @ApiResponse(
+          responseCode = "401",
+          description = "Não autorizado"
+      )
+  })
+  @GetMapping("/{id}")
+  GetDoctorResponse getDoctorById(
+      @PathVariable
+      @Parameter(
+          description = "ID do médico",
+          example = "a3f1a9e4-7b20-4fa3-bc1b-5e57b51fd123",
+          required = true
+      )
+      String id
+  );
+
+  @Operation(
+      summary = "Valida existência do médico",
+      description = """
+          Retorna verdadeiro caso o médico exista no sistema.
+
+          """
+  )
+  @ApiResponses({
+      @ApiResponse(
+          responseCode = "200",
+          description = "Médico validado com sucesso",
+          content = @Content(
+              mediaType = "application/json",
+              schema = @Schema(implementation = Boolean.class)
+          )
+      ),
+      @ApiResponse(
+          responseCode = "400",
+          description = "Parâmetros de validação inválidos"
+      ),
+      @ApiResponse(
+          responseCode = "404",
+          description = "Médico não encontrado"
+      ),
+      @ApiResponse(
+          responseCode = "401",
+          description = "Não autorizado"
+      )
+  })
+  @GetMapping("/{id}")
+  ResponseEntity<Boolean> validateDoctor(
+        @PathVariable
+        @Parameter(
+            description = "ID do Médico",
+            example = "a3f1a9e4-7b20-4fa3-bc1b-5e57b51fd123",
+            required = true
+        )
+        String id
   );
 
   @Operation(

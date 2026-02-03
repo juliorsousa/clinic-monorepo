@@ -4,6 +4,7 @@ import com.ifba.clinic.people.entities.Patient;
 import com.ifba.clinic.people.entities.Person;
 import com.ifba.clinic.people.exceptions.ConflictException;
 import com.ifba.clinic.people.exceptions.NotFoundException;
+import com.ifba.clinic.people.feign.AppointmentClient;
 import com.ifba.clinic.people.messaging.roles.models.UserRoleDroppedEvent;
 import com.ifba.clinic.people.messaging.roles.producers.UserRoleProducer;
 import com.ifba.clinic.people.models.requests.PageableRequest;
@@ -33,10 +34,10 @@ public class PatientService {
   private final PatientRepository patientRepository;
   private final PersonRepository personRepository;
 
-  private final UserRoleProducer userRoleProducer;
-
   private final AuthorizationComponent authorizationComponent;
+  private final AppointmentClient appointmentClient;
   private final PersonService personService;
+  private final UserRoleProducer userRoleProducer;
 
   @AuthRequired
   @RoleRestricted("ADMIN")
@@ -96,6 +97,7 @@ public class PatientService {
     Patient patient = patientRepository.findById(id)
         .orElseThrow(() -> new NotFoundException(PATIENT_NOT_FOUND));
 
+    appointmentClient.deletePatientAppointments(id);
     patientRepository.delete(patient);
 
     String deletedRole = "PATIENT";

@@ -8,6 +8,9 @@ import com.ifba.clinic.people.models.response.GetDoctorResponse;
 import com.ifba.clinic.people.models.response.PageResponse;
 import com.ifba.clinic.people.services.DoctorService;
 import lombok.RequiredArgsConstructor;
+
+import java.time.LocalDateTime;
+
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RestController;
@@ -21,6 +24,11 @@ public class DoctorControllerImpl implements DoctorController {
   @Override
   public PageResponse<GetDoctorResponse> listDoctors(PageableRequest pageable) {
     return doctorService.listDoctors(pageable);
+  }
+
+  @Override
+  public GetDoctorResponse getDoctorById(String id) {
+    return doctorService.getDoctorById(id);
   }
 
   @Override
@@ -39,5 +47,10 @@ public class DoctorControllerImpl implements DoctorController {
     return ResponseEntity
         .status(HttpStatus.NO_CONTENT)
         .build();
+  }
+
+  @Override
+  public ResponseEntity<Boolean> validateDoctor(String id) {
+      return ResponseEntity.ok(doctorService.validateDoctor(id));
   }
 }

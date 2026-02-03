@@ -20,6 +20,7 @@
         <module>server-service</module>
         <module>people-management</module>
         <module>access-control</module>
+        <module>appointment-service</module>
         <module>gateway-service</module>
     </modules>
 
@@ -36,6 +37,7 @@
                 <module>server-service</module>
                 <module>gateway-service</module>
                 <module>access-control</module>
+                <module>appointment-service</module>
                 <module>people-management</module>
             </modules>
         </profile>
